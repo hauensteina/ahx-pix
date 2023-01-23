@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+
+{% block pre %}
+<script type='text/javascript'>
+ /* Filename: mod_carousel/templates/layout.tmpl
+  * Author: AHN
+  * Creation Date: Jan, 2023
+  */
+</script>
+{% endblock pre %}
+
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name='description' content='Carousel'>
+    <meta name='keywords' content='Photo Viewer Demo'>
+    <meta name='author' content='Andreas Hauenstein'>
+
+    <title>Carousel</title>
+    <link rel="icon" href="static/images/favicon.png" type="image/ico" />
+    <link rel="shortcut icon" href="static/images/favicon.png" type="image/ico" />
+
+    <!-- Our CSS -->
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/styles.css") }}'>
+    <!-- Our JS -->
+    <script src='static/js/main.js') defer> </script>
+
+    {% block css %}
+    {% endblock css %}
+
+    {% block js %}
+    {% endblock js %}
+
+  </head>
+
+  <body>
+    <!-- Page Header -->
+    <table class='center' style='width:100%' style='background-color:white' border=1>
+      <tr style='background-color:white'>
+        <td width=20px></td>
+        <td id='homelogo' align='left' width='50px' class=''>
+          <a class='hlink vcenter' href="{{ url_for('index') }}">
+            <img class='vcenter' height=50px src="static/images/logo.png"/></a>
+        </td>
+        <td align='center'> <span class='font-l'> Carousel </span> </td>
+      </tr>
+      <tr><td height=15px></td></tr>
+    </table>
+    {% block content %}
+    {% endblock content %}
+
+
+  </body>
+</html>
