@@ -11,8 +11,8 @@ import os, sys, re, json
 
 from flask import request, render_template, flash, redirect, url_for
 
-from mod_carousel import AppError
-from mod_carousel import app
+from mod_ahx_pics import AppError
+from mod_ahx_pics import app
 
 @app.before_request
 def before_request():

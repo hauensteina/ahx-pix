@@ -25,5 +25,5 @@ def log( msg, level=''):
     print(msg, flush=True)
  
 # Endpoints for GUI
-from mod_carousel import routes
+from mod_ahx_pics import routes
 

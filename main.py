@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 
 # /********************************************************************
-# Filename: mod_carousel/main.py
+# Filename: ahx-pics/main.py
 # Author: AHN
-# Creation Date: Feb 2023
+# Creation Date: Jan 2023
 # **********************************************************************/
 #
 # A simple image viewer
 # See https://www.youtube.com/watch?v=9HcxHDS2w1s (Web Dev Simplified)
 
 from pdb import set_trace as BP
-from mod_carousel import app
+from mod_ahx_pics import app
 
 #----------------------------
 if __name__ == '__main__':
