@@ -47,8 +47,7 @@ class AHXCarousel {
       console.log('pause')
     }
     if (nextSlide.tagName == 'VIDEO') {
-      nextSlide.play()
-      console.log('play')
+      //nextSlide.play()
     }
     activeSlide.classList.remove( 'ahx-active')
     this._resetArrowTimer()
@@ -105,11 +104,16 @@ class AHXCarousel {
   //--------------------------------------------------
   _hideArrows() {
     var self = this
-    // self.container.addEventListener( 'mousemove', () => {
-    //   document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
-    //   document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
-    //   self._resetArrowTimer()
-    // })
+    self.container.addEventListener( 'pointermove', () => {
+      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
+      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
+      self._resetArrowTimer()
+    })
+    self.container.addEventListener( 'pointerup', () => {
+      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
+      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
+      self._resetArrowTimer()
+    })
     this._resetArrowTimer()
   } // hideArrows()
 
