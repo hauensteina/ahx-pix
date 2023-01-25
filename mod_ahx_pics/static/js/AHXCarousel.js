@@ -16,6 +16,7 @@ class AHXCarousel {
     this._enableSwiping()
     this._enableKeyNav()
     this._hideArrows()
+    this._setImgNum()
   }
 
   //--------------------
@@ -36,7 +37,8 @@ class AHXCarousel {
     var slides = this.slides()
     this.prevSlide = activeSlide
 
-    let newIndex = [...slides].indexOf(activeSlide) + offset
+    var activeIdx = [...slides].indexOf(activeSlide)
+    var newIndex = activeIdx + offset    
 
     if (newIndex < 0) { newIndex = slides.length - 1 }
     if (newIndex >= slides.length) { newIndex = 0 }
@@ -50,8 +52,17 @@ class AHXCarousel {
       //nextSlide.play()
     }
     activeSlide.classList.remove( 'ahx-active')
+    this._setImgNum()
     this._resetArrowTimer()
   } // _changeImage()
+
+  //------------------
+  _setImgNum() {
+    var slides = this.slides()
+    var activeSlide = this.activeSlide()
+    var activeIdx = [...slides].indexOf(activeSlide)
+    this.container.querySelector( '.ahx-imgnum').innerHTML = `${activeIdx+1}/${slides.length}`
+  } // _setImgNum
 
   //-------------------------------
   _enableSwiping() {
@@ -104,25 +115,24 @@ class AHXCarousel {
   //--------------------------------------------------
   _hideArrows() {
     var self = this
-    self.container.addEventListener( 'pointermove', () => {
+    function showControls() {
       document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
       document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
+      document.querySelector('.ahx-imgnum').hidden = false
       self._resetArrowTimer()
-    })
-    self.container.addEventListener( 'pointerup', () => {
-      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
-      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
-      self._resetArrowTimer()
-    })
+    }
+    self.container.addEventListener( 'pointermove', showControls)
+    self.container.addEventListener( 'pointerup', showControls)
     this._resetArrowTimer()
   } // hideArrows()
 
   //---------------------------
   _resetArrowTimer() {
-    const TIMEOUT = 2500
+    const TIMEOUT = 2000
     function timerFired() {
       document.querySelector('.ahx-carousel-button.ahx-next').hidden = true
       document.querySelector('.ahx-carousel-button.ahx-prev').hidden = true
+      document.querySelector('.ahx-imgnum').hidden = true
     }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)
