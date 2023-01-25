@@ -50,7 +50,7 @@ def carousel():
         classes = " class='ahx-slide' "
         if i == 0: classes = " class='ahx-slide ahx-active' "
         if ext in VIDEO_EXTS:
-            link = f"<li> <video controls {classes}>  <source src='{f}'></video> </li>"
+            link = f"<li> <video controls {classes}>  <source src='{f}#t=0.5'></video> </li>"
         elif ext in IMAGE_EXTS:
             link = f"<li> <img src='{f}' {classes}> </li>"
         else:
