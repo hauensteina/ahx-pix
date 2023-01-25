@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_carousel/__init__.py
+# Filename: mod_ahx_pics/__init__.py
 # Author: AHN
 # Creation Date: Feb, 2023
 # **********************************************************************/
@@ -12,6 +12,8 @@ from pdb import set_trace as BP
 import sys,os
 
 from flask import Flask
+
+S3_BUCKET = 'ahx-pics'
 
 # Our own exception class
 class AppError(Exception):

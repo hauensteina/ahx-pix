@@ -1,9 +1,8 @@
 # /********************************************************************
-# Filename: mod_carousel/routes.py
+# Filename: mod_ahx_pics/routes.py
 # Author: AHN
-# Creation Date:Feb, 2023
+# Creation Date: Jan, 2023
 # **********************************************************************/
-#
 
 from pdb import set_trace as BP
 
@@ -13,6 +12,7 @@ from flask import request, render_template, flash, redirect, url_for
 
 from mod_ahx_pics import AppError
 from mod_ahx_pics import app, log
+import mod_ahx_pics.helpers as helpers
 
 IMAGE_EXTS = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG']
 VIDEO_EXTS = ['.mov','.mp4','.MOV','.MP4']
@@ -42,17 +42,19 @@ def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
     img_files = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
-    #img_files = ['defense.jpg','eiffel.jpg','elphi.jpg']
-    img_files = [ f'static/images/{x}' for x in img_files ]
+    img_files = [ f'test_gallery_01/orig/{x}' for x in img_files ]
+    img_fileurls = helpers.get_s3_links(img_files)
+    
     links = []
     for i,f in enumerate(img_files):
+        furl = img_fileurls[i]
         ext = os.path.splitext(f)[1]
         classes = " class='ahx-slide' "
         if i == 0: classes = " class='ahx-slide ahx-active' "
         if ext in VIDEO_EXTS:
-            link = f"<li> <video controls {classes}>  <source src='{f}#t=0.5'></video> </li>"
+            link = f"<li> <video controls {classes}>  <source src='{furl}#t=0.5'></video> </li>"
         elif ext in IMAGE_EXTS:
-            link = f"<li> <img src='{f}' {classes}> </li>"
+            link = f"<li> <img src='{furl}' {classes}> </li>"
         else:
             log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
             continue

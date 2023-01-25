@@ -57,6 +57,7 @@ class AHXCarousel {
     activeSlide.classList.remove( 'ahx-active')
     this._setImgNum()
     this._resetArrowTimer()
+    //this._openFullScreen(nextSlide)
   } // _changeImage()
 
   //------------------
@@ -157,5 +158,15 @@ class AHXCarousel {
     })
   } // _preventClickOnPrevious()
 
+// //----------------------------------
+//   _openFullScreen(elem) {
+//     if (elem.requestFullscreen) {
+//       elem.requestFullscreen();
+//     } else if (elem.webkitRequestFullscreen) { /* Safari */
+//       elem.webkitRequestFullscreen();
+//     } else if (elem.msRequestFullscreen) { /* IE11 */
+//       elem.msRequestFullscreen();
+//     }
+//   } // _openFullScreen()
 } // class AHXCarousel
 
