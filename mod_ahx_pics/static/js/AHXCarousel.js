@@ -2,6 +2,7 @@
 'use strict;'
 
 // Make an image carousel from the .ahx-slide elements in <div id=containerId...>
+// Called from carousel.html
 // Example: AHXCarousel('#ahx-carousel')
 class AHXCarousel {
   constructor( containerId) {
