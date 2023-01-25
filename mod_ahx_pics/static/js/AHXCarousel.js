@@ -12,6 +12,8 @@ class AHXCarousel {
 
     this.container.querySelector('.ahx-carousel-button.ahx-next').addEventListener( 'click', ev => { this._changeImage('next') } )
     this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 'click', ev => { this._changeImage('prev') } )
+    this.container.querySelector('.ahx-x').addEventListener( 'click', ev => { document.location.href = '/' } )
+
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
@@ -119,6 +121,7 @@ class AHXCarousel {
       document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
       document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
       document.querySelector('.ahx-imgnum').hidden = false
+      document.querySelector('.ahx-x').hidden = false
       self._resetArrowTimer()
     }
     self.container.addEventListener( 'pointermove', showControls)
@@ -133,6 +136,7 @@ class AHXCarousel {
       document.querySelector('.ahx-carousel-button.ahx-next').hidden = true
       document.querySelector('.ahx-carousel-button.ahx-prev').hidden = true
       document.querySelector('.ahx-imgnum').hidden = true
+      document.querySelector('.ahx-x').hidden = true
     }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)

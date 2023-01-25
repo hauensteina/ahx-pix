@@ -44,6 +44,21 @@
     object-position:center;
 }
 
+.ahx-x {
+    position:absolute;
+    z-index: 2;
+    background:none; 
+    border:none;
+    font-size: 3rem;
+    top:5%;
+    left:1rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: 0 1.0rem;
+    background-color: rgba(0, 0, 0, .3) 	     
+}
+
 .ahx-imgnum {
     position:absolute;
     z-index: 2;
