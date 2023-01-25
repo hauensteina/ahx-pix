@@ -8,12 +8,14 @@ class AHXCarousel {
     this.container = document.querySelector(containerId)
     // Properties
     this.prevSlide = null
+    this.arrowTimer = null
 
     this.container.querySelector('.ahx-carousel-button.ahx-next').addEventListener( 'click', ev => { this._changeImage('next') } )
     this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 'click', ev => { this._changeImage('prev') } )
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
+    this._hideArrows()
   }
 
   //--------------------
@@ -51,6 +53,7 @@ class AHXCarousel {
       console.log('play')
     }
     activeSlide.classList.remove( 'ahx-active')
+    this._resetArrowTimer()
   } // _changeImage()
 
   //-------------------------------
@@ -99,7 +102,29 @@ class AHXCarousel {
     } // check_key()
     document.onkeydown = checkKey
   } // check_key()
-  
+
+  // Hide arrows after a timeout; show on mouse move
+  //--------------------------------------------------
+  _hideArrows() {
+    var self = this
+    self.container.addEventListener( 'mousemove', () => {
+      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
+      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
+      self._resetArrowTimer()
+    })
+    this._resetArrowTimer()
+  } // hideArrows()
+
+  //---------------------------
+  _resetArrowTimer() {
+    const TIMEOUT = 2500
+    function timerFired() {
+      document.querySelector('.ahx-carousel-button.ahx-next').hidden = true
+      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = true
+    }
+    clearTimeout(this.arrowTimer )
+    this.arrowTimer = setTimeout( timerFired, TIMEOUT)
+  } // _resetArrowTimer()
 
   // Prevent click action on previous slide.
   // Otherwise swiping will restart a video.
