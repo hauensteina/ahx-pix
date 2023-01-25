@@ -5,6 +5,7 @@
     width: 100vw;
     height: 100vh;
     position:relative;
+    touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
 }
 
 .ahx-carousel > ul {

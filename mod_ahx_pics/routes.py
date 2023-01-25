@@ -42,6 +42,7 @@ def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
     img_files = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
+    #img_files = ['defense.jpg','eiffel.jpg','elphi.jpg']
     img_files = [ f'static/images/{x}' for x in img_files ]
     links = []
     for i,f in enumerate(img_files):

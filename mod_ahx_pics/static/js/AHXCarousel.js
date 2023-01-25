@@ -105,11 +105,11 @@ class AHXCarousel {
   //--------------------------------------------------
   _hideArrows() {
     var self = this
-    self.container.addEventListener( 'mousemove', () => {
-      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
-      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
-      self._resetArrowTimer()
-    })
+    // self.container.addEventListener( 'mousemove', () => {
+    //   document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
+    //   document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
+    //   self._resetArrowTimer()
+    // })
     this._resetArrowTimer()
   } // hideArrows()
 
