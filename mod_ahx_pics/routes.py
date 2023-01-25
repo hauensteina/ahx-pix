@@ -31,6 +31,21 @@ def ttest():
 @app.route('/home', methods=['GET', 'POST'])
 def index():
     """ Main entry point """
+    parms = get_parms()
+    return render_template( 'index.html')
+
+@app.route('/carousel', methods=['GET', 'POST'])
+def carousel():
+    """ Full screen swipeable image carousel """
+    images = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
+    images = [ f'static/images/{x}' for x in images ] # @@@ cont here
+        
+    parms = get_parms()
+    return render_template( 'carousel.html',images=images )
+
+
+
+def get_parms():
     if request.method == 'POST': # Active screen submitted a form
         parms = dict(request.form)
     else:
@@ -38,19 +53,4 @@ def index():
     # strip all input parameters    
     parms = { k:v.strip() for k, v in parms.items()}
     print(f'>>>>>>>>>PARMS:{parms}')
-
-    '''
-    active_tab = parms.get('_active_tab','')
-    active_screen = parms.get('_active_screen','')
-    try:
-        tab_html, rredirect = tabgen.gen_html( active_tab, active_screen, parms)
-    except AppError as e:
-        if 'bad_or_expired_token' in str(e):
-            return redirect( url_for('logout'))
-        else:
-            raise
-    if rredirect: return rredirect
-    '''
-
-    return render_template( 'index.html')
-
+    return parms

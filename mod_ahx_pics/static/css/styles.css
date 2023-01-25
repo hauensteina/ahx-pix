@@ -58,14 +58,16 @@
     background-color: rgba(0, 0, 0, .1) 	     
 }
 
-.ahx-carousel-button:hover,
-.ahx-carousel-button:focus {
+
+.ahx-carousel-button:hover {
     color:white;
     background-color: rgba(0, 0, 0, .2)
 }
+/*
 .ahx-carousel-button:focus {
     outline: 1px solid black;
 }
+*/
 
 .ahx-carousel-button.ahx-prev {
     left: 1rem;

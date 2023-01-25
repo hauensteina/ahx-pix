@@ -13,6 +13,7 @@ class AHXCarousel {
     this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 'click', ev => { this._changeImage('prev') } )
     this._preventClickOnPrevious()
     this._enableSwiping()
+    this._enableKeyNav()
   }
 
   //--------------------
@@ -71,6 +72,35 @@ class AHXCarousel {
     }) // slides.foreach
   } // _enableSwiping()
 
+  // Key actions. Left/Right arrow navigate thru images.
+  // Space pauses a movie.
+  //-------------------------------------------------------
+  _enableKeyNav(e) {
+    const self = this
+    function checkKey(e) {
+      e = e || window.event;
+      if (e.keyCode == '37') { // left arrow
+        self._changeImage('prev')
+      }
+      else if (e.keyCode == '39') { // right arrow
+        self._changeImage('next')
+      }
+      else if (e.keyCode == '32') { // space
+        if (self.activeSlide().tagName == 'VIDEO') {
+          e.preventDefault()
+          let video = self.activeSlide()
+          if (!video.paused && !video.ended) {
+            video.pause()
+          } else {
+            video.play()
+          }
+        } // if
+      } // if space
+    } // check_key()
+    document.onkeydown = checkKey
+  } // check_key()
+  
+
   // Prevent click action on previous slide.
   // Otherwise swiping will restart a video.
   //------------------------------------------
@@ -78,7 +108,7 @@ class AHXCarousel {
     this.slides().forEach( imgOrVideo => {
       imgOrVideo.addEventListener( 'click', (ev) => {
         if (this.prevSlide === ev.target) {
-          console.log('prevent')
+          //console.log('prevent')
           ev.preventDefault()
         }
       }) 
