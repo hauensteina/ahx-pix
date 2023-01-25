@@ -12,7 +12,10 @@ import os, sys, re, json
 from flask import request, render_template, flash, redirect, url_for
 
 from mod_ahx_pics import AppError
-from mod_ahx_pics import app
+from mod_ahx_pics import app, log
+
+IMAGE_EXTS = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG']
+VIDEO_EXTS = ['.mov','.mp4','.MOV','.MP4']
 
 @app.before_request
 def before_request():
@@ -37,13 +40,24 @@ def index():
 @app.route('/carousel', methods=['GET', 'POST'])
 def carousel():
     """ Full screen swipeable image carousel """
-    images = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
-    images = [ f'static/images/{x}' for x in images ] # @@@ cont here
-        
     parms = get_parms()
-    return render_template( 'carousel.html',images=images )
-
-
+    img_files = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
+    img_files = [ f'static/images/{x}' for x in img_files ]
+    links = []
+    for i,f in enumerate(img_files):
+        ext = os.path.splitext(f)[1]
+        classes = " class='ahx-slide' "
+        if i == 0: classes = " class='ahx-slide ahx-active' "
+        if ext in VIDEO_EXTS:
+            link = f"<li> <video controls {classes}>  <source src='{f}'></video> </li>"
+        elif ext in IMAGE_EXTS:
+            link = f"<li> <img src='{f}' {classes}> </li>"
+        else:
+            log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
+            continue
+        links.append(link)
+    links = '\n'.join(links)
+    return render_template( 'carousel.html',images=links )
 
 def get_parms():
     if request.method == 'POST': # Active screen submitted a form

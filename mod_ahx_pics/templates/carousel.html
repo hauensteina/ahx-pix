@@ -25,10 +25,7 @@
         <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
         <button class='ahx-carousel-button ahx-next'>&#x21e8;</button>
         <ul>
-          <li> <img src='static/images/defense.jpg' class='ahx-slide ahx-active'> </li>
-          <li> <img src='static/images/eiffel.jpg'  class='ahx-slide'> </li>
-          <li> <img src='static/images/elphi.jpg'  class='ahx-slide'> </li>
-          <li> <video controls class='ahx-slide'>  <source src='static/images/robot.mov'></video> </li>
+          {{ images|safe }}
         </ul>
       </div>
     </section>

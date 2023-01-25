@@ -32,8 +32,6 @@ class AHXCarousel {
   _changeImage( direction) {
     var offset = 1
     if (direction == 'prev') offset = -1
-    //const slides = this.container.querySelectorAll('.ahx-slide')
-    //var activeSlide = this.container.querySelector('.ahx-slide.ahx-active') 
     var activeSlide = this.activeSlide()
     var slides = this.slides()
     this.prevSlide = activeSlide
