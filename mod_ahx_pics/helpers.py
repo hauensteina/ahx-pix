@@ -10,7 +10,7 @@ import sys,os
 # AWS S3 api
 import boto3
 
-from mod_ahx_pics import S3_BUCKET
+from mod_ahx_pics import S3_BUCKET, log
 
 def get_s3_links( fnames):
     """
@@ -18,11 +18,7 @@ def get_s3_links( fnames):
     These can be used as img urls in an html template.
     Example path: 'test_gallery_01/orig/eiffel.jpg'
     """
-    client = boto3.client(
-        's3',
-        aws_access_key_id=os.environ['AWS_KEY'],
-        aws_secret_access_key=os.environ['AWS_SECRET']
-    )
+    client = _get_client()
     urls = []
     for f in fnames:
         try:
@@ -35,4 +31,23 @@ def get_s3_links( fnames):
         urls.append(url)
 
     return urls    
+
+def s3_upload_files( fnames):
+    client = _get_client()
+    for idx,fname in enumerate(fnames):
+        if idx % 10 == 0:
+            log(f'uploaded {idx}/{len(fnames)}')
+        try:
+            response = client.upload_file( fname, S3_BUCKET, fname)
+        except Exception as e:
+            log(e)
+
+def _get_client():
+    client = boto3.client(
+        's3',
+        aws_access_key_id=os.environ['AWS_KEY'],
+        aws_secret_access_key=os.environ['AWS_SECRET']
+    )
+    return client
+
 
