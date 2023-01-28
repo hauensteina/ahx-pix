@@ -42,6 +42,27 @@ def s3_upload_files( fnames):
         except Exception as e:
             log(e)
 
+def s3_delete_files( fnames):
+    client = _get_client()
+    for idx,fname in enumerate(fnames):
+        try:
+            log(f'deleting {fname}')
+            response = client.delete_object( Bucket=S3_BUCKET, Key=fname)
+        except Exception as e:
+            log(e)
+
+def s3_get_keys( prefix):
+    MAX_KEYS = 10000
+    client = _get_client()
+    paginator = client.get_paginator('list_objects_v2')
+
+    keys = []
+    pages = paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix)
+    for page in pages:
+        rows = page['Contents']
+        keys.extend( [ x['Key'] for x in rows ] )        
+    return keys
+
 def _get_client():
     client = boto3.client(
         's3',
