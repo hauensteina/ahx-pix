@@ -50,7 +50,7 @@ def insert_gallery(rows):
     for row in rows:
         nr = {}
         nr['id'] = str(row['topic_id'])
-        nr['owner_id'] = 'ahn'
+        nr['username'] = 'ahn'
         nr['title'] = row['topic_name']
         nr['blurb'] = row['text']
         nr['private_flag'] = False

@@ -27,6 +27,7 @@ def _create_login( pg):
       ,email text
       ,fname text
       ,lname text
+      ,admin_flag Boolean
       ,create_date date
       ,change_date date
     )
@@ -40,7 +41,7 @@ def _create_gallery( pg):
     sql = f'''
     create table {tabname} (
       id text
-      ,owner_id text
+      ,username text
       ,title text
       ,blurb text
       ,private_flag boolean

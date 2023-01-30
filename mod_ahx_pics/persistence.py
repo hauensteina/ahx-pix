@@ -16,7 +16,7 @@ def get_galleries( username=None, public_only=True):
 
     where = ' where true '
     if public_only: where += ' and private_flag = false '
-    if username: where += ' and owner_id = username '
+    if username: where += ' and username = username '
     sql = f'''
     select * from gallery {where} order by title
     '''

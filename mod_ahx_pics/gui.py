@@ -17,7 +17,7 @@ def gen_gallery_list( galleries, action1, title1, action2='', title2=''):
     For styling, use class dbtable in main.css .
     """
     try:
-        columns = { 'Title':'title', 'Owner':'owner_id', 'Date':'create_date', 'Hits':'n_hits' }
+        columns = { 'Title':'title', 'Owner':'username', 'Date':'create_date', 'Hits':'n_hits' }
         # Table header
         theader = ''
         for col in columns:
