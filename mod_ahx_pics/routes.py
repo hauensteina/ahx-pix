@@ -11,8 +11,10 @@ import os, sys, re, json
 from flask import request, render_template, flash, redirect, url_for
 from functools import wraps
 
-from mod_ahx_pics import AppError
+from mod_ahx_pics import AppError, Q
 from mod_ahx_pics import app, log
+
+from mod_ahx_pics.worker_funcs import gen_thumbnails 
 import mod_ahx_pics.helpers as helpers
 import mod_ahx_pics.persistence as pe
 import mod_ahx_pics.gui as gui
@@ -52,6 +54,7 @@ def ttest():
 def index():
     """ Main entry point. Show heading and list of galleries """
     parms = get_parms()
+    Q.enqueue( gen_thumbnails, args=[10,20])
     galleries = pe.get_galleries()
     gallery_html = gui.gen_gallery_list( galleries, action1='visit', title1='Visit')
     return render_template( 'index.html', gallery_list=gallery_html)
