@@ -1,6 +1,39 @@
 
 .red-border { border-style:solid; border-color:red; }
 
+/* Gallery list styling */
+/*----------------------*/
+
+/* The gallery list table */
+.gallery-list {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75em;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.gallery-list td, .gallery-list th {
+  border: 1px solid #bbb;
+  padding: 4px;
+}
+
+.gallery-list tr:nth-child(even){background-color: #f2f2f2;}
+
+.gallery-list tr:hover {background-color: #ddd;}
+
+.gallery-list th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center;
+  background-color: hsl(220, 100%, 90%);
+  color: black;
+  font-weight:normal;
+  font-size: 1.1em;
+}
+
+/* Image carousel styling */
+/*------------------------*/
+
 .ahx-carousel {
     width: 100vw;
     height: 100vh;
@@ -36,13 +69,8 @@
     transition-delay: 200ms;  
 } 
 
-.slide > img,video {
-    display:block;
-    width: 100%;
-    height: 100%;
-    object-fit: scale-down;
-    object-position:center;
-}
+/* Exit carousel button (x) */
+/*--------------------------*/
 
 .ahx-x {
     position:absolute;
@@ -58,6 +86,9 @@
     padding: 0 1.0rem;
     background-color: rgba(0, 0, 0, .3) 	     
 }
+
+/* Img number k/n */
+/*----------------*/
 
 .ahx-imgnum {
     position:absolute;
@@ -75,6 +106,9 @@
     background-color: rgba(0, 0, 0, .3) 	     
 }
 
+/* Prev and Next button */
+/*----------------------*/
+
 .ahx-carousel-button {
     position:absolute;
     z-index: 2;
@@ -90,16 +124,10 @@
     background-color: rgba(0, 0, 0, .3) 	     
 }
 
-
 .ahx-carousel-button:hover {
     color:white;
     background-color: rgba(0, 0, 0, .2)
 }
-/*
-.ahx-carousel-button:focus {
-    outline: 1px solid black;
-}
-*/
 
 .ahx-carousel-button.ahx-prev {
     left: 1rem;

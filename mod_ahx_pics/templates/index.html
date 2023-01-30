@@ -2,23 +2,8 @@
 
 {% block content %}
 
-<section>
-  <div id='ahx-carousel' class='ahx-carousel' style='width:100%'>
-    <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
-    <button class='ahx-carousel-button ahx-next'>&#x21e8;</button>
-    <ul>
-      <li> <img src='static/images/defense.jpg' class='ahx-slide ahx-active'> </li>
-      <li> <img src='static/images/eiffel.jpg'  class='ahx-slide'> </li>
-      <li> <img src='static/images/elphi.jpg'  class='ahx-slide'> </li>
-      <li> <video controls class='ahx-slide'>  <source src='static/images/robot.mov'></video> </li>
-    </ul>
-  </div>
-</section>
-
-<script src='static/js/AHXCarousel.js')> </script>
-<script>
- _ = new AHXCarousel('#ahx-carousel')
-</script>
+{{ gallery_list|safe }}
+<div class=bottom-space-20></div>
 
 {% endblock content %}
 

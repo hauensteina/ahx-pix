@@ -9,10 +9,13 @@ from pdb import set_trace as BP
 import os, sys, re, json
 
 from flask import request, render_template, flash, redirect, url_for
+from functools import wraps
 
 from mod_ahx_pics import AppError
 from mod_ahx_pics import app, log
 import mod_ahx_pics.helpers as helpers
+import mod_ahx_pics.persistence as pe
+import mod_ahx_pics.gui as gui
 
 IMAGE_EXTS = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG']
 VIDEO_EXTS = ['.mov','.mp4','.MOV','.MP4']
@@ -24,6 +27,18 @@ def before_request():
         code = 301
         return redirect(url)
 
+#-----------------------------
+def show_error(f):
+    """  Show errors in the browser """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            return {'error':str(e)}, 500 
+    return decorated
+
+#-----------------------
 @app.route('/ttest')
 def ttest():
     """ Try things here """
@@ -32,10 +47,22 @@ def ttest():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
+@show_error
+#-------------------------------------------------
 def index():
-    """ Main entry point """
+    """ Main entry point. Show heading and list of galleries """
     parms = get_parms()
-    return render_template( 'index.html')
+    galleries = pe.get_galleries()
+    gallery_html = gui.gen_gallery_list( galleries, action1='visit', title1='Visit')
+    return render_template( 'index.html', gallery_list=gallery_html)
+
+@app.route('/gallery', methods=['GET', 'POST'])
+@show_error
+#-------------------------------------------------
+def gallery():
+    """ View or edit a gallery """
+    parms = get_parms()
+    return parms['_action']
 
 @app.route('/carousel', methods=['GET', 'POST'])
 def carousel():

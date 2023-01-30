@@ -1,11 +1,10 @@
 """
-' dbutils.py
-'
-' Andreas Hauenstein
-' Created: Jul 15, 2020
-'
-' A thin layer on top of psycopg2 to run queries
-' against a postgres DB
+postgres.py
+Andreas Hauenstein
+Created: Jan 2023
+
+A thin layer on top of psycopg2 to run queries
+against a postgres DB
 """
 
 import os, sys

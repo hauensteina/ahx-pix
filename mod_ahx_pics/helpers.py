@@ -6,11 +6,15 @@
 
 from pdb import set_trace as BP
 import sys,os
+import inspect
 
 # AWS S3 api
 import boto3
 
 from mod_ahx_pics import S3_BUCKET, log
+
+# S3 functions
+#-----------------------
 
 def get_s3_links( fnames):
     """
@@ -18,7 +22,7 @@ def get_s3_links( fnames):
     These can be used as img urls in an html template.
     Example path: 'test_gallery_01/orig/eiffel.jpg'
     """
-    client = _get_client()
+    client = _get_s3_client()
     urls = []
     for f in fnames:
         try:
@@ -33,7 +37,7 @@ def get_s3_links( fnames):
     return urls    
 
 def s3_upload_files( fnames):
-    client = _get_client()
+    client = _get_s3_client()
     for idx,fname in enumerate(fnames):
         if idx % 10 == 0:
             log(f'uploaded {idx}/{len(fnames)}')
@@ -43,7 +47,7 @@ def s3_upload_files( fnames):
             log(e)
 
 def s3_delete_files( fnames):
-    client = _get_client()
+    client = _get_s3_client()
     for idx,fname in enumerate(fnames):
         try:
             log(f'deleting {fname}')
@@ -53,7 +57,7 @@ def s3_delete_files( fnames):
 
 def s3_get_keys( prefix):
     MAX_KEYS = 10000
-    client = _get_client()
+    client = _get_s3_client()
     paginator = client.get_paginator('list_objects_v2')
 
     keys = []
@@ -63,7 +67,7 @@ def s3_get_keys( prefix):
         keys.extend( [ x['Key'] for x in rows ] )        
     return keys
 
-def _get_client():
+def _get_s3_client():
     client = boto3.client(
         's3',
         aws_access_key_id=os.environ['AWS_KEY'],
@@ -71,4 +75,13 @@ def _get_client():
     )
     return client
 
+
+# Misc
+#--------------
+
+def pexc( e):
+    func = inspect.stack()[1].function
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
+    return msg
 
