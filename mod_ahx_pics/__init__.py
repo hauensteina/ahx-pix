@@ -49,9 +49,9 @@ if url.hostname == 'localhost': ssl=False
 REDIS_CONN = redis.Redis( host=url.hostname, port=url.port, 
                           username=url.username, password=url.password, 
                           ssl=ssl, ssl_cert_reqs=None)
-Q = Queue( 'myq', connection=REDIS_CONN)
+Q = Queue( 'myq', connection=REDIS_CONN, default_timeout=300)
 from mod_ahx_pics.worker_funcs import gen_thumbnails
-Q.enqueue( gen_thumbnails, args=[1,3])
+Q.enqueue( gen_thumbnails)
 
 # Postgres
 #-------------

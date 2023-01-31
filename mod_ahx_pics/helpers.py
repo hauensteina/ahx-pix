@@ -56,7 +56,6 @@ def s3_delete_files( fnames):
             log(e)
 
 def s3_get_keys( prefix):
-    MAX_KEYS = 10000
     client = _get_s3_client()
     paginator = client.get_paginator('list_objects_v2')
 
@@ -78,6 +77,11 @@ def _get_s3_client():
 
 # Misc
 #--------------
+
+def basename(fname):
+    """ pics/orig/bla.jpeg -> bla """
+    res = os.path.splitext( os.path.split(fname)[1])[0]
+    return res
 
 def pexc( e):
     func = inspect.stack()[1].function
