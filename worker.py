@@ -1,3 +1,10 @@
+"""
+worker.py
+Andreas Hauenstein
+Created: Jan 2023
+
+Register a worker for background jobs on Redis Queue
+"""
 
 from pdb import set_trace as BP
 import os

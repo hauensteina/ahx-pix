@@ -7,11 +7,12 @@
 from pdb import set_trace as BP
 import sys,os
 import inspect
+import uuid
 
 # AWS S3 api
 import boto3
 
-from mod_ahx_pics import S3_BUCKET, log
+from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, log
 
 # S3 functions
 #-----------------------
@@ -36,13 +37,15 @@ def get_s3_links( fnames):
 
     return urls    
 
-def s3_upload_files( fnames):
+def s3_upload_files( fnames, s3_fnames=''):
+    if not s3_fnames: s3_fnames = fnames
     client = _get_s3_client()
     for idx,fname in enumerate(fnames):
+        s3_fname = s3_fnames[idx]
         if idx % 10 == 0:
-            log(f'uploaded {idx}/{len(fnames)}')
+            log(f'uploading {idx+1}/{len(fnames)}')
         try:
-            response = client.upload_file( fname, S3_BUCKET, fname)
+            response = client.upload_file( fname, S3_BUCKET, s3_fname)
         except Exception as e:
             log(e)
 
@@ -62,9 +65,18 @@ def s3_get_keys( prefix):
     keys = []
     pages = paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix)
     for page in pages:
-        rows = page['Contents']
-        keys.extend( [ x['Key'] for x in rows ] )        
+        if 'Contents' in page:
+            rows = page['Contents']
+            keys.extend( [ x['Key'] for x in rows ] )        
     return keys
+
+def s3_download_file(fname):
+    """ Download a file from s3 into unique filename and return the filename """
+    client = _get_s3_client()
+    ext = os.path.splitext(fname)[1]
+    ofname = DOWNLOAD_FOLDER + '/' + str(uuid.uuid4()) + ext
+    client.download_file( S3_BUCKET, fname, ofname)
+    return ofname
 
 def _get_s3_client():
     client = boto3.client(
@@ -73,7 +85,6 @@ def _get_s3_client():
         aws_secret_access_key=os.environ['AWS_SECRET']
     )
     return client
-
 
 # Misc
 #--------------

@@ -20,6 +20,23 @@ from mod_ahx_pics.postgres import Postgres
 app = Flask( __name__)
 
 S3_BUCKET = 'ahx-pics'
+# S3 folders
+ORIG_FOLDER = 'pics/orig/'
+MEDIUM_FOLDER = 'pics/medium/'
+SMALL_FOLDER = 'pics/small/'
+
+# Thumbnail sizes
+SMALL_THUMB_SIZE = 200
+MEDIUM_THUMB_SIZE = 1000
+
+# Local download folder
+DOWNLOAD_FOLDER='downloads'
+
+# Limit background job time
+JOB_TIMEOUT=3600
+
+IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg']
+VIDEO_EXTENSIONS = ['.mov', '.mp4']
 
 # Our own exception class
 #----------------------------
@@ -49,7 +66,7 @@ if url.hostname == 'localhost': ssl=False
 REDIS_CONN = redis.Redis( host=url.hostname, port=url.port, 
                           username=url.username, password=url.password, 
                           ssl=ssl, ssl_cert_reqs=None)
-Q = Queue( 'myq', connection=REDIS_CONN, default_timeout=300)
+Q = Queue( 'myq', connection=REDIS_CONN, default_timeout=JOB_TIMEOUT)
 from mod_ahx_pics.worker_funcs import gen_thumbnails
 Q.enqueue( gen_thumbnails)
 
