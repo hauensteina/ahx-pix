@@ -5,7 +5,7 @@
 # **********************************************************************/
 
 from pdb import set_trace as BP
-import sys,os
+import sys,os,subprocess
 import inspect
 import uuid
 
@@ -13,6 +13,40 @@ import uuid
 import boto3
 
 from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, log
+from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
+
+# Misc
+#--------------
+
+def media_type( fname):
+    ext = os.path.splitext(fname)[1].lower()
+    if ext in IMG_EXTENSIONS:
+        return 'image'
+    elif ext in VIDEO_EXTENSIONS:
+        return 'video'
+    return 'unknown'
+
+def run_shell(cmd):
+    sp = subprocess.Popen(cmd,
+                          shell=True,
+                          encoding='utf8',
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
+    out,err=sp.communicate()
+    return out,err
+
+def basename(fname):
+    """ pics/orig/bla.jpeg -> bla """
+    res = os.path.splitext( os.path.split(fname)[1])[0]
+    return res
+
+def pexc( e):
+    """ Return  function and line number of exception """
+    func = inspect.stack()[1].function
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
+    return msg
+
 
 # S3 functions
 #-----------------------
@@ -47,7 +81,7 @@ def s3_upload_files( fnames, s3_fnames=''):
         try:
             response = client.upload_file( fname, S3_BUCKET, s3_fname)
         except Exception as e:
-            log(e)
+            log(pexc(e))
 
 def s3_delete_files( fnames):
     client = _get_s3_client()
@@ -56,19 +90,20 @@ def s3_delete_files( fnames):
             log(f'deleting {fname}')
             response = client.delete_object( Bucket=S3_BUCKET, Key=fname)
         except Exception as e:
-            log(e)
+            log(pexc(e))
 
 def s3_get_keys( prefix):
+    """ Get complete info for all objects starting with prefix, like Key, Size, ... """
     client = _get_s3_client()
     paginator = client.get_paginator('list_objects_v2')
 
-    keys = []
+    infos = []
     pages = paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix)
     for page in pages:
         if 'Contents' in page:
             rows = page['Contents']
-            keys.extend( [ x['Key'] for x in rows ] )        
-    return keys
+            infos.extend( rows )        
+    return infos
 
 def s3_download_file(fname):
     """ Download a file from s3 into unique filename and return the filename """
@@ -85,18 +120,4 @@ def _get_s3_client():
         aws_secret_access_key=os.environ['AWS_SECRET']
     )
     return client
-
-# Misc
-#--------------
-
-def basename(fname):
-    """ pics/orig/bla.jpeg -> bla """
-    res = os.path.splitext( os.path.split(fname)[1])[0]
-    return res
-
-def pexc( e):
-    func = inspect.stack()[1].function
-    exc_type, exc_obj, exc_tb = sys.exc_info()
-    msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
-    return msg
 
