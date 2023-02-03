@@ -6,18 +6,19 @@ Created: Jan 2023
 Functions to generate sql for the GUI
 """
 
+from pdb import set_trace as BP
 from flask import url_for
 from mod_ahx_pics import AppError
 from mod_ahx_pics.helpers import pexc
 
-def gen_gallery_list( galleries, action1, title1, action2='', title2=''):
+def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
     """
     Generate html to display a list of galleries
     If action is given, a link with that action is generated on the right.
     For styling, use class dbtable in main.css .
     """
     try:
-        columns = { 'Title':'title', 'Owner':'username', 'Date':'create_date', 'Hits':'n_hits' }
+        columns = { 'Title':'title', 'Owner':'username', 'Date':'create_date'} # , 'Hits':'n_hits' }
         # Table header
         theader = ''
         for col in columns:
@@ -26,15 +27,19 @@ def gen_gallery_list( galleries, action1, title1, action2='', title2=''):
         # Table body
         tbody = ''
         for idx,gal in enumerate(galleries):
+            visit_url = f"'{url_for( 'gallery', _id=gal['id'], _action='visit')}'"
             trow = ''
             for col in columns:
                 val = gal[columns[col]]
-                trow += H('td',val)
+                if col in (('Owner','Date')):
+                    trow += H('td align=center',val)
+                else:
+                    trow += H(f'td',val)
             if action1:    
                 trow += H('td', _gen_gallery_link( gal, action1, title1))   
             if action2:   
                 trow += H('td', _gen_gallery_link( gal, action2, title2))    
-            trow = H('tr',trow) 
+            trow = H(f'tr onclick="window.location.href={visit_url}"',trow) 
             tbody += trow
         html = H('table class="gallery-list"', theader + tbody)
         return html

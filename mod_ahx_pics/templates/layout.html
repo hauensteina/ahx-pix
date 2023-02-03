@@ -2,7 +2,7 @@
 
 {% block pre %}
 <script type='text/javascript'>
- /* Filename: mod_carousel/templates/layout.tmpl
+ /* Filename: mod_ahx_pics/templates/layout.tmpl
   * Author: AHN
   * Creation Date: Jan, 2023
   */
@@ -18,9 +18,9 @@
     <meta name='keywords' content='Photo Viewer Demo'>
     <meta name='author' content='Andreas Hauenstein'>
 
-    <title>Carousel</title>
-    <link rel="icon" href="static/images/favicon.png" type="image/ico" />
-    <link rel="shortcut icon" href="static/images/favicon.png" type="image/ico" />
+    <title>AHX Pics</title>
+    <link rel="icon" href="static/images/world_100.png" type="image/ico" />
+    <link rel="shortcut icon" href="static/images/world_100.png" type="image/ico" />
 
     <!-- Our CSS -->
     <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
@@ -35,15 +35,14 @@
   </head>
 
   <body>
-    <!-- Page Header -->
-    <table class='center' style='width:100%' style='background-color:white' border=1>
-      <tr style='background-color:white'>
-        <td width=20px></td>
-        <td id='homelogo' align='left' width='50px' class=''>
-          <a class='hlink vcenter' href="{{ url_for('index') }}">
-            <img class='vcenter' height=50px src="static/images/logo.png"/></a>
+    <!-- Page Heading -->
+    <table class='heading'>
+      <tr>
+        <td id='homelogo' align='left' width='50px' >
+          <a href="{{ url_for('index') }}">
+            <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'></a>
         </td>
-        <td align='center'> <span class='font-l'> Carousel </span> </td>
+        <td> <span class='font-l' style='margin-left:15px'> Picture Galleries </span> </td>
       </tr>
       <tr><td height=15px></td></tr>
     </table>

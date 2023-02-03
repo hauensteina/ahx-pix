@@ -56,7 +56,7 @@ def index():
     parms = get_parms()
     Q.enqueue( gen_thumbnails, args=[10,20])
     galleries = pe.get_galleries()
-    gallery_html = gui.gen_gallery_list( galleries, action1='visit', title1='Visit')
+    gallery_html = gui.gen_gallery_list( galleries)
     return render_template( 'index.html', gallery_list=gallery_html)
 
 @app.route('/gallery', methods=['GET', 'POST'])

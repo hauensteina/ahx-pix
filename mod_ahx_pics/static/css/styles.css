@@ -1,20 +1,47 @@
 
 .red-border { border-style:solid; border-color:red; }
 
+/* Heading styling */
+/*----------------*/
+.heading {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2.0em;
+  border-collapse: collapse;
+  min-width:25em;
+  max-width:100em;
+  white-space:nowrap;
+  margin:10px 50px;
+}
+
+
 /* Gallery list styling */
 /*----------------------*/
 
 /* The gallery list table */
 .gallery-list {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.75em;
+  font-size: 1.0em;
   border-collapse: collapse;
-  width: 100%;
+  min-width:25em;
+  max-width:100em;
+  white-space:nowrap;
+  margin-top:10px;
+  margin-left:50px;
+  margin-right:50px;
+  margin-bottom:50px;
+	     
 }
 
 .gallery-list td, .gallery-list th {
   border: 1px solid #bbb;
-  padding: 4px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.gallery-list td:first-child {
+    width:1px;
 }
 
 .gallery-list tr:nth-child(even){background-color: #f2f2f2;}
@@ -25,7 +52,7 @@
   padding-top: 4px;
   padding-bottom: 4px;
   text-align: center;
-  background-color: hsl(220, 100%, 90%);
+  background-color: #8fc3f5 /* hsl(220, 100%, 90%) */;
   color: black;
   font-weight:normal;
   font-size: 1.1em;
