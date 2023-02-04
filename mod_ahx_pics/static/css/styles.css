@@ -64,7 +64,7 @@
   font-size: 1.0em;
   border-collapse: collapse;
   min-width:25em;
-  max-width:100em;
+  max-width:50em; 
   white-space:nowrap;
   margin-top:10px;
   margin-left:50px;
@@ -83,6 +83,10 @@
 
 .gallery-list td:first-child {
     width:1px;
+}
+
+.gallery-list td {
+    width:50px;
 }
 
 .gallery-list tr:nth-child(even){background-color: #f2f2f2;}
