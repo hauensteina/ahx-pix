@@ -3,7 +3,7 @@ gui.py
 Andreas Hauenstein
 Created: Jan 2023
 
-Functions to generate sql for the GUI
+Functions to generate html for the GUI
 """
 
 from pdb import set_trace as BP
@@ -45,6 +45,34 @@ def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
         return html
     except Exception as e:
         raise AppError(pexc(e))
+
+def gen_gallery_search( title='', owner=''):
+    """ Generate a form to search galleries by title and owner """
+
+    html = f'''
+    <form method=post class=search_form>
+      <input type=hidden name=_action value="search_gallery">
+      <div class="row">
+        <div class="column right-space-20">
+          <div>Title:</div>
+          <div> 
+             <input type=text name=title size={20} value="{title}">
+          </div>
+        </div>
+        <div class="column right-space-20">
+          <div>Owner:</div>
+          <div> 
+            <input type=text name=owner size={20} value="{owner}">
+          </div>
+        </div>
+        <div class="column">
+          <div>&nbsp;</div>
+          <div> <input type=submit name=btn_search value=Search > </div>
+        </div>
+      </div>  
+    </form>
+    '''
+    return html
 
 def _gen_gallery_link( gallery, action, title):   
     """ Generate an html link to a gallery """

@@ -6,19 +6,20 @@ Created: Jan 2023
 Functions to abstract all data persistence stuff, like postgres and S3 access.
 """
 
+from pdb import set_trace as BP
 from mod_ahx_pics import pg
 
-def get_galleries( username=None, public_only=True):
+def get_galleries( title='', owner=''):
     """
-    Get all galleries as a list of dicts. If username is given, only 
-    those owned by that user.
+    Get galleries as a list of dicts. Filter by title and owner.
+    TODO: If logged in, show private pages of user. 
     """
 
     where = ' where true '
-    if public_only: where += ' and private_flag = false '
-    if username: where += ' and username = username '
+    if owner: where += f''' and lower(username) like '%%{owner.lower()}%%' '''
+    if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     sql = f'''
-    select * from gallery {where} order by title
+    select * from gallery {where} order by create_date desc
     '''
 
     rows = pg.select(sql)
