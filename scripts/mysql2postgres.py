@@ -68,6 +68,7 @@ def insert_picture(rows):
         nr['blurb'] = row['caption']
         nr['filename'] = row['filename']
         nr['position'] = row['position']
+        nr['title_flag'] = True if row['type'] == 'primary' else False
         nr['create_date'] = row['date_submitted']
         nr['change_date'] = row['date_submitted']
         newrows.append(nr)

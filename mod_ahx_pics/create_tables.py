@@ -63,6 +63,7 @@ def _create_picture( pg):
       ,blurb text
       ,filename text
       ,position int
+      ,title_flag boolean
       ,create_date date
       ,change_date date
     )
