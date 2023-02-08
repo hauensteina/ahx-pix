@@ -1,13 +1,17 @@
 
 .red-border { border-style:solid; border-color:red; }
+.green-border { border-style:solid; border-color:green; }
+.blue-border { border-style:solid; border-color:blue; }
 
 .row {
+  /* border-style:solid; border-color:green; */
   display: flex;
   flex-direction: row;
-  width:fit-content;
+  width:fit-content; 
 }
 
 .column {
+  /* border-style:solid; border-color:blue; */
   display: flex;
   flex-direction: column;
   width:fit-content;
@@ -53,6 +57,64 @@
   box-sizing: border-box;
   height:25px;
   margin-bottom:0px;
+}
+
+/* Gallery styling */
+/*-----------------*/
+.gallery-title {
+  /* border-style:solid; border-color:red;  */
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2.0em;
+  border-collapse: collapse;
+  /* min-width:25em; */
+  /* max-width:100em; */
+  white-space:nowrap;
+  /* margin:10px 50px;   */
+  margin-left:auto; 
+  margin-right:auto; 
+  text-align:center;
+}
+
+.gallery-title-img {
+    /* border-style:solid; border-color:red;   */
+    display:block;
+    height: 30%;
+    object-fit: scale-down; /*cover;*/
+    object-position:left;
+    margin-left:auto; 
+    margin-right:auto; 
+}
+
+.gallery-title-blurb {
+    /* border-style:solid; border-color:red;   */
+    margin-left:auto; 
+    margin-right:auto; 
+    font-size: 1.2em;
+}
+
+.gallery-blurb {
+    /* border-style:solid; border-color:red;  */
+    display:block;
+    margin-top:1em;
+    margin-left:50px; 
+    margin-right:auto; 
+    font-family: Arial, Helvetica, sans-serif;
+    text-align:left;
+    font-size: 1.2em;
+}
+
+.gallery-table {
+    /* width:100%; */
+    max-width:1500px;
+    margin-left:50px;
+    margin-right:50px;
+}
+
+.gallery-thumb {
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 
 /* Gallery list styling */

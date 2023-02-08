@@ -31,7 +31,7 @@
 
     {% block js %}
     {% endblock js %}
-
+    <script src='static/js/AHXHelpers.js'> </script>
   </head>
 
   <body>
@@ -42,13 +42,13 @@
           <a href="{{ url_for('index') }}">
             <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'></a>
         </td>
-        <td> <span class='font-l' style='margin-left:15px'> Picture Galleries </span> </td>
+        <td> <span style='margin-left:15px'> Picture Galleries </span> </td>
       </tr>
       <tr><td height=15px></td></tr>
     </table>
     {% block content %}
     {% endblock content %}
 
-
+    
   </body>
 </html>

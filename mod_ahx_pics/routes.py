@@ -38,6 +38,7 @@ def show_error(f):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             tb = exc_tb.tb_next.tb_next
+            if not tb: tb = exc_tb.tb_next
             frame = str(tb.tb_frame)
             err = str(e)
             return flask.escape( f'''EXCEPTION: {err} {frame}''')
@@ -70,14 +71,16 @@ def index():
 def gallery():
     """ View or edit a gallery """
     parms = get_parms()
-    return parms['_action']
+    pics = pe.get_gallery_pics( parms['_id'])
+    gallery = pe.get_galleries( title='', owner='', gallery_id = parms['_id'])[0]
+    gallery_html = gui.gen_gallery_as_table( gallery, pics)
+    return render_template( 'gallery.html', content=gallery_html)
 
 @app.route('/carousel', methods=['GET', 'POST'])
 #-------------------------------------------------
 def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
-    img_files = ['defense.jpg','eiffel.jpg','elphi.jpg','robot.mov']
     img_files = [ f'test_gallery_01/orig/{x}' for x in img_files ]
     img_fileurls = helpers.get_s3_links(img_files)
     

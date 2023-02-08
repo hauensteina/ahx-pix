@@ -9,7 +9,7 @@ Functions for background execution via Redis Queue
 from pdb import set_trace as BP
 import os
 import datetime
-from PIL import Image
+from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log
 from mod_ahx_pics import ORIG_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
@@ -101,8 +101,19 @@ def _resize_image( fname, size='small'):
         s3_thumb = f'{target_folder}{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf':
             image = Image.open( local_fname)
-            MAX_SIZE = (100, 100)
-            image.thumbnail( max_size)
+            for orientation in ExifTags.TAGS.keys() : 
+                if ExifTags.TAGS[orientation]=='Orientation' : break 
+            try:
+                exif=dict(image._getexif().items())
+                if   exif[orientation] == 3 : 
+                    image=image.rotate(180, expand=True)
+                elif exif[orientation] == 6 : 
+                    image=image.rotate(270, expand=True)
+                elif exif[orientation] == 8 : 
+                    image=image.rotate(90, expand=True)
+                image.thumbnail( max_size, Image.ANTIALIAS)            
+            except:
+                pass
             image.save( local_thumb)
             s3_upload_files( [local_thumb], [s3_thumb])
         else: # Just leave pdfs alone
