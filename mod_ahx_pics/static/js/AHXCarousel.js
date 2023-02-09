@@ -5,15 +5,20 @@
 // Called from carousel.html
 // Example: AHXCarousel('#ahx-carousel')
 class AHXCarousel {
-  constructor( containerId) {
+  constructor( containerId, galleryId, pictureId) {
     this.container = document.querySelector(containerId)
     // Properties
+    this.galleryId = galleryId
+    this.pictureId = pictureId
     this.prevSlide = null
     this.arrowTimer = null
 
-    this.container.querySelector('.ahx-carousel-button.ahx-next').addEventListener( 'click', ev => { this._changeImage('next') } )
-    this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 'click', ev => { this._changeImage('prev') } )
-    this.container.querySelector('.ahx-x').addEventListener( 'click', ev => { document.location.href = '/' } )
+    this.container.querySelector('.ahx-carousel-button.ahx-next').addEventListener( 
+      'click', ev => { this._changeImage('next') } )
+    this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 
+      'click', ev => { this._changeImage('prev') } )
+    this.container.querySelector('.ahx-x').addEventListener( 
+      'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
 
     this._preventClickOnPrevious()
     this._enableSwiping()

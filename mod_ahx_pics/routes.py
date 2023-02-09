@@ -14,7 +14,7 @@ from functools import wraps
 
 from mod_ahx_pics import AppError, Q
 from mod_ahx_pics import app, log
-from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
+from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER
 
 from mod_ahx_pics.worker_funcs import gen_thumbnails 
 import mod_ahx_pics.helpers as helpers
@@ -69,10 +69,11 @@ def index():
 @show_error
 #-------------------------------------------------
 def gallery():
-    """ View or edit a gallery """
+    """ View a gallery """
     parms = get_parms()
-    pics = pe.get_gallery_pics( parms['_id'])
-    gallery = pe.get_galleries( title='', owner='', gallery_id = parms['_id'])[0]
+    gallery_id = parms['gallery_id']
+    pics = pe.get_gallery_pics( gallery_id)
+    gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
     gallery_html = gui.gen_gallery_as_table( gallery, pics)
     return render_template( 'gallery.html', content=gallery_html)
 
@@ -81,26 +82,38 @@ def gallery():
 def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
-    img_files = [ f'test_gallery_01/orig/{x}' for x in img_files ]
-    img_fileurls = helpers.get_s3_links(img_files)
+    gallery_id = parms['gallery_id']
+    picture_id = parms['picture_id']
+    pics = pe.get_gallery_pics( gallery_id)
+    img_prefix = MEDIUM_FOLDER + gallery_id + '/'
+    images, s3_client =  helpers.s3_get_keys( img_prefix)
+    keys = [ x['Key'] for x in images ]
+    id2key = { k.split('_')[1]:k for k in keys }
     
     links = []
-    for i,f in enumerate(img_files):
-        furl = img_fileurls[i]
-        ext = os.path.splitext(f)[1]
+    s3_client = ''
+    found_active = False
+    for i,pic in enumerate(pics):
+        key = id2key[pic['id']]
+        furl,s3_client = helpers.s3_get_link( key, s3_client)
+        ext = os.path.splitext(key)[1].lower()
         classes = " class='ahx-slide' "
-        if i == 0: classes = " class='ahx-slide ahx-active' "
-        if ext in VIDEO_EXTS:
-            link = f"<li> <video controls {classes}>  <source src='{furl}#t=0.5'></video> </li>"
-        elif ext in IMAGE_EXTS:
-            link = f"<li> <img src='{furl}' {classes}> </li>"
+        #if i == 0: classes = " class='ahx-slide ahx-active' "
+        if pic['id'] == picture_id: 
+            found_active = True
+            classes = " class='ahx-slide ahx-active' "
+        if ext in VIDEO_EXTENSIONS:
+            link = f"<li> <video preload='none' controls {classes}>  <source src='{furl}#t=0.5'></video> </li>"
+        elif ext in IMG_EXTENSIONS:
+            link = f"<li> <img loading='lazy' src='{furl}' {classes}> </li>"
         else:
             log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
             continue
         links.append(link)
+    if not found_active:
+        links[0] = links[0].replace('ahx-slide', 'ahx-slide ahx-active')
     links = '\n'.join(links)
-    return render_template( 'carousel.html',images=links )
-
+    return render_template( 'carousel.html', images=links, gallery_id=gallery_id, picture_id=picture_id )
 
 def get_parms():
     if request.method == 'POST': # Form submit

@@ -13,7 +13,7 @@ from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log
 from mod_ahx_pics import ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
-from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB
+from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
 from mod_ahx_pics import DOWNLOAD_FOLDER
 from mod_ahx_pics.helpers import s3_get_keys, basename, s3_download_file, s3_upload_files, s3_delete_files
 
@@ -101,11 +101,13 @@ def _resize_image( fname, size='small'):
     if size == 'small':
         prefix = 'sm'
         target_folder = SMALL_FOLDER
-        max_size = (SMALL_THUMB_SIZE, SMALL_THUMB_SIZE)
+        #max_size = (SMALL_THUMB_SIZE, SMALL_THUMB_SIZE)
+        max_size = SMALL_THUMB_SIZE
     elif size == 'medium': 
         prefix = 'med'
         target_folder = MEDIUM_FOLDER
-        max_size = (MEDIUM_THUMB_SIZE, MEDIUM_THUMB_SIZE)
+        #max_size = (MEDIUM_THUMB_SIZE, MEDIUM_THUMB_SIZE)
+        max_size = MEDIUM_THUMB_SIZE
     else: # large
         prefix = 'lg'
         target_folder = LARGE_FOLDER
@@ -117,23 +119,37 @@ def _resize_image( fname, size='small'):
         gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf' and size != 'large':
+            cmd = FFMPEG_RESIZE_IMG
             image = Image.open( local_fname)
             for orientation in ExifTags.TAGS.keys() : 
                 if ExifTags.TAGS[orientation]=='Orientation' : break 
             try:
                 exif=dict(image._getexif().items())
+                rot = ''
                 if   exif[orientation] == 3 : 
-                    image=image.rotate(180, expand=True)
+                    rot = ',transpose=1,transpose=1'
+                    #image=image.rotate(180, expand=True)
                 elif exif[orientation] == 6 : 
-                    image=image.rotate(270, expand=True)
+                    rot = ',transpose=1'
+                    #image=image.rotate(270, expand=True)
                 elif exif[orientation] == 8 : 
-                    image=image.rotate(90, expand=True)
-                image.thumbnail( max_size)            
-            except:
-                pass
-            image.save( local_thumb, quality=90)
+                    rot = ',transpose=2'
+                    #image=image.rotate(90, expand=True)
+                cmd = cmd.replace( '@MAXW', str(max_size))
+                cmd = cmd.replace( '@IN', local_fname)
+                cmd = cmd.replace( '@OUT', local_thumb)
+                cmd = cmd.replace( '@ROT', rot)
+                out,err = run_shell( cmd)
+                #image.thumbnail( max_size)            
+                #image.thumbnail( max_size, resample=Resampling.NEAREST, reducing_gap=2.0 )            
+            except Exception as e:
+                log(pexc(e))
+                log(f'WARNING: ffmpeg resize of {fname} failed. Using PIL.') 
+                image.thumbnail( (max_size,max_size))
+                image.save( local_thumb, quality=95)
+
             s3_upload_files( [local_thumb], [s3_thumb])
-        else: # Just leave pdfs and large files alone
+        else: # Just leave pdfs and large image version alone
             s3_upload_files( [local_fname], [s3_thumb])
     except Exception as e:
         if 'truncated' in str(e):

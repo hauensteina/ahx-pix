@@ -42,6 +42,8 @@ VIDEO_EXTENSIONS = ['.mov', '.mp4']
 FFMPEG_COMPRESSOR = 'ffmpeg -i @IN  -c:v libx264 -crf 28 @OUT'
 FFMPEG_VIDEO_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'
 
+FFMPEG_RESIZE_IMG = 'ffmpeg -i @IN -q:v 2 -vf "scale=@MAXW:-1@ROT" @OUT'
+
 # Our own exception class
 #----------------------------
 class AppError(Exception):

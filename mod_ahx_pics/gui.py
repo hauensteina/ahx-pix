@@ -71,8 +71,10 @@ def _gen_image_grid( gallery, pics, n_cols):
             #keys, s3_client =  helpers.s3_get_keys( img_prefix, s3_client)
             key =  id2key.get( pic['id'], 'pics/img_not_found.jpg')
             img_link, s3_client = helpers.s3_get_link( key, s3_client)
+            visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
+            onclick = f''' onclick="window.location.href={visit_url}" '''
             html += f''' <td class='gallery-thumb' style='width:{colw};' > '''
-            html += f''' <img src='{img_link}' style='width:100%;'>\n '''
+            html += f''' <img loading='lazy' {onclick} src='{img_link}' style='width:100%;'>\n '''
             html += f''' <br>{pic['blurb']} '''
         html += '</tr>'
     html += f'''</table>'''
@@ -93,7 +95,7 @@ def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
     # Table body
     tbody = ''
     for idx,gal in enumerate(galleries):
-        visit_url = f"'{url_for( 'gallery', _id=gal['id'], _action='visit')}'"
+        visit_url = f"'{url_for( 'gallery', gallery_id=gal['id'])}'"
         trow = ''
         for col in columns:
             val = gal[columns[col]]

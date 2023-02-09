@@ -53,11 +53,12 @@ def pexc( e):
 
 def s3_get_link( fname, client=''):
     """
-    Get presigned URLs for the given file paths.
-    These can be used as img urls in an html template.
-    Example path: 'test_gallery_01/orig/eiffel.jpg'
+    Get presigned URL for the given file path.
+    The URL can be used as img url in an html template.
+    Example: img_link, s3_client = helpers.s3_get_link( 'test_gallery_01/orig/eiffel.jpg', s3_client)
+    Note that this happens locally and does not cause an API hit.
     """
-    if not client: client = _get_s3_client()
+    if not client: client = _get_s3_client() 
     url = ''
     try:
         url = client.generate_presigned_url(
