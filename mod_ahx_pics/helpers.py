@@ -12,7 +12,7 @@ import uuid
 # AWS S3 api
 import boto3
 
-from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, ORIG_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, log
+from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, log
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 
 # Misc
@@ -112,9 +112,11 @@ def s3_download_file(fname):
     return ofname
 
 def s3_prefix(fname, size):
-    if size == 'small': res = SMALL_FOLDER + 'sm_' + basename( fname)
-    elif size == 'orig': res = ORIG_FOLDER + basename( fname)
-    else: res = MEDIUM_FOLDER + 'med_' + basename( fname)
+    parts = fname.split('_')
+    gallery_id = parts[1]
+    if size == 'small': res = SMALL_FOLDER + gallery_id + '/sm_' + basename( fname)
+    elif size == 'large': res = LARGE_FOLDER + gallery_id + '/' + basename( fname)
+    else: res = MEDIUM_FOLDER + gallery_id + '/med_' + basename( fname)
     return res
 
 def _get_s3_client():

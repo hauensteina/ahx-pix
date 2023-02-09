@@ -8,7 +8,7 @@ Functions to generate html for the GUI
 
 from pdb import set_trace as BP
 from flask import url_for
-from mod_ahx_pics import AppError
+from mod_ahx_pics import AppError, SMALL_FOLDER
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
 
@@ -30,7 +30,9 @@ def gen_gallery_as_table( gallery, pics, n_cols=5):
         title_pic = title_pic[0]
         img_prefix = helpers.s3_prefix( title_pic['filename'], size='medium')
         keys, _ =  helpers.s3_get_keys( img_prefix)
-        img_link, _  = helpers.s3_get_link( keys[0]['Key'])
+        key = 'pics/img_not_found.jpg'
+        if keys: key = keys[0]['Key']
+        img_link, _  = helpers.s3_get_link( key)
         html += f'''<img src='{img_link}' id='gallery_img' class='gallery-title-img'>'''
         html += f'''<span class='gallery-title-blurb'>{title_pic['blurb']}</span>'''
     else:
@@ -45,15 +47,19 @@ def gen_gallery_as_table( gallery, pics, n_cols=5):
     </div> 
     '''
     # Images
-    html += _gen_image_grid( pics, n_cols)
+    html += _gen_image_grid( gallery, pics, n_cols)
     return html
 
-def _gen_image_grid(pics, n_cols):
+def _gen_image_grid( gallery, pics, n_cols):
     """ Arrange image thumbs as a grid """
     
     s3_client = ''
     html = f'''<table class=gallery-table> ''' 
     colw = f'{100.0/n_cols}%'
+    img_prefix = SMALL_FOLDER + gallery['id'] + '/'
+    images, s3_client =  helpers.s3_get_keys( img_prefix)
+    keys = [ x['Key'] for x in images ]
+    id2key = { k.split('_')[1]:k for k in keys }
 
     for left_idx in range( 0, len(pics), n_cols):
         html += f''' <tr> \n ''' 
@@ -61,9 +67,10 @@ def _gen_image_grid(pics, n_cols):
             idx = left_idx + col
             if idx >= len(pics): break
             pic = pics[idx]
-            img_prefix = helpers.s3_prefix( pic['filename'], size='small')
-            keys, s3_client =  helpers.s3_get_keys( img_prefix, s3_client)
-            img_link, s3_client = helpers.s3_get_link( keys[0]['Key'], s3_client)
+            #img_prefix = helpers.s3_prefix( pic['filename'], size='small')
+            #keys, s3_client =  helpers.s3_get_keys( img_prefix, s3_client)
+            key =  id2key.get( pic['id'], 'pics/img_not_found.jpg')
+            img_link, s3_client = helpers.s3_get_link( key, s3_client)
             html += f''' <td class='gallery-thumb' style='width:{colw};' > '''
             html += f''' <img src='{img_link}' style='width:100%;'>\n '''
             html += f''' <br>{pic['blurb']} '''

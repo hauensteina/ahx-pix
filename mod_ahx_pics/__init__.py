@@ -22,6 +22,7 @@ app = Flask( __name__)
 S3_BUCKET = 'ahx-pics'
 # S3 folders
 ORIG_FOLDER = 'pics/orig/'
+LARGE_FOLDER = 'pics/large/'
 MEDIUM_FOLDER = 'pics/medium/'
 SMALL_FOLDER = 'pics/small/'
 
@@ -39,7 +40,7 @@ IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.pdf']
 VIDEO_EXTENSIONS = ['.mov', '.mp4']
 
 FFMPEG_COMPRESSOR = 'ffmpeg -i @IN  -c:v libx264 -crf 28 @OUT'
-FFMPEG_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'
+FFMPEG_VIDEO_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'
 
 # Our own exception class
 #----------------------------

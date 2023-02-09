@@ -12,8 +12,8 @@ import datetime
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log
-from mod_ahx_pics import ORIG_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
-from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_THUMB
+from mod_ahx_pics import ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
+from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB
 from mod_ahx_pics import DOWNLOAD_FOLDER
 from mod_ahx_pics.helpers import s3_get_keys, basename, s3_download_file, s3_upload_files, s3_delete_files
 
@@ -25,13 +25,16 @@ def _get_missing_media(subfolder):
     """
     prefix = 'sm'
     if '/medium/' in subfolder: prefix = 'med'
+    elif '/large/' in subfolder: prefix = 'lg'
 
-    orig_files = sorted( [ x['Key'] for x in s3_get_keys( ORIG_FOLDER) ]) 
+    orig_files,_ = s3_get_keys( ORIG_FOLDER)
+    orig_files = sorted( [ x['Key'] for x in orig_files ]) 
     # pics/orig/name.jpeg -> name
     orig_basenames = [ basename(x) for x in orig_files ]
 
     # pics/small/name.jpeg -> name
-    existing_target_files =  [ x['Key'] for x in s3_get_keys( subfolder) ] 
+    existing_target_files,_ = s3_get_keys( subfolder)
+    existing_target_files =  [ x['Key'] for x in existing_target_files ] 
     existing_target_basenames = [ basename(x) for x in existing_target_files ]
 
     missing_target_basenames = [ x for x in orig_basenames if not f'{prefix}_{x}' in set(existing_target_basenames) ]
@@ -56,24 +59,33 @@ def _resize_media( fnames, size):
 
 def _resize_video( fname, size):
     """ Compress video. The small version is just a single thumbnail frame. """
-    prefix = 'sm'
-    target_folder = SMALL_FOLDER
-    cmd = FFMPEG_THUMB
-    ext = '.jpeg'
-    if size == 'medium': 
+    if size == 'small':
+        prefix = 'sm'
+        target_folder = SMALL_FOLDER
+        cmd = FFMPEG_VIDEO_THUMB
+        ext = '.jpeg'
+    elif size == 'medium': 
         prefix = 'med'
         target_folder = MEDIUM_FOLDER
         cmd = FFMPEG_COMPRESSOR
         ext = '.mp4'
+    else: # large
+        prefix = 'lg'
+        target_folder = LARGE_FOLDER
+        ext = os.path.splitext(fname)[1]
 
     try:
         local_fname = s3_download_file(fname)
         #ext = os.path.splitext(fname)[1].lower()
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        s3_thumb = f'{target_folder}{prefix}_{basename(fname)}{ext}'
-        cmd = cmd.replace( '@IN', local_fname)
-        cmd = cmd.replace( '@OUT', local_thumb)
-        out,err = run_shell( cmd)
+        gallery_id = basename(fname).split('_')[1]
+        s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
+        if size == 'large': # Large version remains unchanged
+            local_thumb = local_fname
+        else:
+            cmd = cmd.replace( '@IN', local_fname)
+            cmd = cmd.replace( '@OUT', local_thumb)
+            out,err = run_shell( cmd)
         s3_upload_files( [local_thumb], [s3_thumb])
     except Exception as e:
         log( f'EXCEPTION: {pexc(e)}')
@@ -86,20 +98,25 @@ def _resize_video( fname, size):
     
 def _resize_image( fname, size='small'):
     """ Resize images to either small or medium size and store in target folder """
-    prefix = 'sm'
-    target_folder = SMALL_FOLDER
-    max_size = (SMALL_THUMB_SIZE, SMALL_THUMB_SIZE)
-    if size == 'medium': 
+    if size == 'small':
+        prefix = 'sm'
+        target_folder = SMALL_FOLDER
+        max_size = (SMALL_THUMB_SIZE, SMALL_THUMB_SIZE)
+    elif size == 'medium': 
         prefix = 'med'
         target_folder = MEDIUM_FOLDER
         max_size = (MEDIUM_THUMB_SIZE, MEDIUM_THUMB_SIZE)
-
+    else: # large
+        prefix = 'lg'
+        target_folder = LARGE_FOLDER
+        
     try:
         local_fname = s3_download_file(fname)
         ext = os.path.splitext(fname)[1].lower()
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        s3_thumb = f'{target_folder}{prefix}_{basename(fname)}{ext}'
-        if ext != '.pdf':
+        gallery_id = basename(fname).split('_')[1]
+        s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
+        if ext != '.pdf' and size != 'large':
             image = Image.open( local_fname)
             for orientation in ExifTags.TAGS.keys() : 
                 if ExifTags.TAGS[orientation]=='Orientation' : break 
@@ -111,12 +128,12 @@ def _resize_image( fname, size='small'):
                     image=image.rotate(270, expand=True)
                 elif exif[orientation] == 8 : 
                     image=image.rotate(90, expand=True)
-                image.thumbnail( max_size, Image.ANTIALIAS)            
+                image.thumbnail( max_size)            
             except:
                 pass
-            image.save( local_thumb)
+            image.save( local_thumb, quality=90)
             s3_upload_files( [local_thumb], [s3_thumb])
-        else: # Just leave pdfs alone
+        else: # Just leave pdfs and large files alone
             s3_upload_files( [local_fname], [s3_thumb])
     except Exception as e:
         if 'truncated' in str(e):
@@ -139,5 +156,11 @@ def gen_thumbnails():
     # Paths to originals that still need web size versions
     missing_medium  = _get_missing_media( MEDIUM_FOLDER)
     _resize_media( missing_medium, 'medium')
+
+    log(f'>>>>>>> generating large size')
+    # Paths to originals that still need large size versions
+    missing_large  = _get_missing_media( LARGE_FOLDER)
+    _resize_media( missing_large, 'large')
+
     log('Done.')
 
