@@ -83,20 +83,23 @@ def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
     gallery_id = parms['gallery_id']
-    picture_id = parms['picture_id']
+    picture_id = parms['picture_id'] # The active picture
     pics = pe.get_gallery_pics( gallery_id)
-    img_prefix = MEDIUM_FOLDER + gallery_id + '/'
-    images, s3_client =  helpers.s3_get_keys( img_prefix)
-    keys = [ x['Key'] for x in images ]
-    id2key = { k.split('_')[1]:k for k in keys }
+    #img_prefix = MEDIUM_FOLDER + gallery_id + '/'
+    #images, s3_client =  helpers.s3_get_keys( img_prefix)
+    #keys = [ x['Key'] for x in images ]
+    #id2key = { k.split('_')[1]:k for k in keys }
+
+    pic_links = pe.get_gallery_links( gallery_id)
     
     links = []
     s3_client = ''
     found_active = False
     for i,pic in enumerate(pics):
-        key = id2key[pic['id']]
-        furl,s3_client = helpers.s3_get_link( key, s3_client)
-        ext = os.path.splitext(key)[1].lower()
+        #key = id2key[pic['id']]
+        #furl,s3_client = helpers.s3_get_link( key, s3_client)
+        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'pics/img_not_found.jpg')
+        ext = os.path.splitext(pic['filename'])[1].lower()
         classes = " class='ahx-slide' "
         #if i == 0: classes = " class='ahx-slide ahx-active' "
         if pic['id'] == picture_id: 
