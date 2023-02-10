@@ -413,7 +413,7 @@ class Postgres:
             msg = '%s %s():%d %s %s TXT:%s' % (fname, func, line, str(exname), str(exmsg), p_txt)
         else:
             msg = '%s %s():%d %s %s' % (fname, func, line, str(exname), str(exmsg))
-            self.trace( 'EXCEPTION', msg)
+        self.trace( 'EXCEPTION', msg)
 
     #-------------------------
     def perr( self, p_msg):

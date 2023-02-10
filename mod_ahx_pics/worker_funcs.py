@@ -15,7 +15,7 @@ from mod_ahx_pics import log
 from mod_ahx_pics import ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
 from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
 from mod_ahx_pics import DOWNLOAD_FOLDER
-from mod_ahx_pics.helpers import s3_get_keys, basename, s3_download_file, s3_upload_files, s3_delete_files
+from mod_ahx_pics.helpers import s3_get_keys, basename, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
 
 def _get_missing_media(subfolder):
     """
@@ -27,13 +27,14 @@ def _get_missing_media(subfolder):
     if '/medium/' in subfolder: prefix = 'med'
     elif '/large/' in subfolder: prefix = 'lg'
 
-    orig_files,_ = s3_get_keys( ORIG_FOLDER)
+    s3_client = s3_get_client()
+    orig_files = s3_get_keys( s3_client, ORIG_FOLDER)
     orig_files = sorted( [ x['Key'] for x in orig_files ]) 
     # pics/orig/name.jpeg -> name
     orig_basenames = [ basename(x) for x in orig_files ]
 
     # pics/small/name.jpeg -> name
-    existing_target_files,_ = s3_get_keys( subfolder)
+    existing_target_files = s3_get_keys( s3_client, subfolder)
     existing_target_files =  [ x['Key'] for x in existing_target_files ] 
     existing_target_basenames = [ basename(x) for x in existing_target_files ]
 
@@ -121,18 +122,21 @@ def _resize_image( fname, size='small'):
         if ext != '.pdf' and size != 'large':
             cmd = FFMPEG_RESIZE_IMG
             image = Image.open( local_fname)
-            for orientation in ExifTags.TAGS.keys() : 
-                if ExifTags.TAGS[orientation]=='Orientation' : break 
+            for orientation_key in ExifTags.TAGS.keys() : 
+                if ExifTags.TAGS[orientation_key]=='Orientation' : break 
             try:
-                exif=dict(image._getexif().items())
+                exif = {}
+                if image._getexif():
+                    exif=dict(image._getexif().items())
+                orientation = exif.get(orientation_key,0)    
                 rot = ''
-                if   exif[orientation] == 3 : 
+                if   orientation == 3 : 
                     rot = ',transpose=1,transpose=1'
                     #image=image.rotate(180, expand=True)
-                elif exif[orientation] == 6 : 
+                elif orientation == 6 : 
                     rot = ',transpose=1'
                     #image=image.rotate(270, expand=True)
-                elif exif[orientation] == 8 : 
+                elif orientation == 8 : 
                     rot = ',transpose=2'
                     #image=image.rotate(90, expand=True)
                 cmd = cmd.replace( '@MAXW', str(max_size))

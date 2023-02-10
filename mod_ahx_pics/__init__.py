@@ -26,6 +26,8 @@ LARGE_FOLDER = 'pics/large/'
 MEDIUM_FOLDER = 'pics/medium/'
 SMALL_FOLDER = 'pics/small/'
 
+LINK_EXPIRE_HOURS = 24
+
 # Thumbnail sizes
 SMALL_THUMB_SIZE = 200
 MEDIUM_THUMB_SIZE = 1000

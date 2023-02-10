@@ -11,12 +11,14 @@ from flask import url_for
 from mod_ahx_pics import AppError, SMALL_FOLDER
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
+import mod_ahx_pics.persistence as pe
 
 def gen_gallery_as_table( gallery, pics, n_cols=5):
     """
     Generate html to display all pics in a gallery in table format.
     Gallery title and blurb at the top.
     """
+    pic_links = pe.get_gallery_links( gallery['id'])
     html = ''
     # Heading
     html += f'''
@@ -28,11 +30,12 @@ def gen_gallery_as_table( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_prefix = helpers.s3_prefix( title_pic['filename'], size='medium')
-        keys, _ =  helpers.s3_get_keys( img_prefix)
-        key = 'pics/img_not_found.jpg'
-        if keys: key = keys[0]['Key']
-        img_link, _  = helpers.s3_get_link( key)
+        #img_prefix = helpers.s3_prefix( title_pic['filename'], size='medium')
+        #keys, _ =  helpers.s3_get_keys( img_prefix)
+        #key = 'pics/img_not_found.jpg'
+        #if keys: key = keys[0]['Key']
+        #img_link, _  = helpers.s3_get_link( key)
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'pics/img_not_found.jpg')
         html += f'''<img src='{img_link}' id='gallery_img' class='gallery-title-img'>'''
         html += f'''<span class='gallery-title-blurb'>{title_pic['blurb']}</span>'''
     else:
@@ -47,19 +50,19 @@ def gen_gallery_as_table( gallery, pics, n_cols=5):
     </div> 
     '''
     # Images
-    html += _gen_image_grid( gallery, pics, n_cols)
+    html += _gen_image_grid( gallery, pics, pic_links, n_cols)
     return html
 
-def _gen_image_grid( gallery, pics, n_cols):
+def _gen_image_grid( gallery, pics, pic_links, n_cols):
     """ Arrange image thumbs as a grid """
     
     s3_client = ''
     html = f'''<table class=gallery-table> ''' 
     colw = f'{100.0/n_cols}%'
-    img_prefix = SMALL_FOLDER + gallery['id'] + '/'
-    images, s3_client =  helpers.s3_get_keys( img_prefix)
-    keys = [ x['Key'] for x in images ]
-    id2key = { k.split('_')[1]:k for k in keys }
+    #img_prefix = SMALL_FOLDER + gallery['id'] + '/'
+    #images, s3_client =  helpers.s3_get_keys( img_prefix)
+    #keys = [ x['Key'] for x in images ]
+    #id2key = { k.split('_')[1]:k for k in keys }
 
     for left_idx in range( 0, len(pics), n_cols):
         html += f''' <tr> \n ''' 
@@ -69,8 +72,9 @@ def _gen_image_grid( gallery, pics, n_cols):
             pic = pics[idx]
             #img_prefix = helpers.s3_prefix( pic['filename'], size='small')
             #keys, s3_client =  helpers.s3_get_keys( img_prefix, s3_client)
-            key =  id2key.get( pic['id'], 'pics/img_not_found.jpg')
-            img_link, s3_client = helpers.s3_get_link( key, s3_client)
+            #key =  id2key.get( pic['id'], 'pics/img_not_found.jpg')
+            #img_link, s3_client = helpers.s3_get_link( key, s3_client)
+            img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'pics/img_not_found.jpg')
             visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
             onclick = f''' onclick="window.location.href={visit_url}" '''
             html += f''' <td class='gallery-thumb' style='width:{colw};' > '''

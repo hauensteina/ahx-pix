@@ -51,28 +51,27 @@ def pexc( e):
 # S3 functions
 #-----------------------
 
-def s3_get_link( fname, client=''):
+def s3_get_link( client, fname, expire_hours=1):
     """
     Get presigned URL for the given file path.
     The URL can be used as img url in an html template.
     Example: img_link, s3_client = helpers.s3_get_link( 'test_gallery_01/orig/eiffel.jpg', s3_client)
     Note that this happens locally and does not cause an API hit.
     """
-    if not client: client = _get_s3_client() 
     url = ''
     try:
         url = client.generate_presigned_url(
             ClientMethod='get_object', 
             Params={'Bucket':S3_BUCKET, 'Key':fname},
-            ExpiresIn=3600)
+            ExpiresIn = expire_hours * 3600)
     except Exception as e:
         url = 'static/images/img_not_found.jpg'
 
-    return url, client    
+    return url
 
 def s3_upload_files( fnames, s3_fnames=''):
     if not s3_fnames: s3_fnames = fnames
-    client = _get_s3_client()
+    client = s3_get_client()
     for idx,fname in enumerate(fnames):
         s3_fname = s3_fnames[idx]
         if idx % 10 == 0:
@@ -83,7 +82,7 @@ def s3_upload_files( fnames, s3_fnames=''):
             log(pexc(e))
 
 def s3_delete_files( fnames):
-    client = _get_s3_client()
+    client = s3_get_client()
     for idx,fname in enumerate(fnames):
         try:
             log(f'deleting {fname}')
@@ -91,9 +90,8 @@ def s3_delete_files( fnames):
         except Exception as e:
             log(pexc(e))
 
-def s3_get_keys( prefix, client=''):
+def s3_get_keys( client, prefix):
     """ Get complete info for all objects starting with prefix, like Key, Size, ... """
-    if not client: client = _get_s3_client()
     paginator = client.get_paginator('list_objects_v2')
 
     infos = []
@@ -102,11 +100,11 @@ def s3_get_keys( prefix, client=''):
         if 'Contents' in page:
             rows = page['Contents']
             infos.extend( rows )        
-    return infos, client
+    return infos
 
 def s3_download_file(fname):
     """ Download a file from s3 into unique filename and return the filename """
-    client = _get_s3_client()
+    client = s3_get_client()
     ext = os.path.splitext(fname)[1]
     ofname = DOWNLOAD_FOLDER + '/' + str(uuid.uuid4()) + ext
     client.download_file( S3_BUCKET, fname, ofname)
@@ -120,7 +118,7 @@ def s3_prefix(fname, size):
     else: res = MEDIUM_FOLDER + gallery_id + '/med_' + basename( fname)
     return res
 
-def _get_s3_client():
+def s3_get_client():
     client = boto3.client(
         's3',
         aws_access_key_id=os.environ['AWS_KEY'],
