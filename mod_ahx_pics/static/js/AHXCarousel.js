@@ -25,6 +25,7 @@ class AHXCarousel {
     this._enableKeyNav()
     this._hideArrows()
     this._setImgNum()
+    this._preloadImages( this.slides(), this.activeSlide() )
   }
 
   //--------------------
@@ -59,11 +60,31 @@ class AHXCarousel {
     if (nextSlide.tagName == 'VIDEO') {
       //nextSlide.play()
     }
+    if (nextSlide.tagName == 'IMG') {
+      this._preloadImages(slides, nextSlide)
+    }
     activeSlide.classList.remove( 'ahx-active')
     this._setImgNum()
     this._resetArrowTimer()
     //this._openFullScreen(nextSlide)
   } // _changeImage()
+
+  // 
+  //----------------------------------------------
+  _preloadImages( slides, nextSlide) {
+    var nextIdx = [...slides].indexOf(nextSlide)
+    // Load current img
+    var sl = slides[nextIdx]
+    sl.setAttribute( 'src', sl.getAttribute( 'data-src'))
+
+    // Preload some to the left and right of next img
+    for (var idx = nextIdx - 2; idx <= nextIdx + 3; idx++) {
+      if (idx < 0) { continue }
+      if (idx >= slides.length) { continue }
+      const sl = slides[idx]
+      sl.setAttribute( 'src', sl.getAttribute( 'data-src'))
+    }
+  } // _preloadImages()
 
   //------------------
   _setImgNum() {

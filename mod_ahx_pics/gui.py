@@ -30,12 +30,12 @@ def gen_gallery_as_table( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'pics/img_not_found.jpg')
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'static/images/img_not_found.jpg')
         html += f'''<img src='{img_link}' id='gallery_img' class='gallery-title-img'>'''
         html += f'''<span class='gallery-title-blurb'>{title_pic['blurb']}</span>'''
     else:
         html += f''' 
-        <img src='img_not_found.jpg'> 
+        <img src='static/images/img_not_found.jpg'> 
         '''
         
     # Blurb
@@ -61,7 +61,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols):
             idx = left_idx + col
             if idx >= len(pics): break
             pic = pics[idx]
-            img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'pics/img_not_found.jpg')
+            img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
             visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
             onclick = f''' onclick="window.location.href={visit_url}" '''
             html += f''' <td class='gallery-thumb' style='width:{colw};' > '''

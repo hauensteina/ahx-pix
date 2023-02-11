@@ -98,7 +98,7 @@ def carousel():
     for i,pic in enumerate(pics):
         #key = id2key[pic['id']]
         #furl,s3_client = helpers.s3_get_link( key, s3_client)
-        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'pics/img_not_found.jpg')
+        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
         ext = os.path.splitext(pic['filename'])[1].lower()
         classes = " class='ahx-slide' "
         #if i == 0: classes = " class='ahx-slide ahx-active' "
@@ -106,9 +106,9 @@ def carousel():
             found_active = True
             classes = " class='ahx-slide ahx-active' "
         if ext in VIDEO_EXTENSIONS:
-            link = f"<li> <video preload='none' controls {classes}>  <source src='{furl}#t=0.5'></video> </li>"
+            link = f"<li> <video preload='none' controls {classes}>  <source data-src='{furl}#t=0.5'></video> </li>"
         elif ext in IMG_EXTENSIONS:
-            link = f"<li> <img loading='lazy' src='{furl}' {classes}> </li>"
+            link = f"<li> <img loading='lazy' data-src='{furl}' {classes}> </li>"
         else:
             log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
             continue
