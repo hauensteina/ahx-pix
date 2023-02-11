@@ -83,40 +83,9 @@ def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
     gallery_id = parms['gallery_id']
-    picture_id = parms['picture_id'] # The active picture
-    pics = pe.get_gallery_pics( gallery_id)
-    #img_prefix = MEDIUM_FOLDER + gallery_id + '/'
-    #images, s3_client =  helpers.s3_get_keys( img_prefix)
-    #keys = [ x['Key'] for x in images ]
-    #id2key = { k.split('_')[1]:k for k in keys }
-
-    pic_links = pe.get_gallery_links( gallery_id)
-    
-    links = []
-    s3_client = ''
-    found_active = False
-    for i,pic in enumerate(pics):
-        #key = id2key[pic['id']]
-        #furl,s3_client = helpers.s3_get_link( key, s3_client)
-        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
-        ext = os.path.splitext(pic['filename'])[1].lower()
-        classes = " class='ahx-slide' "
-        #if i == 0: classes = " class='ahx-slide ahx-active' "
-        if pic['id'] == picture_id: 
-            found_active = True
-            classes = " class='ahx-slide ahx-active' "
-        if ext in VIDEO_EXTENSIONS:
-            link = f"<li> <video preload='none' controls {classes}>  <source data-src='{furl}#t=0.5'></video> </li>"
-        elif ext in IMG_EXTENSIONS:
-            link = f"<li> <img loading='lazy' data-src='{furl}' {classes}> </li>"
-        else:
-            log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
-            continue
-        links.append(link)
-    if not found_active:
-        links[0] = links[0].replace('ahx-slide', 'ahx-slide ahx-active')
-    links = '\n'.join(links)
-    return render_template( 'carousel.html', images=links, gallery_id=gallery_id, picture_id=picture_id )
+    active_pic_id = parms['picture_id']
+    images = gui.gen_carousel_images( gallery_id, active_pic_id)
+    return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
 def get_parms():
     if request.method == 'POST': # Form submit

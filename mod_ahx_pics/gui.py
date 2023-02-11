@@ -7,11 +7,40 @@ Functions to generate html for the GUI
 """
 
 from pdb import set_trace as BP
+import os
 from flask import url_for
 from mod_ahx_pics import AppError, SMALL_FOLDER
+from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
 import mod_ahx_pics.persistence as pe
+
+def gen_carousel_images( gallery_id, active_pic_id):
+    images = []
+    s3_client = ''
+    found_active = False
+    pics = pe.get_gallery_pics( gallery_id) # pic filenames in DB 
+    pic_links = pe.get_gallery_links( gallery_id) # image files in S3
+    for i,pic in enumerate(pics):
+        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
+        ext = os.path.splitext(pic['filename'])[1].lower()
+        classes = " class='ahx-slide' "
+        #if i == 0: classes = " class='ahx-slide ahx-active' "
+        if pic['id'] == active_pic_id: 
+            found_active = True
+            classes = " class='ahx-slide ahx-active' "
+        if ext in VIDEO_EXTENSIONS:
+            link = f"<li> <video preload='none' controls {classes}>  <source data-src='{furl}#t=0.5'></video> </li>"
+        elif ext in IMG_EXTENSIONS:
+            link = f"<li> <img loading='lazy' data-src='{furl}' {classes}> </li>"
+        else:
+            log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
+            continue
+        images.append(link)
+    if not found_active:
+        images[0] = images[0].replace('ahx-slide', 'ahx-slide ahx-active')
+    images = '\n'.join(images)
+    return images
 
 def gen_gallery_as_table( gallery, pics, n_cols=5):
     """
