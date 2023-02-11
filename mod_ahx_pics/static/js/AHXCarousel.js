@@ -6,18 +6,18 @@
 // Example: AHXCarousel('#ahx-carousel')
 class AHXCarousel {
   constructor( containerId, galleryId, pictureId) {
-    this.container = document.querySelector(containerId)
+    this.container = E(containerId)
     // Properties
     this.galleryId = galleryId
     this.pictureId = pictureId
     this.prevSlide = null
     this.arrowTimer = null
 
-    this.container.querySelector('.ahx-carousel-button.ahx-next').addEventListener( 
+    E('.ahx-carousel-button.ahx-next').addEventListener( 
       'click', ev => { this._changeImage('next') } )
-    this.container.querySelector('.ahx-carousel-button.ahx-prev').addEventListener( 
+    E('.ahx-carousel-button.ahx-prev').addEventListener( 
       'click', ev => { this._changeImage('prev') } )
-    this.container.querySelector('.ahx-x').addEventListener( 
+    E('.ahx-x').addEventListener( 
       'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
 
     this._preventClickOnPrevious()
@@ -30,12 +30,12 @@ class AHXCarousel {
 
   //--------------------
   slides() {
-    return this.container.querySelectorAll( '.ahx-slide')
+    return A( '.ahx-slide')
   }
 
   //--------------------
   activeSlide() {
-    return this.container.querySelector( '.ahx-slide.ahx-active')
+    return E( '.ahx-slide.ahx-active')
   }
 
   //------------------------------------------------------
@@ -69,20 +69,29 @@ class AHXCarousel {
     //this._openFullScreen(nextSlide)
   } // _changeImage()
 
-  // 
-  //----------------------------------------------
+  // Load active image on demand, and some more to the left and right
+  //---------------------------------------------------------------------
   _preloadImages( slides, nextSlide) {
+    function load(elt, idx) {
+      if (elt.tagName == 'IMG') {
+        elt.setAttribute( 'src', elt.getAttribute( 'data-src'))
+      }
+      else if  (elt.tagName == 'VIDEO') {
+        var source = E( `#vsrc_${idx}`)
+        source.src = source.getAttribute('data-src')
+        elt.load()
+      }
+    } // load()
+
     var nextIdx = [...slides].indexOf(nextSlide)
     // Load current img
-    var sl = slides[nextIdx]
-    sl.setAttribute( 'src', sl.getAttribute( 'data-src'))
+    load( slides[nextIdx], nextIdx)
 
     // Preload some to the left and right of next img
     for (var idx = nextIdx - 2; idx <= nextIdx + 3; idx++) {
       if (idx < 0) { continue }
       if (idx >= slides.length) { continue }
-      const sl = slides[idx]
-      sl.setAttribute( 'src', sl.getAttribute( 'data-src'))
+      load( slides[idx], idx)
     }
   } // _preloadImages()
 
@@ -91,7 +100,7 @@ class AHXCarousel {
     var slides = this.slides()
     var activeSlide = this.activeSlide()
     var activeIdx = [...slides].indexOf(activeSlide)
-    this.container.querySelector( '.ahx-imgnum').innerHTML = `${activeIdx+1}/${slides.length}`
+    E( '.ahx-imgnum').innerHTML = `${activeIdx+1}/${slides.length}`
   } // _setImgNum
 
   //-------------------------------
@@ -146,10 +155,10 @@ class AHXCarousel {
   _hideArrows() {
     var self = this
     function showControls() {
-      document.querySelector('.ahx-carousel-button.ahx-next').hidden = false
-      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = false
-      document.querySelector('.ahx-imgnum').hidden = false
-      document.querySelector('.ahx-x').hidden = false
+      E('.ahx-carousel-button.ahx-next').hidden = false
+      E('.ahx-carousel-button.ahx-prev').hidden = false
+      E('.ahx-imgnum').hidden = false
+      E('.ahx-x').hidden = false
       self._resetArrowTimer()
     }
     self.container.addEventListener( 'pointermove', showControls)
@@ -161,10 +170,10 @@ class AHXCarousel {
   _resetArrowTimer() {
     const TIMEOUT = 2000
     function timerFired() {
-      document.querySelector('.ahx-carousel-button.ahx-next').hidden = true
-      document.querySelector('.ahx-carousel-button.ahx-prev').hidden = true
-      document.querySelector('.ahx-imgnum').hidden = true
-      document.querySelector('.ahx-x').hidden = true
+      E('.ahx-carousel-button.ahx-next').hidden = true
+      E('.ahx-carousel-button.ahx-prev').hidden = true
+      E('.ahx-imgnum').hidden = true
+      E('.ahx-x').hidden = true
     }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)

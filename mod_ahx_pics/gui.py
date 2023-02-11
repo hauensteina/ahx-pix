@@ -30,7 +30,8 @@ def gen_carousel_images( gallery_id, active_pic_id):
             found_active = True
             classes = " class='ahx-slide ahx-active' "
         if ext in VIDEO_EXTENSIONS:
-            link = f"<li> <video preload='none' controls {classes}>  <source data-src='{furl}#t=0.5'></video> </li>"
+            link = f'''<li> <video preload='none' controls {classes}>  
+                       <source id=vsrc_{i} data-src='{furl}#t=0.5'></video> </li> '''
         elif ext in IMG_EXTENSIONS:
             link = f"<li> <img loading='lazy' data-src='{furl}' {classes}> </li>"
         else:
