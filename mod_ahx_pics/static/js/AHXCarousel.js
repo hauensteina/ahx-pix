@@ -55,44 +55,47 @@ class AHXCarousel {
     nextSlide.classList.add( 'ahx-active')
     if (activeSlide.tagName == 'VIDEO') {
       activeSlide.pause()
-      console.log('pause')
     }
-    if (nextSlide.tagName == 'VIDEO') {
-      //nextSlide.play()
-    }
-    if (nextSlide.tagName == 'IMG') {
-      this._preloadImages(slides, nextSlide)
-    }
+    this._preloadImages(slides, nextSlide)
     activeSlide.classList.remove( 'ahx-active')
     this._setImgNum()
     this._resetArrowTimer()
     //this._openFullScreen(nextSlide)
   } // _changeImage()
 
-  // Load active image on demand, and some more to the left and right
+  // Load active image on demand, and some more to the left and right.
+  // Unload other stuff by setting display:none (remove ahx-loaded).
+  // Otherwise, mobile browsers crash.
   //---------------------------------------------------------------------
   _preloadImages( slides, nextSlide) {
+    var nextIdx = [...slides].indexOf(nextSlide)
+    // Load current img
+    load( slides[nextIdx], nextIdx)
+    // Load or unload the others
+    for (var idx=0; idx < slides.length; idx++) {
+      const slide = slides[idx]
+      if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
+        console.log( `preloading idx ${idx}`)
+        load( slide, idx)
+      }
+      else if (idx != nextIdx) {
+        slide.classList.remove( 'ahx-loaded')
+      }
+    } // for
+
     function load(elt, idx) {
+      elt.classList.add( 'ahx-loaded')
       if (elt.tagName == 'IMG') {
         elt.setAttribute( 'src', elt.getAttribute( 'data-src'))
       }
       else if  (elt.tagName == 'VIDEO') {
         var source = E( `#vsrc_${idx}`)
-        source.src = source.getAttribute('data-src')
-        elt.load()
+        if (!source.src) {
+          source.src = source.getAttribute('data-src')
+          elt.load()
+        }
       }
     } // load()
-
-    var nextIdx = [...slides].indexOf(nextSlide)
-    // Load current img
-    load( slides[nextIdx], nextIdx)
-
-    // Preload some to the left and right of next img
-    for (var idx = nextIdx - 2; idx <= nextIdx + 3; idx++) {
-      if (idx < 0) { continue }
-      if (idx >= slides.length) { continue }
-      load( slides[idx], idx)
-    }
   } // _preloadImages()
 
   //------------------

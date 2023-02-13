@@ -182,14 +182,19 @@
 }
 
 .ahx-slide.ahx-active {
+    display:block;
     opacity: 1;
     z-index: 1;
     /* Fade in starts immediately to blend images during transition */
     transition-delay: 0ms;  
 }
 
+.ahx-slide.ahx-loaded {
+    display:block; /* vicinity of active slide gets display:block */
+}
+
 .ahx-slide {
-    display:block;
+    display:none; /* Browser will crash on ios if too many with diplay:block */
     width: 100%;
     height: 100%;
     object-fit: contain; /* scale-down; */

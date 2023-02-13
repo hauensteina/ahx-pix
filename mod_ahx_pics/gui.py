@@ -9,7 +9,7 @@ Functions to generate html for the GUI
 from pdb import set_trace as BP
 import os
 from flask import url_for
-from mod_ahx_pics import AppError, SMALL_FOLDER
+from mod_ahx_pics import AppError, log, SMALL_FOLDER
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
@@ -32,12 +32,13 @@ def gen_carousel_images( gallery_id, active_pic_id):
         if ext in VIDEO_EXTENSIONS:
             link = f'''<li> <video preload='none' controls {classes}>  
                        <source id=vsrc_{i} data-src='{furl}#t=0.5'></video> </li> '''
+            images.append(link)
         elif ext in IMG_EXTENSIONS:
             link = f"<li> <img loading='lazy' data-src='{furl}' {classes}> </li>"
+            images.append(link)
         else:
-            log(f'ERROR: unknown media extension .{ext}. Ignoring {f}')
+            #log(f'ERROR: unknown media extension {ext}. Ignoring {pic}')
             continue
-        images.append(link)
     if not found_active:
         images[0] = images[0].replace('ahx-slide', 'ahx-slide ahx-active')
     images = '\n'.join(images)
