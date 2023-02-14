@@ -103,11 +103,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols):
     html += f'''</table>'''
     return html
 
-def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
+def gen_gallery_list( galleries):
     """
     Generate html to display a list of galleries
-    If action is given, a link with that action is generated on the right.
-    For styling, use class dbtable in main.css .
     """
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
 
