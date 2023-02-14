@@ -1,9 +1,49 @@
-{% extends 'layout.html' %}
+<!DOCTYPE HTML>
+
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
+    <style>
+     .red-border { border-style:solid; border-color:red; }
+     .green-border { border-style:solid; border-color:green; }
+     .blue-border { border-style:solid; border-color:blue; }
+    </style>
+  </head>
+
+  <body>
+    <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0); margin-left:5px; margin-right:5px;'>
+      <div class='red-border' style="display:grid;grid-column-start:1; grid-column-end:4;">
+        <span style='margin:auto'>Heading</span>
+      </div>
+      <div class='red-border' style="display:grid;grid-column-start:1; grid-column-end:2;">left1</div>
+      <div class='red-border' style="display:grid;grid-column-start:2; grid-column-end:3;">middle1</div>
+      <div class='red-border' style="display:grid;grid-column-start:3; grid-column-end:4;">right1</div>
 
 
-{% block content %}
-  <br>
-  {{ msg }}
-  <br>
-{% endblock content %}
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style='display:grid; grid-template-columns: auto auto auto; margin-left:5px; margin-right:5px;'>
+      <div class='red-border' style="display:grid;grid-column-start:1; grid-column-end:4;">
+        <span style='margin:auto'>Heading</span>
+      </div>
+      <div class='red-border' style="display:grid;grid-column-start:1; grid-column-end:2;">left1</div>
+      <div class='red-border' style="display:grid;grid-column-start:2; grid-column-end:3;">middle1</div>
+      <div class='red-border' style="display:grid;grid-column-start:3; grid-column-end:4;">right1</div>
+
+      <div class='red-border' style="display:grid;grid-column-start:1; grid-column-end:2;">left2</div>
+      <div class='red-border' style="display:grid;grid-column-start:2; grid-column-end:3;">middle2</div>
+      <div class='red-border' style="display:grid;grid-column-start:3; grid-column-end:4;">xxxright2</div>
+
+    </div>
+
+  </body>
+</html>
+
+
 

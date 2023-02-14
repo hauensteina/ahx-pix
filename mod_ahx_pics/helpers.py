@@ -47,6 +47,28 @@ def pexc( e):
     msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
     return msg
 
+def html_tag( tag, content='', style=''):
+    """
+    Make a piece of HTML surrounded by tag,
+    with content and style. Plus a hack for images.
+    Examples: 
+    html_tag('div','hello')
+    html_tag('div', ('fig.png','width:100px'))
+    """
+    if content is None: content = ''
+    res = '\n'
+    if type(content) not in  [list,tuple]:
+        content = [content,'']
+    cont = content[0]
+    contstyle = content[1]
+    res += f'<{tag} '
+    if style: res += f'style="{style}">\n'
+    else: res += '>\n'
+    if type(cont) == str and (cont[-4:] in ('.png', '.svg')):
+        cont = f'<img src="{cont}" style="{contstyle}">'
+    res += f'{cont}\n' 
+    res += f'</{tag.split()[0]}>\n'
+    return res
 
 # S3 functions
 #-----------------------

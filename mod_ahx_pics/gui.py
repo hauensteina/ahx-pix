@@ -13,6 +13,7 @@ from mod_ahx_pics import AppError, log, SMALL_FOLDER
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
+from  mod_ahx_pics.helpers import html_tag as H
 import mod_ahx_pics.persistence as pe
 
 def gen_carousel_images( gallery_id, active_pic_id):
@@ -109,29 +110,38 @@ def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
     For styling, use class dbtable in main.css .
     """
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
+
+    layout =  f'''
+             display:grid; 
+             grid-template-columns: fit-content(50%) fit-content(50%) fit-content(50%);
+             margin-left:50px
+             '''
+
+    html = ''
+
     # Table header
     theader = ''
-    for col in columns:
-        theader += H('th',col)
-    theader = H('tr',theader)
-    # Table body
-    tbody = ''
-    for idx,gal in enumerate(galleries):
+    style = f'background-color: #8fc3f5; border: 1px solid #bbb;'
+    for idx,col in enumerate(columns):
+        pos = f'grid-column-start:{idx+1}; grid-column-end:{idx+2}'
+        theader += H('div class="gallery-list-cell"',col,f'{pos};{style}')
+    html += theader
+
+    # One row per gallery
+    for ridx,gal in enumerate(galleries):
         visit_url = f"'{url_for( 'gallery', gallery_id=gal['id'])}'"
-        trow = ''
-        for col in columns:
+        onclick = f''' onclick="window.location.href={visit_url}" '''
+        row_html = ''
+        for cidx,col in enumerate(columns):
+            pos = f'grid-column-start:{cidx+1}; grid-column-end:{cidx+2}'
             val = gal[columns[col]]
-            if col in (('Owner','Date')):
-                trow += H('td align=center',val)
-            else:
-                trow += H(f'td',val)
-        if action1:    
-            trow += H('td', _gen_gallery_link( gal, action1, title1))   
-        if action2:   
-            trow += H('td', _gen_gallery_link( gal, action2, title2))    
-        trow = H(f'tr onclick="window.location.href={visit_url}"',trow) 
-        tbody += trow
-    html = H('table class="gallery-list"', theader + tbody)
+            col_html = H( f'div class="gallery-list-cell"', f'{val}', f'{pos}')
+            row_html += col_html
+        row_html = H( f'div {onclick} class="gallery-list-row"', row_html )
+        html += row_html
+
+    html = H('div', html, layout)
+
     return html
 
 def gen_gallery_list_mobile( galleries, action1='', title1='', action2='', title2=''):
@@ -172,24 +182,25 @@ def gen_gallery_search( title='', owner=''):
     html = f'''
     <form method=post class=search-form>
       <input type=hidden name=_action value="search_gallery">
-      <div class="row">
-        <div class="column right-space-20">
-          <div>Title:</div>
-          <div> 
-             <input type=text name=title size={20} value="{title}">
-          </div>
+      <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
+        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+          Title:
         </div>
-        <div class="column right-space-20">
-          <div>Owner:</div>
-          <div> 
-            <input type=text name=owner size={20} value="{owner}">
-          </div>
+        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+          Owner:
         </div>
-        <div class="column">
-          <div>&nbsp;</div>
-          <div> <input type=submit name=btn_search value=Search > </div>
+
+        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+          <input type=text name=title size={20} value='{title}'>
         </div>
-      </div>  
+        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+          <input type=text name=owner size={20} value='{owner}'>
+        </div>
+
+        <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
+          <input type=submit name=btn_search value=Search >
+        </div>
+      </div>
     </form>
     '''
     return html
@@ -230,29 +241,4 @@ def _gen_gallery_link( gallery, action, title):
                    _id=gallery['id'], _action=action)
     link = H(f'a href={url}', title)
     return link
-
-def _html_tag( tag, content='', style=''):
-    """
-    Make a piece of HTML surrounded by tag,
-    with content and style. Plus a hack for images.
-    Examples: 
-    html_tag('div','hello')
-    html_tag('div', ('fig.png','width:100px'))
-    """
-    if content is None: content = ''
-    res = '\n'
-    if type(content) not in  [list,tuple]:
-        content = [content,'']
-    cont = content[0]
-    contstyle = content[1]
-    res += f'<{tag} '
-    if style: res += f'style="{style}">\n'
-    else: res += '>\n'
-    if type(cont) == str and (cont[-4:] in ('.png', '.svg')):
-        cont = f'<img src="{cont}" style="{contstyle}">'
-    res += f'{cont}\n' 
-    res += f'</{tag.split()[0]}>\n'
-    return res
-# short function alias
-H = _html_tag 
 
