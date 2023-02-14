@@ -65,6 +65,19 @@ def index():
     gallery_html = gui.gen_gallery_list( galleries)
     return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
 
+@app.route('/index_mobile', methods=['GET', 'POST'])
+@show_error
+#-------------------------------------------------
+def index_mobile():
+    """ Main entry point for phones. """
+    parms = get_parms()
+    title = parms.get('title','')
+    owner = parms.get('owner','')
+    search_html = gui.gen_gallery_search_mobile( title, owner)
+    galleries = pe.get_galleries( title, owner)
+    gallery_html = gui.gen_gallery_list_mobile( galleries)
+    return render_template( 'index_mobile.html', search_html=search_html, gallery_list=gallery_html)
+
 @app.route('/gallery', methods=['GET', 'POST'])
 @show_error
 #-------------------------------------------------

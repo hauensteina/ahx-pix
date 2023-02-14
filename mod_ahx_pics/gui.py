@@ -108,7 +108,7 @@ def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
     If action is given, a link with that action is generated on the right.
     For styling, use class dbtable in main.css .
     """
-    columns = { 'Title':'title', 'Owner':'username', 'Date':'create_date'} # , 'Hits':'n_hits' }
+    columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
     # Table header
     theader = ''
     for col in columns:
@@ -134,11 +134,43 @@ def gen_gallery_list( galleries, action1='', title1='', action2='', title2=''):
     html = H('table class="gallery-list"', theader + tbody)
     return html
 
+def gen_gallery_list_mobile( galleries, action1='', title1='', action2='', title2=''):
+    """
+    Generate html to display a list of galleries
+    If action is given, a link with that action is generated on the right.
+    For styling, use class dbtable in main.css .
+    """
+    columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
+    # Table header
+    theader = ''
+    for col in columns:
+        theader += H('th',col)
+    theader = H('tr',theader)
+    # Table body
+    tbody = ''
+    for idx,gal in enumerate(galleries):
+        visit_url = f"'{url_for( 'gallery', gallery_id=gal['id'])}'"
+        trow = ''
+        for col in columns:
+            val = gal[columns[col]]
+            if col in (('Owner','Date')):
+                trow += H('td align=center',val)
+            else:
+                trow += H(f'td',val)
+        if action1:    
+            trow += H('td', _gen_gallery_link( gal, action1, title1))   
+        if action2:   
+            trow += H('td', _gen_gallery_link( gal, action2, title2))    
+        trow = H(f'tr onclick="window.location.href={visit_url}"',trow) 
+        tbody += trow
+    html = H('table class="ahx-mobile gallery-list"', theader + tbody)
+    return html
+
 def gen_gallery_search( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
 
     html = f'''
-    <form method=post class=search_form>
+    <form method=post class=search-form>
       <input type=hidden name=_action value="search_gallery">
       <div class="row">
         <div class="column right-space-20">
@@ -153,6 +185,36 @@ def gen_gallery_search( title='', owner=''):
             <input type=text name=owner size={20} value="{owner}">
           </div>
         </div>
+        <div class="column">
+          <div>&nbsp;</div>
+          <div> <input type=submit name=btn_search value=Search > </div>
+        </div>
+      </div>  
+    </form>
+    '''
+    return html
+
+def gen_gallery_search_mobile( title='', owner=''):
+    """ Generate a form to search galleries by title and owner """
+
+    html = f'''
+    <form method=post class="search-form" style="margin-left:5vw">
+      <input type=hidden name=_action value="search_gallery">
+      <div class="row">
+        <div class="column right-space-20">
+          <div>Title:</div>
+          <div> 
+             <input type=text name=title size={20} value="{title}">
+          </div>
+        </div>
+        <div class="column right-space-20">
+          <div>Owner:</div>
+          <div> 
+            <input type=text name=owner size={20} value="{owner}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="column">
           <div>&nbsp;</div>
           <div> <input type=submit name=btn_search value=Search > </div>
@@ -184,7 +246,8 @@ def _html_tag( tag, content='', style=''):
     cont = content[0]
     contstyle = content[1]
     res += f'<{tag} '
-    res += f'style="{style}">\n'
+    if style: res += f'style="{style}">\n'
+    else: res += '>\n'
     if type(cont) == str and (cont[-4:] in ('.png', '.svg')):
         cont = f'<img src="{cont}" style="{contstyle}">'
     res += f'{cont}\n' 

@@ -27,29 +27,28 @@
 /*-----------------*/
 
 .heading {
+  /* border-style:solid; border-color:red; */
   font-family: Arial, Helvetica, sans-serif;
   font-size: 2.0em;
   border-collapse: collapse;
-  min-width:25em;
-  max-width:100em;
+  width:100%;
   white-space:nowrap;
-  margin:10px 50px;
 }
 
 /* Search form */ 
 /*-------------*/
 
-.search_form {
+.search-form {
     margin-left:50px;
     margin-bottom:20px;
 }
 
-.search_form input {
+.search-form input {
     height:25px;
     margin-bottom:0px;
 }
 
-.search_form select {
+.search-form select {
   width: 100%;
   display: inline-block;
   border: 1px solid black;
@@ -131,8 +130,22 @@
   margin-top:10px;
   margin-left:50px;
   margin-right:50px;
-  margin-bottom:50px;
-	     
+  margin-bottom:50px;	     
+}
+
+.ahx-mobile.gallery-list {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.0em;
+  border-collapse: collapse;
+  /* min-width:25em; */
+  /* table-layout:fixed; */
+  /* max-width:90vw; */
+  /* white-space:nowrap; */
+  white-space:normal;  /* This makes text wrap */
+  margin-top:10px;
+  margin-left:5vw;
+  margin-right:5vw;
+  margin-bottom:50px;	     
 }
 
 .gallery-list td, .gallery-list th {
@@ -143,9 +156,9 @@
   padding-bottom: 5px;
 }
 
-.gallery-list td:first-child {
-    width:1px;
-}
+/* .gallery-list td:first-child { */
+/*     width:1px; */
+/* } */
 
 .gallery-list td {
     width:50px;

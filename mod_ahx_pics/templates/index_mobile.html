@@ -1,8 +1,8 @@
-{% extends 'layout.html' %}
+{% extends 'layout_mobile.html' %}
 
 {% block js %}
 <script>
- if (isMobile()) { document.location.href = '/index_mobile' }
+ // if (!isMobile()) { document.location.href = '/index' }
 </script>
 {% endblock js %}
 
@@ -12,5 +12,5 @@
 {{ gallery_list|safe }}
 <div>&nbsp;</div>
 
-{% endblock content %}
+{% endblock content %} 
 

@@ -10,3 +10,7 @@ function E( selector) {
 function A( selector) { 
   return document.querySelectorAll( selector)
 }
+
+/* Check whether we're on a phone or pad */
+function isMobile() { return typeof window.orientation !== 'undefined' }
+
