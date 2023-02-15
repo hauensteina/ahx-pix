@@ -36,16 +36,21 @@
 
   <body>
     <!-- Page Heading -->
-    <table class='heading'>
-      <tr>
-        <td id='homelogo' align='left' width='50px' >
-          <a href="{{ url_for('index') }}">
-            <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'></a>
-        </td>
-        <td> <span style='margin-left:15px'> Picture Galleries </span> </td>
-      </tr>
-      <tr><td height=15px></td></tr>
-    </table>
+
+    <div style='display:grid;
+                grid-template-columns: fit-content(50%) fit-content(50%);
+                margin-left:40px; margin-bottom:25px;'>
+      <div style='display:grid; grid-column-start:1; grid-column-end:2'>
+        <a href="{{ url_for('index') }}">
+          <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'>
+        </a>
+      </div>
+      <div class='heading' style='display:grid; grid-column-start:2; grid-column-end:3; 
+                  padding-left:15px;'>
+        <span style='margin:auto'>Picture Galleries</span>
+      </div>
+    </div>
+
     {% block content %}
     {% endblock content %}
 
