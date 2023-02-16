@@ -17,8 +17,13 @@ class AHXCarousel {
       'click', ev => { this._changeImage('next') } )
     E('.ahx-carousel-button.ahx-prev').addEventListener( 
       'click', ev => { this._changeImage('prev') } )
-    E('.ahx-x').addEventListener( 
-      'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
+    if (isMobile()) {
+      E('.ahx-x').addEventListener( 
+        'click', ev => { document.location.href = `/gallery_mobile?gallery_id=${galleryId}` } )
+    } else {
+      E('.ahx-x').addEventListener( 
+        'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
+    }
 
     this._preventClickOnPrevious()
     this._enableSwiping()
@@ -60,7 +65,6 @@ class AHXCarousel {
     activeSlide.classList.remove( 'ahx-active')
     this._setImgNum()
     this._resetArrowTimer()
-    //this._openFullScreen(nextSlide)
   } // _changeImage()
 
   // Load active image on demand, and some more to the left and right.
@@ -196,15 +200,5 @@ class AHXCarousel {
     })
   } // _preventClickOnPrevious()
 
-// //----------------------------------
-//   _openFullScreen(elem) {
-//     if (elem.requestFullscreen) {
-//       elem.requestFullscreen();
-//     } else if (elem.webkitRequestFullscreen) { /* Safari */
-//       elem.webkitRequestFullscreen();
-//     } else if (elem.msRequestFullscreen) { /* IE11 */
-//       elem.msRequestFullscreen();
-//     }
-//   } // _openFullScreen()
 } // class AHXCarousel
 

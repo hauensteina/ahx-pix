@@ -105,7 +105,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=3)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
-             'display:grid; grid-template-columns:fit-content(1200px); margin-left:15px; margin-right:15px;')
+             'display:grid; grid-template-columns:fit-content(1200px); margin-left:5vw; margin-right:5vw;')
     return html
 
 
@@ -118,9 +118,12 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
         onclick = f''' onclick="window.location.href={visit_url}" '''
-        pic_h = I( img_link, 'object-fit:contain;width:100%;', f' {onclick} ')
-        caption_h = H( 'div', pic['blurb'])
-        pic_h = H( 'div', pic_h + caption_h, 'padding:10px 10px; margin:auto 0 auto 0;')
+        pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
+        #caption_h = H( 'div', pic['blurb'], f'text-overflow:ellipsis;overflow:hidden;white-space:nowrap;')
+        #caption_h = H( 'div', pic['blurb'], f'text-overflow:ellipsis;overflow:hidden;width:min-content;min-width:100%;')
+        #caption_h = H( 'div', 'xx')
+        caption_h = pic['blurb']
+        pic_h = H( 'div', pic_h + caption_h, f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
         html += pic_h
 
     html = H('div', html,
