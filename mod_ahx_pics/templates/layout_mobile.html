@@ -2,7 +2,7 @@
 
 {% block pre %}
 <script type='text/javascript'>
- /* Filename: mod_ahx_pics/templates/layout.tmpl
+ /* Filename: mod_ahx_pics/templates/layout_mobile.tmpl
   * Author: AHN
   * Creation Date: Jan, 2023
   */
@@ -36,17 +36,23 @@
 
   <body>
     <!-- Page Heading -->
-    <table class='heading'>
-      <tr>
-        <td>&nbsp;</td>
-        <td id='homelogo' align='left' width='50px' >
-          <a href="{{ url_for('index') }}">
-            <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'></a>
-        </td>
-        <td> <span style='margin-left:15px'> Picture Galleries </span> </td>
-      </tr>
-      <tr><td height=15px></td></tr>
-    </table>
+
+    <div style='display:grid;
+                grid-template-columns: fit-content(50%) fit-content(50%);
+                margin-left:15px; margin-bottom:25px;'>
+      <!-- <div class=red-border style='display:grid; grid-column-start:1; grid-column-end:2; height:10vh'> -->
+      <div style='height:10vh'>
+        <a href="{{ url_for('index') }}">
+          <!-- <img height=100% src="static/images/world_500.png"/ style='transform: translateY(8%)'> -->
+          <img height=100% src="static/images/world_500.png"/ style='margin:auto 0;'>
+        </a>
+      </div>
+      <!-- <div style='display:grid; grid-column-start:2; grid-column-end:3; padding-left:15px;'> -->
+      <div style='padding-left:15px;margin:auto 0;'>
+        <span style='font-size: 1.5em;'>Picture Galleries</span>
+      </div>
+    </div>
+
     {% block content %}
     {% endblock content %}
 

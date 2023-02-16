@@ -36,18 +36,16 @@
 
   <body>
     <!-- Page Heading -->
-
     <div style='display:grid;
                 grid-template-columns: fit-content(50%) fit-content(50%);
                 margin-left:40px; margin-bottom:25px;'>
-      <div style='display:grid; grid-column-start:1; grid-column-end:2'>
+      <div style='height:8vh'>
         <a href="{{ url_for('index') }}">
-          <img height=100px src="static/images/world_500.png"/ style='transform: translateY(8%)'>
+          <img height=100% src="static/images/world_500.png"/ style='margin:auto 0;'>
         </a>
       </div>
-      <div class='heading' style='display:grid; grid-column-start:2; grid-column-end:3; 
-                  padding-left:15px;'>
-        <span style='margin:auto'>Picture Galleries</span>
+      <div style='padding-left:15px;margin:auto 0;'>
+        <span style='font-size: 1.5em;'>Picture Galleries</span>
       </div>
     </div>
 

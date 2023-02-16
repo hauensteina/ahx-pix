@@ -71,13 +71,45 @@ def gen_gallery( gallery, pics, n_cols=5):
     gallery_blurb_h = H( 'div', gallery['blurb'], 'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
-    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols)
+    images_h = _gen_image_grid( gallery, pics, pic_links)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
-             'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px;')
+             'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px; margin-right:50px; ')
     return html
 
-def _gen_image_grid( gallery, pics, pic_links, n_cols):
+def gen_gallery_mobile( gallery, pics, n_cols=5):
+    """
+    Generate html to display all pics in a gallery at once.
+    Gallery title and blurb at the top.
+    """
+    pic_links = pe.get_gallery_links( gallery['id'])
+
+    # Heading
+    heading_h = H( 'div', gallery['title'], 'margin:0 auto; font-size:2.0em;')
+
+    # Title pic
+    title_pic = [x for x in pics if x['title_flag']]
+    if title_pic:
+        title_pic = title_pic[0]
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'static/images/img_not_found.jpg')
+        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
+        title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
+    else:
+        title_pic_h = I( 'static/images/img_not_found.jpg', 'object-fit:contain;margin:0 auto; height:30vh;')
+        title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
+
+    # Blurb
+    gallery_blurb_h = H( 'div', gallery['blurb'], 'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+
+    # Images
+    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=3)
+
+    html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
+             'display:grid; grid-template-columns:fit-content(1200px); margin-left:15px; margin-right:15px;')
+    return html
+
+
+def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     """ Arrange image thumbs as a grid """
     
     colw = f'{100.0/n_cols}% '
@@ -88,7 +120,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, 'object-fit:contain;width:100%;', f' {onclick} ')
         caption_h = H( 'div', pic['blurb'])
-        pic_h = H( 'div', pic_h + caption_h, 'padding:10px 10px')
+        pic_h = H( 'div', pic_h + caption_h, 'padding:10px 10px; margin:auto 0 auto 0;')
         html += pic_h
 
     html = H('div', html,
@@ -164,7 +196,7 @@ def gen_gallery_list_mobile( galleries):
 
     # One row per gallery
     for ridx,gal in enumerate(galleries):
-        visit_url = f"'{url_for( 'gallery', gallery_id=gal['id'])}'"
+        visit_url = f"'{url_for( 'gallery_mobile', gallery_id=gal['id'])}'"
         onclick = f''' onclick="window.location.href={visit_url}" '''
         row_html = ''
         for cidx,col in enumerate(columns):
