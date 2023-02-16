@@ -87,7 +87,7 @@ def gallery():
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
-    gallery_html = gui.gen_gallery_as_table( gallery, pics)
+    gallery_html = gui.gen_gallery( gallery, pics)
     return render_template( 'gallery.html', content=gallery_html)
 
 @app.route('/carousel', methods=['GET', 'POST'])

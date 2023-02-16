@@ -14,6 +14,7 @@ from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
 from  mod_ahx_pics.helpers import html_tag as H
+from  mod_ahx_pics.helpers import html_img as I
 import mod_ahx_pics.persistence as pe
 
 def gen_carousel_images( gallery_id, active_pic_id):
@@ -45,62 +46,53 @@ def gen_carousel_images( gallery_id, active_pic_id):
     images = '\n'.join(images)
     return images
 
-def gen_gallery_as_table( gallery, pics, n_cols=5):
+def gen_gallery( gallery, pics, n_cols=5):
     """
-    Generate html to display all pics in a gallery in table format.
+    Generate html to display all pics in a gallery at once.
     Gallery title and blurb at the top.
     """
     pic_links = pe.get_gallery_links( gallery['id'])
-    html = ''
+
     # Heading
-    html += f'''
-    <div class="row gallery-title">
-    {gallery['title']}
-    </div>
-    '''
+    heading_h = H( 'div', gallery['title'], 'margin:0 auto; font-size:2.0em;')
+
     # Title pic
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
         img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'static/images/img_not_found.jpg')
-        html += f'''<img src='{img_link}' id='gallery_img' class='gallery-title-img'>'''
-        html += f'''<span class='gallery-title-blurb'>{title_pic['blurb']}</span>'''
+        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
+        title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
-        html += f''' 
-        <img src='static/images/img_not_found.jpg'> 
-        '''
-        
+        title_pic_h = I( 'static/images/img_not_found.jpg', 'object-fit:contain;margin:0 auto; height:30vh;')
+        title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
+
     # Blurb
-    html += f'''
-    <div id='gallery_blurb' class=gallery-blurb>
-    {gallery['blurb']}
-    </div> 
-    '''
+    gallery_blurb_h = H( 'div', gallery['blurb'], 'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+
     # Images
-    html += _gen_image_grid( gallery, pics, pic_links, n_cols)
+    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols)
+
+    html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
+             'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px;')
     return html
 
 def _gen_image_grid( gallery, pics, pic_links, n_cols):
     """ Arrange image thumbs as a grid """
     
-    s3_client = ''
-    html = f'''<table class=gallery-table> ''' 
-    colw = f'{100.0/n_cols}%'
+    colw = f'{100.0/n_cols}% '
+    html = ''
+    for pic in pics:
+        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
+        onclick = f''' onclick="window.location.href={visit_url}" '''
+        pic_h = I( img_link, 'object-fit:contain;width:100%;', f' {onclick} ')
+        caption_h = H( 'div', pic['blurb'])
+        pic_h = H( 'div', pic_h + caption_h, 'padding:10px 10px')
+        html += pic_h
 
-    for left_idx in range( 0, len(pics), n_cols):
-        html += f''' <tr> \n ''' 
-        for col in range(n_cols):
-            idx = left_idx + col
-            if idx >= len(pics): break
-            pic = pics[idx]
-            img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
-            visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
-            onclick = f''' onclick="window.location.href={visit_url}" '''
-            html += f''' <td class='gallery-thumb' style='width:{colw};' > '''
-            html += f''' <img loading='lazy' {onclick} src='{img_link}' style='width:100%;'>\n '''
-            html += f''' <br>{pic['blurb']} '''
-        html += '</tr>'
-    html += f'''</table>'''
+    html = H('div', html,
+             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
     return html
 
 def gen_gallery_list( galleries):
