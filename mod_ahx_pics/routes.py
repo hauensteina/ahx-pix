@@ -25,7 +25,6 @@ import mod_ahx_pics.gui as gui
 def before_request():
     if (not request.is_secure) and ('PRODUCTION_FLAG' in os.environ):
         url = request.url.replace('http://', 'https://', 1)
-        code = 301
         return redirect(url)
 
 #-----------------------------

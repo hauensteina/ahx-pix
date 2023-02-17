@@ -14,10 +14,12 @@ from urllib.parse import urlparse
 import redis
 from rq import Queue
 from flask import Flask
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, user_logged_out, user_logged_in, current_user
+from flask.json import JSONEncoder
 
 from mod_ahx_pics.postgres import Postgres
 
-app = Flask( __name__)
 
 S3_BUCKET = 'ahx-pics'
 # S3 folders
@@ -45,6 +47,52 @@ FFMPEG_COMPRESSOR = 'ffmpeg -i @IN  -c:v libx264 -crf 28 @OUT'
 FFMPEG_VIDEO_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'
 
 FFMPEG_RESIZE_IMG = 'ffmpeg -i @IN -q:v 2 -vf "scale=@MAXW:-1@ROT" @OUT'
+
+app = Flask( __name__)
+# Make sure dates are serialized as yyyy-mm-dd by flask.jsonify (for our API endpoints)
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            if isinstance(obj, datetime.date):
+                return obj.isoformat()
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
+
+app.json_encoder = CustomJSONEncoder
+
+app.config.update(
+    DEBUG = True,
+    SECRET_KEY = os.environ['AHX_FLASK_SECRET'] # For encrypted session cookie
+)
+
+app.config['MAX_CONTENT_LENGTH'] = int(1E6)
+
+# Make some functions available in the jinja templates.
+# Black Magic.
+@app.context_processor
+def inject_template_funcs():
+    return {'logged_in':logged_in
+            ,'rrand':rrand
+            ,'getenv':getenv
+            }   
+
+def logged_in():
+    return current_user.is_authenticated
+
+def rrand():
+    return str(random.uniform(0,1))
+
+def getenv(varname):
+    return os.environ[varname]
+
+bcrypt = Bcrypt( app) # Our password hasher
+login_manager = LoginManager( app)
+login_manager.login_view = 'login' # The route if you should be logged in but aren't
+login_manager.login_message = ''
 
 # Our own exception class
 #----------------------------

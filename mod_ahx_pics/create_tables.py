@@ -8,8 +8,9 @@
 #
 
 from pdb import set_trace as BP
-import datetime
+from datetime import datetime, date
 from mod_ahx_pics import pg # postgres connection
+from mod_ahx_pics import auth
 
 def create_tables( pg):
     _create_login( pg)
@@ -34,6 +35,18 @@ def _create_login( pg):
     )
     '''
     pg.run(sql)
+    user = auth.User('ROOT')
+    today = date.today()
+    data = { 
+        'username':'root'
+        ,'email':'root@root.com'
+        ,'fname':'root'
+        ,'lname':'root'
+        ,'admin_flag':True
+        ,'create_date':today
+        ,'change_date':today
+    }   
+    user.create_user(data, 'welcome321!')
 
 def _create_gallery( pg):
     tabname = 'gallery'
