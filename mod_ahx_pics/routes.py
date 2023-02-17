@@ -10,6 +10,7 @@ import os, sys, re, json
 
 import flask
 from flask import request, render_template, flash, redirect, url_for
+from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
 
 from mod_ahx_pics import AppError, Q
@@ -20,8 +21,10 @@ from mod_ahx_pics.worker_funcs import gen_thumbnails
 import mod_ahx_pics.helpers as helpers
 import mod_ahx_pics.persistence as pe
 import mod_ahx_pics.gui as gui
+import mod_ahx_pics.auth as auth
 
 @app.before_request
+#-----------------------
 def before_request():
     if (not request.is_secure) and ('PRODUCTION_FLAG' in os.environ):
         url = request.url.replace('http://', 'https://', 1)
@@ -43,8 +46,8 @@ def show_error(f):
             return flask.escape( f'''EXCEPTION: {err} {frame}''')
     return decorated
 
-#-----------------------
 @app.route('/ttest')
+#-----------------------
 def ttest():
     """ Try things here """
     return render_template( 'ttest.html', msg='ttest')
@@ -52,7 +55,7 @@ def ttest():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
-@show_error
+#@show_error
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
@@ -65,7 +68,7 @@ def index():
     return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
 
 @app.route('/index_mobile', methods=['GET', 'POST'])
-@show_error
+#@show_error
 #-------------------------------------------------
 def index_mobile():
     """ Main entry point for phones. """
@@ -78,7 +81,7 @@ def index_mobile():
     return render_template( 'index_mobile.html', search_html=search_html, gallery_list=gallery_html)
 
 @app.route('/gallery', methods=['GET', 'POST'])
-@show_error
+#@show_error
 #-------------------------------------------------
 def gallery():
     """ View a gallery on a computer """
@@ -90,7 +93,7 @@ def gallery():
     return render_template( 'gallery.html', content=gallery_html)
 
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
-@show_error
+#@show_error
 #-------------------------------------------------
 def gallery_mobile():
     """ View a gallery on a phone """
@@ -111,6 +114,7 @@ def carousel():
     images = gui.gen_carousel_images( gallery_id, active_pic_id)
     return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
+#------------------
 def get_parms():
     if request.method == 'POST': # Form submit
         parms = dict(request.form)
@@ -120,3 +124,27 @@ def get_parms():
     parms = { k:v.strip() for k, v in parms.items()}
     print(f'>>>>>>>>>PARMS:{parms}')
     return parms
+
+@app.route('/login', methods=['GET', 'POST'])
+#----------------------------------------------
+def login():
+    error = None
+    if request.method == 'POST':
+        password = request.form['password']
+        username = request.form['login'].upper()
+        user = auth.User( username)
+        if user.valid and user.password_matches( password):
+            login_user(user, remember=False)
+            next_page = request.args.get('next') # Magically populated to where we came from
+            return redirect(next_page) if next_page else redirect(url_for('index'))
+        else:
+            error = 'Invalid credentials'
+    return render_template('login.html', error=error)
+
+@app.route("/logout")
+@login_required
+#--------------------
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+

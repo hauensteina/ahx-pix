@@ -1,0 +1,22 @@
+
+{% block content %}
+<div style='margin-left:50px;'>
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <form method=post>
+    <div style='display:grid;
+                grid-template-columns: fit-content(50%) fit-content(50%);'>
+
+      <div style='margin-bottom:10px;margin-right:5px'>Login:</div>
+      <div><input type=text name=login></div> 
+      <div style='margin-bottom:10px;margin-right:5px'>Password:</div>
+      <div><input type=password name=password></div> 
+      <div style='margin-top:10px'><input type=submit value='Log in'></div>
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

@@ -23,9 +23,6 @@ class User(UserMixin):
         if not self.read_from_db():
             self.valid = False
             return
-        if not self.data['active_flag']:
-            self.valid = False
-            return
 
     def create_user( self, data, password):
         """ Create User in DB """

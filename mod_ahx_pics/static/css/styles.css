@@ -3,6 +3,23 @@
 .green-border { border-style:solid; border-color:green; }
 .blue-border { border-style:solid; border-color:blue; }
 
+a:link {
+  color: #293b81;
+}
+
+a:visited {
+  color: #293b81;
+}
+
+a:hover {
+  color: #3280ec;
+}
+
+a:active {
+  color: #3280ec;
+}
+
+
 .right-space-20 {
     margin-right:20px;
 }
