@@ -30,6 +30,8 @@ def ttest():
     """ Try things here """
     return render_template( 'ttest.html', msg='ttest')
 
+
+
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
 #-------------------------------------------------
@@ -66,6 +68,12 @@ def add_user():
         return redirect( url_for('index'))
     else: # Initial hit
         return render_template( 'add_user.html', error=error, is_mobile = '_mobile' in request.referrer )
+
+@app.route('/add_user_mobile', methods=['GET', 'POST'])
+@login_required
+#-------------------------------------------------
+def add_user_mobile():
+    return add_user()
 
 @app.route('/carousel', methods=['GET', 'POST'])
 #-------------------------------------------------
