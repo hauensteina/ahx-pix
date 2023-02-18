@@ -1,15 +1,5 @@
 {% extends 'layout.html' %}
 
-{% block js %}
-<script>
- {% if not is_mobile %}
- if (isMobile()) { document.location.href = '/index_mobile' }
- {% else %}
- if (!isMobile()) { document.location.href = '/index' }
- {% endif %}
-</script>
-{% endblock js %}
-
 {% block content %}
 
 {{ search_html|safe }}

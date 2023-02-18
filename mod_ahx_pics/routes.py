@@ -7,6 +7,7 @@
 from pdb import set_trace as BP
 
 import os, sys, re, json
+from datetime import datetime, date
 
 import flask
 from flask import request, render_template, flash, redirect, url_for
@@ -23,62 +24,58 @@ import mod_ahx_pics.persistence as pe
 import mod_ahx_pics.gui as gui
 import mod_ahx_pics.auth as auth
 
-@app.before_request
-#-----------------------
-def before_request():
-    if (not request.is_secure) and ('PRODUCTION_FLAG' in os.environ):
-        url = request.url.replace('http://', 'https://', 1)
-        return redirect(url)
-
-#-----------------------------
-def show_error(f):
-    """  Show errors in the browser """
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            tb = exc_tb.tb_next.tb_next
-            if not tb: tb = exc_tb.tb_next
-            frame = str(tb.tb_frame)
-            err = str(e)
-            return flask.escape( f'''EXCEPTION: {err} {frame}''')
-    return decorated
-
 @app.route('/ttest')
 #-----------------------
 def ttest():
     """ Try things here """
     return render_template( 'ttest.html', msg='ttest')
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
-@app.route('/home', methods=['GET', 'POST'])
-#@show_error
+@app.route('/add_user', methods=['GET', 'POST'])
+@login_required
 #-------------------------------------------------
-def index():
-    """ Main entry point. Show heading and list of galleries """
-    parms = get_parms()
-    title = parms.get('title','')
-    owner = parms.get('owner','')
-    search_html = gui.gen_gallery_search( title, owner)
-    galleries = pe.get_galleries( title, owner)
-    gallery_html = gui.gen_gallery_list( galleries)
-    return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=False)
+def add_user():
+    error = None
+    if request.method == 'POST': # form submitted
+        username = request.form['login'].upper()
+        password = request.form['password']
+        email = request.form['email']
+        fname = request.form['fname']
+        lname = request.form['lname']
+        admin_flag = request.form.get( 'admin_flag', False)
 
-@app.route('/index_mobile', methods=['GET', 'POST'])
-#@show_error
+        user = auth.User( username)
+        if user.valid:
+            error = 'User exists' 
+        elif len(password) < 8:
+            error = 'Password must have 8 or more characters'
+        if error:
+            return render_template( 'add_user.html', error=error, is_mobile = '_mobile' in request.referrer )
+        # All is well, create user
+        today = date.today()
+        data = { 
+            'username':username
+            ,'email':email
+            ,'fname':fname
+            ,'lname':lname
+            ,'admin_flag':admin_flag
+            ,'create_date':today
+            ,'change_date':today
+        }   
+        user.create_user(data, password)
+        flash('User created.')
+        return redirect( url_for('index'))
+    else: # Initial hit
+        return render_template( 'add_user.html', error=error, is_mobile = '_mobile' in request.referrer )
+
+@app.route('/carousel', methods=['GET', 'POST'])
 #-------------------------------------------------
-def index_mobile():
-    """ Main entry point for phones. """
+def carousel():
+    """ Full screen swipeable image carousel """
     parms = get_parms()
-    title = parms.get('title','')
-    owner = parms.get('owner','')
-    search_html = gui.gen_gallery_search_mobile( title, owner)
-    galleries = pe.get_galleries( title, owner)
-    gallery_html = gui.gen_gallery_list_mobile( galleries)
-    return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=True)
+    gallery_id = parms['gallery_id']
+    active_pic_id = parms['picture_id']
+    images = gui.gen_carousel_images( gallery_id, active_pic_id)
+    return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
 @app.route('/gallery', methods=['GET', 'POST'])
 #@show_error
@@ -104,26 +101,34 @@ def gallery_mobile():
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
     return render_template( 'gallery_mobile.html', content=gallery_html)
 
-@app.route('/carousel', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
+#@show_error
 #-------------------------------------------------
-def carousel():
-    """ Full screen swipeable image carousel """
+def index():
+    """ Main entry point. Show heading and list of galleries """
     parms = get_parms()
-    gallery_id = parms['gallery_id']
-    active_pic_id = parms['picture_id']
-    images = gui.gen_carousel_images( gallery_id, active_pic_id)
-    return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
+    title = parms.get('title','')
+    owner = parms.get('owner','')
+    search_html = gui.gen_gallery_search( title, owner)
+    galleries = pe.get_galleries( title, owner)
+    gallery_html = gui.gen_gallery_list( galleries)
+    res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=False)
+    return res
 
-#------------------
-def get_parms():
-    if request.method == 'POST': # Form submit
-        parms = dict(request.form)
-    else:
-        parms = dict(request.args)
-    # strip all input parameters    
-    parms = { k:v.strip() for k, v in parms.items()}
-    print(f'>>>>>>>>>PARMS:{parms}')
-    return parms
+@app.route('/index_mobile', methods=['GET', 'POST'])
+#@show_error
+#-------------------------------------------------
+def index_mobile():
+    """ Main entry point for phones. """
+    parms = get_parms()
+    title = parms.get('title','')
+    owner = parms.get('owner','')
+    search_html = gui.gen_gallery_search_mobile( title, owner)
+    galleries = pe.get_galleries( title, owner)
+    gallery_html = gui.gen_gallery_list_mobile( galleries)
+    return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=True)
 
 @app.route('/login', methods=['GET', 'POST'])
 #----------------------------------------------
@@ -147,4 +152,42 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+# Utility funcs
+##################
+
+#------------------
+def get_parms():
+    if request.method == 'POST': # Form submit
+        parms = dict(request.form)
+    else:
+        parms = dict(request.args)
+    # strip all input parameters    
+    parms = { k:v.strip() for k, v in parms.items()}
+    print(f'>>>>>>>>>PARMS:{parms}')
+    return parms
+
+#-----------------------------
+def show_error(f):
+    """  Show errors in the browser """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            tb = exc_tb.tb_next.tb_next
+            if not tb: tb = exc_tb.tb_next
+            frame = str(tb.tb_frame)
+            err = str(e)
+            return flask.escape( f'''EXCEPTION: {err} {frame}''')
+    return decorated
+
+@app.before_request
+#-----------------------
+def before_request():
+    if (not request.is_secure) and ('PRODUCTION_FLAG' in os.environ):
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url)
 

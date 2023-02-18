@@ -2,7 +2,7 @@
 
 {% block pre %}
 <script type='text/javascript'>
- /* Filename: mod_ahx_pics/templates/layout.tmpl
+ /* Filename: mod_ahx_pics/templates/layout.html
   * Author: AHN
   * Creation Date: Jan, 2023
   */
@@ -26,10 +26,32 @@
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/base.css') }}'>
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/styles.css') }}'>
 
+    {% if is_mobile %}
+    <style>
+     .ahx-mob-or-desk {
+       margin-left:5vw;
+     }
+    </style>
+    {% else %}
+    <style>
+     .ahx-mob-or-desk {
+       margin-left:50px;
+     }
+    </style>
+    {% endif %}
+
+
     {% block css %}
     {% endblock css %}
 
     <script src='static/js/AHXHelpers.js'> </script>
+    <script>
+     {% if not is_mobile %}
+     if (isMobile()) { document.location.href = '/index_mobile' }
+     {% else %}
+     if (!isMobile()) { document.location.href = '/index' }
+     {% endif %}
+    </script>
     {% block js %}
     {% endblock js %}
   </head>
@@ -43,7 +65,7 @@
 
     <div style='display:grid;
                 grid-template-columns: fit-content(50%) fit-content(50%);
-                margin-left:5vw; margin-bottom:25px; margin-top:5vw;'>
+                margin-left:5vw; margin-bottom:5px; margin-top:5vw;'>
       <div style='height:10vh'>
         <a href="{{ url_for('index') }}">
           <img height=100% src="static/images/world_500.png"/ style='margin:auto 0;'>
@@ -52,6 +74,29 @@
       <div style='padding-left:15px;margin:auto 0;'>
         <span style='font-size: 1.5em;white-space:nowrap;'>Picture Galleries</span>
       </div>
+    </div>
+
+    <!-- Links at the top -->
+    <div style='margin-left:5vw;margin-bottom:10px;'>
+      {% if logged_in() %}
+      <a href="{{ url_for('logout') }}">Log out</a> &nbsp;
+      {% else %}
+      <a href="{{ url_for('login') }}">Log in</a> &nbsp;
+      {% endif %}
+      {% if is_admin() %}
+      <a href="{{ url_for('add_user') }}">Add user</a>      
+      {% endif %}
+    </div>
+
+    <!-- Flashed messages -->
+    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <div>{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
     </div>
 
     {% else %}
@@ -73,19 +118,33 @@
     </div>
 
     <!-- Links at the top -->
-    <div style='margin-left:50px;margin-bottom:10px;'>
+    <div style='margin-left:50px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('logout') }}">Log out</a>
+      <a href="{{ url_for('logout') }}">Log out</a> &nbsp;
       {% else %}
-      <a href="{{ url_for('login') }}">Log in</a>
+      <a href="{{ url_for('login') }}">Log in</a> &nbsp;
+      {% endif %}
+      {% if is_admin() %}
+      <a href="{{ url_for('add_user') }}">Add user</a>      
       {% endif %}
     </div>
 
-    {% endif %}
+    <!-- Flashed messages -->
+    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div>{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+    
+    {% endif %} <!-- End Desktop -->
 
     {% block content %}
     {% endblock content %}
 
-    
+     
   </body>
 </html>

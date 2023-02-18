@@ -75,13 +75,21 @@ app.config['MAX_CONTENT_LENGTH'] = int(1E6)
 # Black Magic.
 @app.context_processor
 def inject_template_funcs():
-    return {'logged_in':logged_in
-            ,'rrand':rrand
-            ,'getenv':getenv
-            }   
+    return {
+        'getenv':getenv
+        ,'is_admin':is_admin
+        ,'logged_in':logged_in
+        ,'rrand':rrand
+    }   
 
 def logged_in():
     return current_user.is_authenticated
+
+def is_admin():
+    try:
+        return current_user.data['admin_flag']
+    except:
+        return False
 
 def rrand():
     return str(random.uniform(0,1))
