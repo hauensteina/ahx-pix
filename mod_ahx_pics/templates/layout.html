@@ -35,9 +35,9 @@
   </head>
 
   <body>
+    {% if is_mobile %}
     <!-- Mobile phone version -->
     <!-- ==================== -->
-    {% if is_mobile %}
 
     <!-- Page Heading -->
 
@@ -54,9 +54,9 @@
       </div>
     </div>
 
+    {% else %}
     <!-- Desktop version -->
     <!-- =============== -->
-    {% else %}
 
     <!-- Page Heading -->
     <div style='display:grid;
