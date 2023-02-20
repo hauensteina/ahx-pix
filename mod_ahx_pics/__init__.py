@@ -13,13 +13,12 @@ import sys,os
 from urllib.parse import urlparse
 import redis
 from rq import Queue
-from flask import Flask
+from flask import Flask, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, user_logged_out, user_logged_in, current_user
 from flask.json import JSONEncoder
 
 from mod_ahx_pics.postgres import Postgres
-
 
 S3_BUCKET = 'ahx-pics'
 # S3 folders
@@ -76,15 +75,13 @@ app.config['MAX_CONTENT_LENGTH'] = int(1E6)
 @app.context_processor
 def inject_template_funcs():
     return {
-        'getenv':getenv
+        'firstname':firstname
+        ,'getenv':getenv
         ,'is_admin':is_admin
+        ,'is_mobile':is_mobile
         ,'logged_in':logged_in
         ,'rrand':rrand
-        ,'firstname':firstname
     }   
-
-def logged_in():
-    return current_user.is_authenticated
 
 def firstname():
     res = ''
@@ -94,17 +91,24 @@ def firstname():
         pass
     return res
 
+def getenv(varname):
+    return os.environ[varname]
+
 def is_admin():
     try:
         return current_user.data['admin_flag']
     except:
         return False
 
+def is_mobile():
+    return session.get('is_mobile', False)
+
+def logged_in():
+    return current_user.is_authenticated
+
 def rrand():
     return str(random.uniform(0,1))
 
-def getenv(varname):
-    return os.environ[varname]
 
 bcrypt = Bcrypt( app) # Our password hasher
 login_manager = LoginManager( app)

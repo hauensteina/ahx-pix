@@ -26,7 +26,7 @@
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/base.css') }}'>
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/styles.css') }}'>
 
-    {% if is_mobile %}
+    {% if is_mobile() %}
     <style>
      .ahx-mob-or-desk {
        margin-left:5vw;
@@ -52,7 +52,7 @@
 
     <script src='static/js/AHXHelpers.js'> </script>
     <script>
-     {% if not is_mobile %}
+     {% if not is_mobile() %}
      if (isMobile()) { document.location.href = '/index_mobile' }
      {% else %}
      if (!isMobile()) { document.location.href = '/index' }
@@ -63,7 +63,7 @@
   </head>
 
   <body>
-    {% if is_mobile %}
+    {% if is_mobile() %}
     <!-- Mobile phone version -->
     <!-- ==================== -->
 
@@ -88,10 +88,10 @@
       {% if logged_in() %}
       <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
       {% else %}
-      <a href="{{ url_for('login_mobile') }}">Log in</a> &nbsp;
+      <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}
       {% if is_admin() %}
-      <a href="{{ url_for('add_user_mobile') }}">Add user</a> &nbsp;          
+      <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;          
       {% endif %}
     </div>
     {% endif %}

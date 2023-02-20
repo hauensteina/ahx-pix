@@ -10,7 +10,7 @@ import os, sys, re, json
 from datetime import datetime, date
 
 import flask
-from flask import request, render_template, flash, redirect, url_for
+from flask import request, render_template, flash, redirect, url_for, session
 from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
 
@@ -30,33 +30,29 @@ def ttest():
     """ Try things here """
     return render_template( 'ttest.html', msg='ttest')
 
-
-
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
 #-------------------------------------------------
 def add_user():
     error = None
     if request.method == 'POST': # form submitted
-        username = request.form['login'].upper()
-        password = request.form['password']
         email = request.form['email']
+        password = request.form['password']
         fname = request.form['fname']
         lname = request.form['lname']
         admin_flag = request.form.get( 'admin_flag', False)
 
-        user = auth.User( username)
+        user = auth.User(email)
         if user.valid:
             error = 'User exists' 
         elif len(password) < 8:
             error = 'Password must have 8 or more characters'
         if error:
-            return render_template( 'add_user.html', error=error, is_mobile = '_mobile' in request.referrer )
+            return render_template( 'add_user.html', error=error)
         # All is well, create user
         today = date.today()
         data = { 
-            'username':username
-            ,'email':email
+            'email':email
             ,'fname':fname
             ,'lname':lname
             ,'admin_flag':admin_flag
@@ -67,13 +63,7 @@ def add_user():
         flash('User created.')
         return redirect( url_for('index'))
     else: # Initial hit
-        return render_template( 'add_user.html', error=error, is_mobile = '_mobile' in request.referrer )
-
-@app.route('/add_user_mobile', methods=['GET', 'POST'])
-@login_required
-#-------------------------------------------------
-def add_user_mobile():
-    return add_user()
+        return render_template( 'add_user.html', error=error)
 
 @app.route('/carousel', methods=['GET', 'POST'])
 #-------------------------------------------------
@@ -116,13 +106,14 @@ def gallery_mobile():
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
+    session['is_mobile'] = False
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
     search_html = gui.gen_gallery_search( title, owner)
     galleries = pe.get_galleries( title, owner)
     gallery_html = gui.gen_gallery_list( galleries)
-    res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=False)
+    res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
     return res
 
 @app.route('/index_mobile', methods=['GET', 'POST'])
@@ -130,13 +121,14 @@ def index():
 #-------------------------------------------------
 def index_mobile():
     """ Main entry point for phones. """
+    session['is_mobile'] = True
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
     search_html = gui.gen_gallery_search_mobile( title, owner)
     galleries = pe.get_galleries( title, owner)
     gallery_html = gui.gen_gallery_list_mobile( galleries)
-    return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html, is_mobile=True)
+    return render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
 
 @app.route('/login', methods=['GET', 'POST'])
 #----------------------------------------------
@@ -152,12 +144,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             error = 'Invalid credentials'
-    return render_template('login.html', error=error, is_mobile = '_mobile' in request.referrer, no_links=True)
-
-@app.route('/login_mobile', methods=['GET', 'POST'])
-#-----------------------------------------------------
-def login_mobile():
-    return login()
+    return render_template('login.html', error=error, no_links=True)
 
 @app.route("/logout")
 @login_required
@@ -165,6 +152,21 @@ def login_mobile():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/reset_request', methods=['GET', 'POST'])
+#--------------------------------------------------------
+def reset_request():
+    if logged_in():
+        return redirect( url_for('index'))
+    if request.method == 'POST':
+        user = auth.User( request.form.email)
+        if not user.valid:
+            flash( 'User does not exist', 'danger')
+            return redirect( url_for('reset_request'))
+        send_reset_email( user)
+        flash( tr('reset_email_sent'), 'info')
+        return redirect(url_for('login')) 
+    return render_template('reset_request.tmpl', title='Reset Password', form=form)
 
 
 # Utility funcs
