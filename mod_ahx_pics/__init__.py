@@ -80,10 +80,19 @@ def inject_template_funcs():
         ,'is_admin':is_admin
         ,'logged_in':logged_in
         ,'rrand':rrand
+        ,'firstname':firstname
     }   
 
 def logged_in():
     return current_user.is_authenticated
+
+def firstname():
+    res = ''
+    try:
+        res = current_user.data['fname']
+    except:
+        pass
+    return res
 
 def is_admin():
     try:

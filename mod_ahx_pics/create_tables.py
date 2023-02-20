@@ -24,9 +24,8 @@ def _create_login( pg):
 
     sql = f'''
     create table {tabname} (
-      username text
+      email text
       ,password text
-      ,email text
       ,fname text
       ,lname text
       ,admin_flag Boolean
@@ -35,18 +34,17 @@ def _create_login( pg):
     )
     '''
     pg.run(sql)
-    user = auth.User('ROOT')
+    user = auth.User('hauensteina@gmail.com')
     today = date.today()
     data = { 
-        'username':'root'
-        ,'email':'root@root.com'
-        ,'fname':'root'
-        ,'lname':'root'
+        'email':'hauensteina@gmail.com'
+        ,'fname':'Andreas'
+        ,'lname':'Hauenstein'
         ,'admin_flag':True
         ,'create_date':today
         ,'change_date':today
     }   
-    user.create_user(data, 'welcome321!')
+    user.create_user( data, 'welcome321!')
 
 def _create_gallery( pg):
     tabname = 'gallery'

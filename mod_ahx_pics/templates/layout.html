@@ -83,16 +83,18 @@
     </div>
 
     <!-- Links at the top -->
+    {% if no_links %} {% else %}
     <div style='margin-left:5vw;margin-bottom:10px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('logout') }}">Log out</a> &nbsp;
+      <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
       {% else %}
-      <a href="{{ url_for('login') }}">Log in</a> &nbsp;
+      <a href="{{ url_for('login_mobile') }}">Log in</a> &nbsp;
       {% endif %}
       {% if is_admin() %}
-      <a href="{{ url_for('add_user_mobile') }}">Add user</a>      
+      <a href="{{ url_for('add_user_mobile') }}">Add user</a> &nbsp;          
       {% endif %}
     </div>
+    {% endif %}
 
     <!-- Flashed messages -->
     <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>
@@ -124,16 +126,18 @@
     </div>
 
     <!-- Links at the top -->
+    {% if no_links %} {% else %}
     <div style='margin-left:50px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('logout') }}">Log out</a> &nbsp;
+      <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
       {% else %}
       <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}
       {% if is_admin() %}
-      <a href="{{ url_for('add_user') }}">Add user</a>      
+      <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;    
       {% endif %}
     </div>
+    {% endif %}
 
     <!-- Flashed messages -->
     <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>

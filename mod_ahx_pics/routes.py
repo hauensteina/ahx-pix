@@ -152,7 +152,12 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             error = 'Invalid credentials'
-    return render_template('login.html', error=error)
+    return render_template('login.html', error=error, is_mobile = '_mobile' in request.referrer, no_links=True)
+
+@app.route('/login_mobile', methods=['GET', 'POST'])
+#-----------------------------------------------------
+def login_mobile():
+    return login()
 
 @app.route("/logout")
 @login_required

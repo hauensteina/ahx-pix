@@ -15,10 +15,10 @@ from mod_ahx_pics import pg as db
 from mod_ahx_pics import login_manager, bcrypt, AppError, log
 
 class User(UserMixin):
-    def __init__( self, login):
+    def __init__( self, email):
         log( f'>>>>> auth:__init__()')
         self.valid = True
-        self.id = login.strip().upper()
+        self.id = email.strip().lower()
         self.data = {}
         if not self.read_from_db():
             self.valid = False
@@ -27,11 +27,11 @@ class User(UserMixin):
     def create_user( self, data, password):
         """ Create User in DB """
         log( f'>>>>> auth:create_user()')
-        rows = db.find( 'login', 'username',  self.id)
+        rows = db.find( 'login', 'email',  self.id)
         if rows:
             raise AppError( f'User {self.id} exists in t_login')
         self.data = data
-        self.data['username'] = self.id
+        self.data['email'] = self.id
         self.data['password'] = bcrypt.generate_password_hash( password).decode('utf-8')
         db.insert( 'login', [self.data]) 
         self.valid = True
@@ -39,12 +39,12 @@ class User(UserMixin):
     def update_db( self):
         """ Write our data back to the db """
         log( f'>>>>> auth:update_db()')
-        db.update_row( 'login', 'username' ,self.id)
+        db.update_row( 'login', 'email', self.id, self.data)
 
     def read_from_db( self):
         """ Read our data from the db """
         log( f'>>>>> auth:read_from_db()')
-        rows = db.find( 'login', 'username', self.id)
+        rows = db.find( 'login', 'email', self.id)
         if not rows: return False
         row = rows[0]
         self.data.update( row)
