@@ -19,6 +19,33 @@ a:active {
   color: #3280ec;
 }
 
+/* Form input fields */
+.centered-form-elt {
+    margin: 0 auto 10px auto;
+}
+
+.centered-form-label {
+    margin: 0 auto 0px auto;
+}
+
+.center {
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* 
+   Three columns. The middle one will be centered. 
+   Normally, the outer ones are empty. 
+*/
+.center-div {
+    display:grid;
+    grid-template-columns:1fr fit-content(100%) 1fr;
+}
+
+.hug {
+    display:inline-block;
+}
+
 /* Gallery search form */ 
 /*---------------------*/
 

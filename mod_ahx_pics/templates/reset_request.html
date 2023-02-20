@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class='ahx-mob-or-desk'>
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <div class='center-div'>
+    <div></div>
+    <div>
+      <form method=post>
+        <div style='display:grid;
+                    grid-template-columns: fit-content(50%);'>
+
+          <div class='centered-form-label'>Email</div>
+          <div class='centered-form-elt'><input type=text name=email size=25></div> 
+        <div class=centered-form-elt>
+          <input type=submit value='Request Password Reset'> 
+        </div>
+      </div>
+    </form>
+    </div>
+    <div></div>
+  </div>
+</div>
+
+{% endblock content %}

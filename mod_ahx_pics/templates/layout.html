@@ -26,7 +26,7 @@
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/base.css') }}'>
     <link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='css/styles.css') }}'>
 
-    {% if is_mobile() %}
+    {% if is_mobile() %} <!-- phone -->
     <style>
      .ahx-mob-or-desk {
        margin-left:5vw;
@@ -35,10 +35,12 @@
        margin-bottom:5px;
      }
     </style>
-    {% else %}
+    {% else %} <!-- desktop -->
     <style>
      .ahx-mob-or-desk {
        margin-left:50px;
+       margin-right:50px;
+       max-width:800px;
      }
      input {
        margin-bottom:5px;

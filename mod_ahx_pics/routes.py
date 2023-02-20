@@ -15,7 +15,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
 
 from mod_ahx_pics import AppError, Q
-from mod_ahx_pics import app, log
+from mod_ahx_pics import app, log, logged_in
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER
 
 from mod_ahx_pics.worker_funcs import gen_thumbnails 
@@ -159,14 +159,14 @@ def reset_request():
     if logged_in():
         return redirect( url_for('index'))
     if request.method == 'POST':
-        user = auth.User( request.form.email)
+        user = auth.User( request.form['email'])
         if not user.valid:
             flash( 'User does not exist', 'danger')
             return redirect( url_for('reset_request'))
         send_reset_email( user)
         flash( tr('reset_email_sent'), 'info')
         return redirect(url_for('login')) 
-    return render_template('reset_request.tmpl', title='Reset Password', form=form)
+    return render_template('reset_request.html', title='Reset Password')
 
 
 # Utility funcs
