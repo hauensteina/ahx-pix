@@ -3,6 +3,10 @@
 .green-border { border-style:solid; border-color:green; }
 .blue-border { border-style:solid; border-color:blue; }
 
+/* flask flashed msgs */
+.message { color:green; }
+.error { color:red; } 
+
 a:link {
   color: #293b81;
 }
@@ -42,9 +46,6 @@ a:active {
     grid-template-columns:1fr fit-content(100%) 1fr;
 }
 
-.hug {
-    display:inline-block;
-}
 
 /* Gallery search form */ 
 /*---------------------*/

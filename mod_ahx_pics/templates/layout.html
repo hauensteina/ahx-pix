@@ -85,7 +85,7 @@
     </div>
 
     <!-- Links at the top -->
-    {% if no_links %} {% else %}
+    {% if not no_links %}
     <div style='margin-left:5vw;margin-bottom:10px;'>
       {% if logged_in() %}
       <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
@@ -99,11 +99,11 @@
     {% endif %}
 
     <!-- Flashed messages -->
-    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>
-      {% with messages = get_flashed_messages() %}
+    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;'>
+      {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-      {% for message in messages %}
-      <div>{{ message }}</div>
+      {% for category, message in messages %}
+      <div class="{{ category }}">{{ message }}</div>
       {% endfor %}
       {% endif %}
       {% endwith %}
@@ -142,13 +142,13 @@
     {% endif %}
 
     <!-- Flashed messages -->
-    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;color:green'>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-            <div>{{ message }}</div>
-          {% endfor %}
-        {% endif %}
+    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;'>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
       {% endwith %}
     </div>
     

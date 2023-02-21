@@ -8,15 +8,40 @@ from pdb import set_trace as BP
 import sys,os,subprocess
 import inspect
 import uuid
+#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+#from itsdangerous import URLSafeTimedSerializer as Serializer
+from itsdangerous import TimestampSigner
+from flask_mail import Message
+from flask import url_for
 
 # AWS S3 api
 import boto3
 
 from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, log
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
+from mod_ahx_pics import app,mail
 
 # Misc
 #--------------
+
+def send_reset_email( user):
+    ''' User requested a password reset. Send him an email with a reset link. '''
+    expires_sec = 3600 * 24 * 7 
+    s = TimestampSigner( app.config['SECRET_KEY'])
+    token = s.sign( user.id)
+    msg = Message('Password Reset Request',
+                  sender='noreply@ahaux.com',
+                  recipients=[user.data['email']])
+    #msg.body = 'hi there testing a reset'
+    tstr = f'''
+To reset your Picture Galleries password, visit the following link:
+
+{url_for('reset_token', token=token, _external=True)}
+
+If you did not request a password change, you can safely ignore this email.
+    '''
+    msg.body = tstr
+    mail.send(msg)
 
 def media_type( fname):
     ext = os.path.splitext(fname)[1].lower()

@@ -13,6 +13,7 @@ import flask
 from flask import request, render_template, flash, redirect, url_for, session
 from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
+from itsdangerous import TimestampSigner, SignatureExpired
 
 from mod_ahx_pics import AppError, Q
 from mod_ahx_pics import app, log, logged_in
@@ -161,13 +162,58 @@ def reset_request():
     if request.method == 'POST':
         user = auth.User( request.form['email'])
         if not user.valid:
-            flash( 'User does not exist', 'danger')
+            flash( 'User does not exist', 'error')
             return redirect( url_for('reset_request'))
-        send_reset_email( user)
-        flash( tr('reset_email_sent'), 'info')
+        helpers.send_reset_email( user)
+        flash( 'Reset email sent')
         return redirect(url_for('login')) 
-    return render_template('reset_request.html', title='Reset Password')
+    return render_template('reset_request.html', title='Reset Password', no_links=True)
 
+@app.route('/reset_token', methods=['GET', 'POST'])
+#----------------------------------------------------------------
+def reset_token():
+    if logged_in():
+        return redirect( url_for('index'))
+    parms = get_parms()
+
+    if 'password' in parms or 'error' in parms: # User entered password
+        
+        user_id = parms['user_id']
+        password = parms['password']
+        confpwd = parms['confpwd']
+        error=''
+
+        user = auth.User( user_id)
+        if not user.valid:
+            flash( 'User does not exist', 'error')
+            return redirect( url_for('login'))
+            
+        if len(password) < 8:
+            error = 'Password must have 8 or more characters'
+        elif password != confpwd:
+            error = 'Passwords must match'
+        if error:
+            return render_template( 'reset_token.html', error=error, password=password, confpwd=confpwd, user_id=user_id )
+
+        user.set_password( password)
+        flash( 'Password updated')
+        return redirect(url_for('login'))
+
+    else: # Prompt user to enter password
+        token = parms['token']
+        s = TimestampSigner( app.config['SECRET_KEY'])
+        try:
+            user_id = s.unsign(token, max_age = 3600 * 24 )
+        except SignatureExpired as e:
+            flash( 'Reset token too old', 'error')
+            return redirect( url_for('index'))
+
+        user_id = user_id.decode('utf8')
+        user = auth.User( user_id)
+        if not user.valid:
+            flash( f'Invalid user {user_id}', 'error')
+            return redirect( url_for('reset_request'))
+        return render_template('reset_token.html', user_id=user_id)
 
 # Utility funcs
 ##################

@@ -17,8 +17,11 @@ from flask import Flask, session
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, user_logged_out, user_logged_in, current_user
 from flask.json import JSONEncoder
+from flask_mail import Mail
 
 from mod_ahx_pics.postgres import Postgres
+
+app = Flask( __name__)
 
 S3_BUCKET = 'ahx-pics'
 # S3 folders
@@ -47,7 +50,17 @@ FFMPEG_VIDEO_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'
 
 FFMPEG_RESIZE_IMG = 'ffmpeg -i @IN -q:v 2 -vf "scale=@MAXW:-1@ROT" @OUT'
 
-app = Flask( __name__)
+# Our own exception class
+#----------------------------
+class AppError(Exception):
+    pass
+
+# Logging
+#---------------------------
+def log( msg, level=''):
+    """ Logging. Change as needed """
+    print(msg, flush=True)
+
 # Make sure dates are serialized as yyyy-mm-dd by flask.jsonify (for our API endpoints)
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
@@ -115,16 +128,12 @@ login_manager = LoginManager( app)
 login_manager.login_view = 'login' # The route if you should be logged in but aren't
 login_manager.login_message = ''
 
-# Our own exception class
-#----------------------------
-class AppError(Exception):
-    pass
-
-# Logging
-#---------------------------
-def log( msg, level=''):
-    """ Logging. Change as needed """
-    print(msg, flush=True)
+app.config['MAIL_SERVER'] = 'mail.hover.com'
+app.config['MAIL_PORT'] = 587 
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+mail = Mail(app)
 
 # REDIS background worker queue 
 #-----------------------------------
