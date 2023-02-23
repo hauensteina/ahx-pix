@@ -66,6 +66,7 @@
 
   <body>
     {% if is_mobile() %}
+
     <!-- Mobile phone version -->
     <!-- ==================== -->
 
@@ -88,7 +89,7 @@
     {% if not no_links %}
     <div style='margin-left:5vw;margin-bottom:10px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
+      <a href="{{ url_for('edit_info') }}">{{ firstname() }}</a> &nbsp;
       {% else %}
       <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}
@@ -110,6 +111,7 @@
     </div>
 
     {% else %}
+
     <!-- Desktop version -->
     <!-- =============== -->
 
@@ -131,7 +133,7 @@
     {% if no_links %} {% else %}
     <div style='margin-left:50px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('logout') }}">{{ firstname() }}</a> &nbsp;
+      <a href="{{ url_for('edit_info') }}">{{ firstname() }}</a> &nbsp;
       {% else %}
       <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}

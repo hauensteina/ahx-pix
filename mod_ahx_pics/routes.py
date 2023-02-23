@@ -76,6 +76,43 @@ def carousel():
     images = gui.gen_carousel_images( gallery_id, active_pic_id)
     return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
+@app.route('/edit_info', methods=['GET', 'POST'])
+@login_required
+#---------------------------------------------------
+def edit_info():
+    error = None
+    if request.method == 'POST': # form submitted
+        email = request.form['email'].strip()
+        fname = request.form['fname'].strip()
+        lname = request.form['lname'].strip()
+
+        user = auth.User(email)
+        if not user.valid:
+            error = 'User does not exist' 
+        elif len(fname) < 1:
+            error = 'First name is required' 
+        elif len(lname) < 1:
+            error = 'Last name is required' 
+        if error:
+            return render_template( 'edit_info.html', error=error, no_links=True)
+
+        # All is well, update user
+        user.data['fname'] = fname
+        user.data['lname'] = lname
+        user.update_db()
+        flash('User info updated.')
+        return redirect( url_for('index'))
+    else: # Initial hit
+        user = current_user
+        if not user.valid:
+            error = 'User does not exist' 
+            return render_template( 'edit_info.html', error=error, no_links=True)
+        return render_template( 'edit_info.html', error=error, no_links=True
+                               ,lname=user.data['lname']
+                               ,fname=user.data['fname']
+                               ,email=user.data['email']
+                               )
+
 @app.route('/gallery', methods=['GET', 'POST'])
 #@show_error
 #-------------------------------------------------

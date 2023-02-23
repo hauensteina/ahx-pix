@@ -9,7 +9,7 @@
 
 from pdb import set_trace as BP
 import json
-import datetime
+from datetime import datetime,date
 from flask_login import UserMixin, current_user
 from mod_ahx_pics import pg as db
 from mod_ahx_pics import login_manager, bcrypt, AppError, log
@@ -39,7 +39,10 @@ class User(UserMixin):
     def update_db( self):
         """ Write our data back to the db """
         log( f'>>>>> auth:update_db()')
-        db.update_row( 'login', 'email', self.id, self.data)
+        today = date.today()
+        data = self.data
+        data['change_date'] = today
+        db.update_row( 'login', 'email', self.id, data)
 
     def read_from_db( self):
         """ Read our data from the db """
@@ -53,7 +56,6 @@ class User(UserMixin):
     def password_matches( self, password):
         """ Check password """
         log( f'>>>>> auth:password_matches()')
-        t0 = datetime.datetime.now()
         good = bcrypt.check_password_hash( self.data['password'], password)
         return good
 
