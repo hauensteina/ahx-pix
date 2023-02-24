@@ -8,7 +8,7 @@ Functions to generate html for the GUI
 
 from pdb import set_trace as BP
 import os
-from flask import url_for
+from flask import url_for, session
 from mod_ahx_pics import AppError, log, SMALL_FOLDER
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 from mod_ahx_pics.helpers import pexc
@@ -91,7 +91,8 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'static/images/img_not_found.jpg')
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 
+                                  'static/images/img_not_found.jpg')
         title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
         title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
@@ -99,7 +100,8 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
         title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
 
     # Blurb
-    gallery_blurb_h = H( 'div', gallery['blurb'], 'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+    gallery_blurb_h = H( 'div', gallery['blurb'], 
+                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=3)
@@ -119,18 +121,16 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
-        #caption_h = H( 'div', pic['blurb'], f'text-overflow:ellipsis;overflow:hidden;white-space:nowrap;')
-        #caption_h = H( 'div', pic['blurb'], f'text-overflow:ellipsis;overflow:hidden;width:min-content;min-width:100%;')
-        #caption_h = H( 'div', 'xx')
         caption_h = pic['blurb']
-        pic_h = H( 'div', pic_h + caption_h, f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
+        pic_h = H( 'div', pic_h + caption_h, 
+                   f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
         html += pic_h
 
     html = H('div', html,
              f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
     return html
 
-def gen_gallery_list( galleries):
+def gen_gallery_list( galleries, parms={}):
     """
     Generate html to display a list of galleries
     """
@@ -149,7 +149,9 @@ def gen_gallery_list( galleries):
     style = f'background-color: #8fc3f5; border: 1px solid #bbb;'
     for idx,col in enumerate(columns):
         pos = f'grid-column-start:{idx+1}; grid-column-end:{idx+2}'
-        theader += H('div class="gallery-list-cell"',col,f'{pos};{style}')
+        link = f''' <input type=submit name=btn_sort value={col} form=gallery_search > '''
+        theader += H(f'''div class="gallery-list-cell" ''', 
+                     link, f'{pos};{style}')
     html += theader
 
     # One row per gallery
@@ -170,7 +172,6 @@ def gen_gallery_list( galleries):
         html += row_html
 
     html = H('div', html, layout)
-
     return html
 
 def gen_gallery_list_mobile( galleries):
@@ -223,7 +224,7 @@ def gen_gallery_search( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
 
     html = f'''
-    <form method=post class=search-form>
+    <form id='gallery_search' method=post class=search-form>
       <input type=hidden name=_action value="search_gallery">
       <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
         <div style='display:grid;grid-column-start:1; grid-column-end:2;'>

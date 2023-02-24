@@ -16,7 +16,8 @@ a:visited {
 }
 
 a:hover {
-  color: #3280ec;
+  /* color: #3280ec; */
+  color:green;
 }
 
 a:active {
@@ -101,9 +102,6 @@ a:active {
     padding-top:10px;
     padding-bottom:10px;
 }
-
-
-
 
 /* Image carousel styling */
 /*------------------------*/

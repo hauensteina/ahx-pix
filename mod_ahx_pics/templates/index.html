@@ -1,5 +1,15 @@
 {% extends 'layout.html' %}
 
+{% block js %}
+<script>
+function ttt(ev) {
+   ev.preventDefault()
+   //debugger
+   //var tt=42
+}
+</script>
+{% endblock js %}
+
 {% block content %}
 
 {{ search_html|safe }}

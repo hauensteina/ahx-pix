@@ -81,8 +81,8 @@ def html_tag( tag, content='', style=''):
     """
     if content is None: content = ''
     res = '\n'
-    res += f'<{tag} '
-    if style: res += f'style="{style}">\n'
+    res += f'<{tag}'
+    if style: res += f' style="{style}">\n'
     else: res += '>\n'
     res += f'{content}\n' 
     res += f'</{tag.split()[0]}>\n'
