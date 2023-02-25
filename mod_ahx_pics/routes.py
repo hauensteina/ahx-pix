@@ -6,7 +6,7 @@
 
 from pdb import set_trace as BP
 
-import os, sys, re, json
+import os, sys, re, json, random
 from datetime import datetime, date
 
 import flask
@@ -144,28 +144,24 @@ def gallery_mobile():
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
-    # @@@ cont here style the buttons
     session['is_mobile'] = False
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
 
-    if 'btn_sort' in parms:
-        cols = { 'Title':'title', 'Date':'create_date', 'Owner':'username' }
-        sort_col = cols[parms['btn_sort']]
-        if session.get( 'gl_sort_col','') != sort_col:
-            session['gl_sort_col'] = sort_col
-            session['gl_sort_order'] = 'asc'
-        else: # Sort on same col, reverse order
-            sort_order =  session.get( 'gl_sort_order', 'desc')
-            session['gl_sort_order'] = 'asc' if sort_order == 'desc' else 'desc'
-    else: # Generic index hit
-            session['gl_sort_col'] = 'create_date'
-            session['gl_sort_order'] = 'desc'
-        
+    if 'btn_sort' in parms: 
+        sort_col = parms['btn_sort']
+        sort_order = parms['sort_order'] # asc or desc
+        next_order = 'asc' if sort_order == 'desc' else 'desc'
+    else: # Initial index hit
+        sort_col = 'Date'
+        sort_order = 'desc'
+        next_order = 'asc'
+
     search_html = gui.gen_gallery_search( title, owner)
-    galleries = pe.get_galleries( title, owner, order_by=f''' lower({session['gl_sort_col']}::text) {session['gl_sort_order']} ''' )
-    gallery_html = gui.gen_gallery_list( galleries, parms)
+    columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
+    galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+    gallery_html = gui.gen_gallery_list( galleries, parms, sort_col, next_order)
     res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
     return res
 

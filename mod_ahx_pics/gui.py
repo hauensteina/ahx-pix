@@ -130,7 +130,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
              f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
     return html
 
-def gen_gallery_list( galleries, parms={}):
+def gen_gallery_list( galleries, parms, sort_col, next_order):
     """
     Generate html to display a list of galleries
     """
@@ -149,9 +149,12 @@ def gen_gallery_list( galleries, parms={}):
     style = f'background-color: #8fc3f5; border: 1px solid #bbb;'
     for idx,col in enumerate(columns):
         pos = f'grid-column-start:{idx+1}; grid-column-end:{idx+2}'
-        link = f''' <input type=submit name=btn_sort value={col} form=gallery_search > '''
+        sort = ''
+        if col == sort_col:
+            sort = f''' <input type=hidden name=sort_order value={next_order} form=gallery_search> '''
+        link = f''' <input type=submit name=btn_sort value='{col}' class=linkbtn form=gallery_search > '''
         theader += H(f'''div class="gallery-list-cell" ''', 
-                     link, f'{pos};{style}')
+                     sort + link, f'{pos};{style}')
     html += theader
 
     # One row per gallery

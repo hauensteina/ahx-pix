@@ -7,6 +7,18 @@
 .message { color:green; }
 .error { color:red; } 
 
+.linkbtn {
+    background-color:transparent;
+    text-decoration:underline;
+    border:0;
+    color: #293b81;
+    margin:auto;
+}
+
+.linkbtn:hover {
+  color: #3280ec; 
+}
+
 a:link {
   color: #293b81;
 }
@@ -16,8 +28,7 @@ a:visited {
 }
 
 a:hover {
-  /* color: #3280ec; */
-  color:green;
+  color: #3280ec; 
 }
 
 a:active {
