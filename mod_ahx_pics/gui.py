@@ -130,7 +130,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
              f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
     return html
 
-def gen_gallery_list( galleries, parms, sort_col, next_order):
+def gen_gallery_list( galleries, sort_col, next_order):
     """
     Generate html to display a list of galleries
     """
@@ -177,7 +177,7 @@ def gen_gallery_list( galleries, parms, sort_col, next_order):
     html = H('div', html, layout)
     return html
 
-def gen_gallery_list_mobile( galleries):
+def gen_gallery_list_mobile( galleries, sort_col, next_order):
     """
     Generate html to display a list of galleries
     """
@@ -196,9 +196,12 @@ def gen_gallery_list_mobile( galleries):
     style = f'background-color: #8fc3f5; border: 1px solid #bbb;'
     for idx,col in enumerate(columns):
         pos = f'grid-column-start:{idx+1}; grid-column-end:{idx+2}'
-        theader += H('div class="gallery-list-cell"', 
-                     H('span', col, 'margin-top:auto;margin-bottom:auto;'), 
-                     f'{pos};{style}')
+        sort = ''
+        if col == sort_col:
+            sort = f''' <input type=hidden name=sort_order value={next_order} form=gallery_search> '''
+        link = f''' <input type=submit name=btn_sort value='{col}' class=linkbtn form=gallery_search > '''
+        theader += H(f'''div class="gallery-list-cell" ''', 
+                     sort + link, f'{pos};{style}')
     html += theader
 
     # One row per gallery
@@ -219,7 +222,6 @@ def gen_gallery_list_mobile( galleries):
         html += row_html
 
     html = H('div', html, layout)
-
     return html
 
 
@@ -256,7 +258,7 @@ def gen_gallery_search_mobile( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
 
     html = f'''
-    <form method=post class=search-form-mobile>
+    <form id='gallery_search' method=post class=search-form-mobile>
       <input type=hidden name=_action value="search_gallery">
       <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
         <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
