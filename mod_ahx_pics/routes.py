@@ -10,7 +10,7 @@ import os, sys, re, json, random
 from datetime import datetime, date
 
 import flask
-from flask import request, render_template, flash, redirect, url_for, session
+from flask import request, render_template, flash, redirect, url_for, session, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
 from itsdangerous import TimestampSigner, SignatureExpired
@@ -76,6 +76,21 @@ def carousel():
     active_pic_id = parms['picture_id']
     images = gui.gen_carousel_images( gallery_id, active_pic_id)
     return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
+
+@app.route('/download_img', methods=['GET'])
+#-------------------------------------------
+def download_img():
+    """
+    Return original full resolution image as attachment.
+    """
+    parms = get_parms()
+    gallery_id = parms['gallery_id']
+    active_pic_id = parms['picture_id']
+    #fh = BytesIO( result.encode('utf8'))
+    fname = 'world_100.png'
+    fh = open( f'downloads/{fname}', 'br')
+    resp = send_file( fh, as_attachment=True, download_name=fname)
+    return resp
 
 @app.route('/edit_info', methods=['GET', 'POST'])
 @login_required

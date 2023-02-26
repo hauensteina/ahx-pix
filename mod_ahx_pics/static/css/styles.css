@@ -157,23 +157,7 @@ a:active {
     transition-delay: 200ms;  
 } 
 
-/* Exit carousel button (x) */
-/*--------------------------*/
 
-.ahx-x {
-    position:absolute;
-    z-index: 2;
-    background:none; 
-    border:none;
-    font-size: 2rem;
-    top:5%;
-    left:1rem;
-    color: rgba(255,255,255, .7);
-    cursor: pointer;
-    border-radius: .25rem;
-    padding: 0 1.0rem;
-    background-color: rgba(0, 0, 0, .3) 	     
-}
 
 /* Img number k/n */
 /*----------------*/
@@ -223,4 +207,38 @@ a:active {
 
 .ahx-carousel-button.ahx-next {
     right: 1rem;
+}
+
+/* Exit carousel button (x) */
+/*--------------------------*/
+.ahx-x {
+    position:absolute;
+    z-index: 2;
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    top:5%;
+    left:1rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: 0 1.0rem;
+    background-color: rgba(0, 0, 0, .3) 	     
+}
+
+/* Download image button */
+/*-----------------------*/
+.ahx-download {
+    position:absolute;
+    z-index: 2;
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    top:5%;
+    right:1rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: 0 1.0rem;
+    background-color: rgba(0, 0, 0, .3) 	     
 }

@@ -24,11 +24,13 @@ class AHXCarousel {
       E('.ahx-x').addEventListener( 
         'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
     }
+    E('.ahx-download').addEventListener(
+        'click', ev => { this._downloadImage( this.galleryId, this.pictureId) })
 
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
-    this._hideArrows()
+    this._showArrows()
     this._setImgNum()
     this._preloadImages( this.slides(), this.activeSlide() )
   }
@@ -66,6 +68,14 @@ class AHXCarousel {
     this._setImgNum()
     this._resetArrowTimer()
   } // _changeImage()
+
+  //------------------------------------------------------
+  _downloadImage( galleryId, pictureId) {
+    var url = '/download_img?q=' + Math.random() + 
+        '&gallery_id=' + encodeURIComponent(galleryId) +
+        '&picture_id=' + encodeURIComponent(pictureId) 
+    window.location.href = url
+  } // _downloadImage()
 
   // Load active image on demand, and some more to the left and right.
   // Unload other stuff by setting display:none (remove ahx-loaded).
@@ -157,30 +167,33 @@ class AHXCarousel {
     document.onkeydown = checkKey
   } // check_key()
 
-  // Hide arrows after a timeout; show on mouse move
+  // Show arrows on mouse move
   //--------------------------------------------------
-  _hideArrows() {
+  _showArrows() {
     var self = this
     function showControls() {
       E('.ahx-carousel-button.ahx-next').hidden = false
       E('.ahx-carousel-button.ahx-prev').hidden = false
       E('.ahx-imgnum').hidden = false
       E('.ahx-x').hidden = false
+      E('.ahx-download').hidden = false
       self._resetArrowTimer()
     }
     self.container.addEventListener( 'pointermove', showControls)
     self.container.addEventListener( 'pointerup', showControls)
     this._resetArrowTimer()
-  } // hideArrows()
+  } // showArrows()
 
+  // Hide arrows after a timeout; show on mouse move
   //---------------------------
   _resetArrowTimer() {
     const TIMEOUT = 2000
-    function timerFired() {
+    function timerFired() { 
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
       E('.ahx-imgnum').hidden = true
       E('.ahx-x').hidden = true
+      E('.ahx-download').hidden = true
     }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)

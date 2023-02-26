@@ -60,7 +60,8 @@ def gen_gallery( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 'static/images/img_not_found.jpg')
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 
+                                  'static/images/img_not_found.jpg')
         title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
         title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
@@ -68,7 +69,8 @@ def gen_gallery( gallery, pics, n_cols=5):
         title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
 
     # Blurb
-    gallery_blurb_h = H( 'div', gallery['blurb'], 'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+    gallery_blurb_h = H( 'div', gallery['blurb'], 
+                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
     images_h = _gen_image_grid( gallery, pics, pic_links)
