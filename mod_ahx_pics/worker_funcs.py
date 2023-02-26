@@ -12,10 +12,17 @@ import datetime
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log
-from mod_ahx_pics import ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
+
+from mod_ahx_pics import (
+    ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
+)
+
 from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
 from mod_ahx_pics import DOWNLOAD_FOLDER
-from mod_ahx_pics.helpers import s3_get_keys, basename, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
+
+from mod_ahx_pics.helpers import (
+    basename, s3_get_keys, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
+)
 
 def _get_missing_media(subfolder):
     """
@@ -38,8 +45,10 @@ def _get_missing_media(subfolder):
     existing_target_files =  [ x['Key'] for x in existing_target_files ] 
     existing_target_basenames = [ basename(x) for x in existing_target_files ]
 
-    missing_target_basenames = [ x for x in orig_basenames if not f'{prefix}_{x}' in set(existing_target_basenames) ]
-    missing_orig_fnames = [ orig_files[i] for (i,x) in enumerate(orig_basenames) if x in set(missing_target_basenames) ]
+    missing_target_basenames = [ x for x in orig_basenames 
+                                 if not f'{prefix}_{x}' in set(existing_target_basenames) ]
+    missing_orig_fnames = [ orig_files[i] for (i,x) in enumerate(orig_basenames) 
+                            if x in set(missing_target_basenames) ]
     return missing_orig_fnames
     
 def _resize_media( fnames, size):

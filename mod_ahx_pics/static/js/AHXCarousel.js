@@ -25,7 +25,7 @@ class AHXCarousel {
         'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
     }
     E('.ahx-download').addEventListener(
-        'click', ev => { this._downloadImage( this.galleryId, this.pictureId) })
+        'click', ev => { this._downloadImage( this.activeSlide()) })
 
     this._preventClickOnPrevious()
     this._enableSwiping()
@@ -70,10 +70,9 @@ class AHXCarousel {
   } // _changeImage()
 
   //------------------------------------------------------
-  _downloadImage( galleryId, pictureId) {
+  _downloadImage( slide) {
     var url = '/download_img?q=' + Math.random() + 
-        '&gallery_id=' + encodeURIComponent(galleryId) +
-        '&picture_id=' + encodeURIComponent(pictureId) 
+        '&slide_src=' + encodeURIComponent(slide.src)
     window.location.href = url
   } // _downloadImage()
 

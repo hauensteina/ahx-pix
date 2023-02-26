@@ -100,6 +100,45 @@ def html_img( link, style='', attributes=''):
 # S3 functions
 #-----------------------
 
+def s3_delete_files( fnames):
+    client = s3_get_client()
+    for idx,fname in enumerate(fnames):
+        try:
+            log(f'deleting {fname}')
+            response = client.delete_object( Bucket=S3_BUCKET, Key=fname)
+        except Exception as e:
+            log(pexc(e))
+
+def s3_download_file(fname):
+    """ Download a file from s3 into unique filename and return the filename """
+    client = s3_get_client()
+    info = sorted(s3_get_keys( client, fname))[-1]
+    key = info['Key']
+    ext = os.path.splitext(key)[1]
+    ofname = DOWNLOAD_FOLDER + '/' + str(uuid.uuid4()) + ext
+    client.download_file( S3_BUCKET, key, ofname)
+    return ofname
+
+def s3_get_client():
+    client = boto3.client(
+        's3',
+        aws_access_key_id=os.environ['AWS_KEY'],
+        aws_secret_access_key=os.environ['AWS_SECRET']
+    )
+    return client
+
+def s3_get_keys( client, prefix):
+    """ Get complete info for all objects starting with prefix, like Key, Size, ... """
+    paginator = client.get_paginator('list_objects_v2')
+
+    infos = []
+    pages = paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix)
+    for page in pages:
+        if 'Contents' in page:
+            rows = page['Contents']
+            infos.extend( rows )        
+    return infos
+
 def s3_get_link( client, fname, expire_hours=1):
     """
     Get presigned URL for the given file path.
@@ -118,6 +157,21 @@ def s3_get_link( client, fname, expire_hours=1):
 
     return url
 
+def s3_path_for_pic(gallery_id, pic_id, size):
+    base = f'{pic_id}_{gallery_id}'
+    if size == 'small': res = SMALL_FOLDER + gallery_id + '/sm_' + base
+    elif size == 'large': res = LARGE_FOLDER + gallery_id + '/lg_' + base
+    else: res = MEDIUM_FOLDER + gallery_id + '/med_' + base
+    return res
+
+def s3_prefix(fname, size):
+    parts = fname.split('_')
+    gallery_id = parts[1]
+    if size == 'small': res = SMALL_FOLDER + gallery_id + '/sm_' + basename( fname)
+    elif size == 'large': res = LARGE_FOLDER + gallery_id + '/lg_' + basename( fname)
+    else: res = MEDIUM_FOLDER + gallery_id + '/med_' + basename( fname)
+    return res
+
 def s3_upload_files( fnames, s3_fnames=''):
     if not s3_fnames: s3_fnames = fnames
     client = s3_get_client()
@@ -130,49 +184,5 @@ def s3_upload_files( fnames, s3_fnames=''):
         except Exception as e:
             log(pexc(e))
 
-def s3_delete_files( fnames):
-    client = s3_get_client()
-    for idx,fname in enumerate(fnames):
-        try:
-            log(f'deleting {fname}')
-            response = client.delete_object( Bucket=S3_BUCKET, Key=fname)
-        except Exception as e:
-            log(pexc(e))
-
-def s3_get_keys( client, prefix):
-    """ Get complete info for all objects starting with prefix, like Key, Size, ... """
-    paginator = client.get_paginator('list_objects_v2')
-
-    infos = []
-    pages = paginator.paginate(Bucket=S3_BUCKET, Prefix=prefix)
-    for page in pages:
-        if 'Contents' in page:
-            rows = page['Contents']
-            infos.extend( rows )        
-    return infos
-
-def s3_download_file(fname):
-    """ Download a file from s3 into unique filename and return the filename """
-    client = s3_get_client()
-    ext = os.path.splitext(fname)[1]
-    ofname = DOWNLOAD_FOLDER + '/' + str(uuid.uuid4()) + ext
-    client.download_file( S3_BUCKET, fname, ofname)
-    return ofname
-
-def s3_prefix(fname, size):
-    parts = fname.split('_')
-    gallery_id = parts[1]
-    if size == 'small': res = SMALL_FOLDER + gallery_id + '/sm_' + basename( fname)
-    elif size == 'large': res = LARGE_FOLDER + gallery_id + '/' + basename( fname)
-    else: res = MEDIUM_FOLDER + gallery_id + '/med_' + basename( fname)
-    return res
-
-def s3_get_client():
-    client = boto3.client(
-        's3',
-        aws_access_key_id=os.environ['AWS_KEY'],
-        aws_secret_access_key=os.environ['AWS_SECRET']
-    )
-    return client
 
 
