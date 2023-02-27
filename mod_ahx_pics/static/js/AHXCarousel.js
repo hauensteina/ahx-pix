@@ -27,6 +27,9 @@ class AHXCarousel {
     E('.ahx-download').addEventListener(
         'click', ev => { this._downloadImage( this.activeSlide()) })
 
+    E('.ahx-captoggle').addEventListener(
+        'click', ev => { this._toggleCaption( this.activeSlide()) })
+
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
@@ -75,6 +78,11 @@ class AHXCarousel {
         '&slide_src=' + encodeURIComponent(slide.src)
     window.location.href = url
   } // _downloadImage()
+
+  _toggleCaption() {
+    //debugger
+    var tt=42
+  } // _toggleCaption()
 
   // Load active image on demand, and some more to the left and right.
   // Unload other stuff by setting display:none (remove ahx-loaded).
@@ -173,9 +181,11 @@ class AHXCarousel {
     function showControls() {
       E('.ahx-carousel-button.ahx-next').hidden = false
       E('.ahx-carousel-button.ahx-prev').hidden = false
-      E('.ahx-imgnum').hidden = false
+      //E('.ahx-imgnum').hidden = false
       E('.ahx-x').hidden = false
-      E('.ahx-download').hidden = false
+      //E('.ahx-download').hidden = false
+      //E('.ahx-captoggle').hidden = false
+      E('#ahx-topcont').hidden = false
       self._resetArrowTimer()
     }
     self.container.addEventListener( 'pointermove', showControls)
@@ -190,9 +200,11 @@ class AHXCarousel {
     function timerFired() { 
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
-      E('.ahx-imgnum').hidden = true
+      //E('.ahx-imgnum').hidden = true
       E('.ahx-x').hidden = true
-      E('.ahx-download').hidden = true
+      //E('.ahx-download').hidden = true
+      //E('.ahx-captoggle').hidden = true
+      E('#ahx-topcont').hidden = true
     }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)
