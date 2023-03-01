@@ -12,11 +12,12 @@ class AHXCarousel {
     this.pictureId = pictureId
     this.prevSlide = null
     this.arrowTimer = null
+    this.captionTimer = null
 
     E('.ahx-carousel-button.ahx-next').addEventListener( 
-      'click', ev => { this._changeImage('next') } )
+      'click', ev => { this._changeImage('next') })
     E('.ahx-carousel-button.ahx-prev').addEventListener( 
-      'click', ev => { this._changeImage('prev') } )
+      'click', ev => { this._changeImage('prev') })
     if (isMobile()) {
       E('.ahx-x').addEventListener( 
         'click', ev => { document.location.href = `/gallery_mobile?gallery_id=${galleryId}` } )
@@ -30,6 +31,10 @@ class AHXCarousel {
     E('.ahx-captoggle').addEventListener(
         'click', ev => { this._toggleCaption( this.activeSlide()) })
 
+    window.addEventListener(
+      'resize',  ev => {
+        this._imgLoaded(this.activeSlide()) })
+
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
@@ -37,6 +42,40 @@ class AHXCarousel {
     this._setImgNum()
     this._preloadImages( this.slides(), this.activeSlide() )
   }
+
+  // Position the caption inside the image after load and resize
+  //-----------------------------------------------------------------
+  _imgLoaded( imgOrVideo) {
+    this._positionImgCaption( imgOrVideo)
+  } // imgLoaded()
+
+//------------------------------
+  _positionImgCaption(img) {
+      var activeId = this.activeSlide().id
+      var imgId = img.id
+      if (activeId != imgId) { return }
+      var frame = getContainedFrame(img)
+      var caption = E('.ahx-caption')
+      var w = 0.8 * frame.width
+      var h = 0.25 * frame.height
+      caption.style.width = `${w}px`
+      caption.style.left = `${frame.left + (frame.width - w)/2.0}px`
+      caption.style.height = `${h}px`
+      caption.style.top = `${frame.top + frame.height - 1.1 * h}px` // '500px' //`${frame.top + frame.height}px`
+  } // _positionImgCaption
+
+  // Format the image caption after the image has been displayed.
+  //---------------------------------------------------------------
+  _captionTimer() {
+    const TIMEOUT = 200
+    var self = this
+    function timerFired() { 
+      var e = self.activeSlide()
+      self._imgLoaded(e)
+    }
+    clearTimeout(this.captionTimer )
+    this.captionTimer = setTimeout( timerFired, TIMEOUT)
+  } // captionTimer()
 
   //--------------------
   slides() {
@@ -79,6 +118,7 @@ class AHXCarousel {
     window.location.href = url
   } // _downloadImage()
 
+  //-----------------------
   _toggleCaption() {
     //debugger
     var tt=42
@@ -103,6 +143,7 @@ class AHXCarousel {
         slide.classList.remove( 'ahx-loaded')
       }
     } // for
+    this._captionTimer()
 
     function load(elt, idx) {
       elt.classList.add( 'ahx-loaded')
@@ -197,7 +238,7 @@ class AHXCarousel {
   //---------------------------
   _resetArrowTimer() {
     const TIMEOUT = 2000
-    function timerFired() { 
+    function timerFired() { return;
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
       //E('.ahx-imgnum').hidden = true
@@ -223,6 +264,5 @@ class AHXCarousel {
       }) 
     })
   } // _preventClickOnPrevious()
-
 } // class AHXCarousel
 

@@ -248,3 +248,23 @@ a:active {
     margin: 0 .5rem;
     background-color: rgba(0, 0, 0, .3);	     
 }
+
+/* 
+Image caption. 
+Position and size is set in AHXCarousel._positionImgCaption()
+*/
+/*---------------*/
+.ahx-caption {
+    position:absolute; 
+    z-index:10;
+    display:inline; 
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: .45rem 1.0rem;
+    /* margin: 0 .5rem; */
+    background-color: rgba(0, 0, 0, .5);	     
+}
