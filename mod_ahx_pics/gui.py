@@ -18,33 +18,49 @@ from  mod_ahx_pics.helpers import html_img as I
 import mod_ahx_pics.persistence as pe
 
 def gen_carousel_images( gallery_id, active_pic_id):
-    images = []
+
+    def gen_images( pics):
+        # The images/videos
+        images = []
+        pic_links = pe.get_gallery_links( gallery_id) # image files in S3
+        for i,pic in enumerate(pics):
+            furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
+            ext = os.path.splitext(pic['filename'])[1].lower()
+            classes = " class='ahx-slide' "
+            #if i == 0: classes = " class='ahx-slide ahx-active' "
+            if pic['id'] == active_pic_id: 
+                found_active = True
+                classes = " class='ahx-slide ahx-active' "
+            if ext in VIDEO_EXTENSIONS:
+                link = f'''<li> <video id='img_{i}' preload='none' controls {classes}>  
+                           <source id=vsrc_{i} data-src='{furl}#t=0.5'></video> </li> '''
+                images.append(link)
+            elif ext in IMG_EXTENSIONS:
+                link = f"<li> <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> </li>"
+                images.append(link)
+            else:
+                #log(f'ERROR: unknown media extension {ext}. Ignoring {pic}')
+                continue
+        if not found_active:
+            images[0] = images[0].replace('ahx-slide', 'ahx-slide ahx-active')
+        html = '\n'.join(images)
+        return html
+        
+    def gen_captions(pics):
+        captions = []
+        for i,pic in enumerate(pics):
+            captions.append( f'''
+            <div id='cap_{i}' hidden> {pic['blurb']} </div>
+            ''')
+        html = '\n'.join(captions)
+        return html
+
     s3_client = ''
     found_active = False
     pics = pe.get_gallery_pics( gallery_id) # pic filenames in DB 
-    pic_links = pe.get_gallery_links( gallery_id) # image files in S3
-    for i,pic in enumerate(pics):
-        furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
-        ext = os.path.splitext(pic['filename'])[1].lower()
-        classes = " class='ahx-slide' "
-        #if i == 0: classes = " class='ahx-slide ahx-active' "
-        if pic['id'] == active_pic_id: 
-            found_active = True
-            classes = " class='ahx-slide ahx-active' "
-        if ext in VIDEO_EXTENSIONS:
-            link = f'''<li> <video id='img_{i}' preload='none' controls {classes}>  
-                       <source id=vsrc_{i} data-src='{furl}#t=0.5'></video> </li> '''
-            images.append(link)
-        elif ext in IMG_EXTENSIONS:
-            link = f"<li> <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> </li>"
-            images.append(link)
-        else:
-            #log(f'ERROR: unknown media extension {ext}. Ignoring {pic}')
-            continue
-    if not found_active:
-        images[0] = images[0].replace('ahx-slide', 'ahx-slide ahx-active')
-    images = '\n'.join(images)
-    return images
+    html = gen_images( pics)
+    html += gen_captions( pics)
+    return html
 
 def gen_gallery( gallery, pics, n_cols=5):
     """

@@ -107,6 +107,7 @@ class AHXCarousel {
     }
     this._preloadImages(slides, nextSlide)
     activeSlide.classList.remove( 'ahx-active')
+
     this._setImgNum()
     this._resetArrowTimer()
   } // _changeImage()
@@ -143,6 +144,8 @@ class AHXCarousel {
         slide.classList.remove( 'ahx-loaded')
       }
     } // for
+    // Show the caption
+    E('.ahx-caption').innerHTML = E(`#cap_${nextIdx}`).innerHTML
     this._captionTimer()
 
     function load(elt, idx) {
