@@ -34,7 +34,7 @@ function getContainedFrame(img) {
   var midY = h / 2.0
   var left = midX - width / 2.0   
   var top = midY - height / 2.0   
-  console.log( `WHTL:${width} ${height} ${top} ${left}`) 
+  //console.log( `WHTL:${width} ${height} ${top} ${left}`) 
   return { 'width':width, 'height':height, 'top':top, 'left':left } 
 } // getContainedFrame()
 

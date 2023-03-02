@@ -157,6 +157,29 @@ a:active {
     transition-delay: 200ms;  
 } 
 
+/* 
+Image caption. 
+Position and size is set in AHXCarousel._positionImgCaption()
+*/
+/*---------------*/
+.ahx-caption {
+    position:absolute; 
+    z-index:2; 
+    display:block; 
+    overflow:auto;
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .5rem;
+    padding: .45rem 1.0rem;
+    /* margin: 0 .5rem; */
+    background-color: rgba(0, 0, 0, .5);
+    opacity: 0;	  
+    max-width:50%;
+}
+
 /* Prev and Next button */
 /*----------------------*/
 .ahx-carousel-button {
@@ -191,7 +214,7 @@ a:active {
 /*--------------------------*/
 .ahx-x {
     position:absolute;
-    z-index: 2;
+    z-index: 20;
     background:none; 
     border:none;
     font-size: 2rem;
@@ -203,6 +226,11 @@ a:active {
     padding: 0 1.0rem;
     background-color: rgba(0, 0, 0, .3); 	     
 }
+.ahx-x:hover {
+    color:white;
+    background-color: rgba(0, 0, 0, .2)
+}
+
 
 /* Img number k/n */
 /*----------------*/
@@ -233,6 +261,10 @@ a:active {
     margin: 0 .5rem;
     background-color: rgba(0, 0, 0, .3);	     
 }
+.ahx-captoggle:hover {
+    color:white;
+    background-color: rgba(0, 0, 0, .2)
+}
 
 /* Download image button */
 /*-----------------------*/
@@ -248,24 +280,7 @@ a:active {
     margin: 0 .5rem;
     background-color: rgba(0, 0, 0, .3);	     
 }
-
-/* 
-Image caption. 
-Position and size is set in AHXCarousel._positionImgCaption()
-*/
-/*---------------*/
-.ahx-caption {
-    position:absolute; 
-    z-index:10;
-    display:inline; 
-    overflow:auto;
-    background:none; 
-    border:none;
-    font-size: 2rem;
-    color: rgba(255,255,255, .7);
-    cursor: pointer;
-    border-radius: .25rem;
-    padding: .45rem 1.0rem;
-    /* margin: 0 .5rem; */
-    background-color: rgba(0, 0, 0, .5);	     
+.ahx-download:hover {
+    color:white;
+    background-color: rgba(0, 0, 0, .2)
 }

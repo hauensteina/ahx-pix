@@ -11,23 +11,64 @@
      .green-border { border-style:solid; border-color:green; }
      .blue-border { border-style:solid; border-color:blue; }
 
-     .caption
-     {
-       height: 200px;
-       width: 300px;
-       overflow: auto;
-       margin-left:5vw;
-       margin-top:5vh;
+     .container {
+       align-items: start;
+       height: 40vw;
+       width: 40vw;
+       border: 1px solid black;
+       display:grid;
+     }
+
+     img {
+       display: block;
+       height: auto;
+       margin: 0 auto;
+       max-height: 40vw;
+       max-width: 40vw;
+     }
+
+     .textcontainer {
+       position: relative;
+     }
+
+     .textcontainer-x-text {
+       color: limegreen;
+       font-family: sans-serif;
+       font-weight: bold;
+       left: 50%;
+       position: absolute;
+       text-align: center;
+       text-transform: uppercase;
+       top: 50%;
+       transform: translate(-50%, -50%);
      }
     </style>
   </head>
 
   <body>
-    <div class=caption>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-      Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+    <p>Portrait</p>
+    <div class="container">
+      <div class="textcontainer">
+        <div class="textcontainer-x-text">Example Text Which Could Be Long</div>
+        <img src="http://placehold.it/150x400">
+      </div>
+    </div>
+
+    <p>Landscape</p>
+    <div class="container">
+      <div class="textcontainer">
+        <div class="textcontainer-x-text">Example Text Which Could Be Long</div>
+        <img src="http://placehold.it/300x150">
+      </div>
+    </div>
+
+    <p>Square</p>
+    <div class="container">
+      <div class="textcontainer">
+        <div class="textcontainer-x-text">Example Text Which Could Be Long</div>
+        <img src="http://placehold.it/300x300">
+      </div>
     </div>
   </body>
 </html>

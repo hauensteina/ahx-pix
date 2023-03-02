@@ -27,16 +27,26 @@ def gen_carousel_images( gallery_id, active_pic_id):
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
             ext = os.path.splitext(pic['filename'])[1].lower()
             classes = " class='ahx-slide' "
-            #if i == 0: classes = " class='ahx-slide ahx-active' "
             if pic['id'] == active_pic_id: 
                 found_active = True
                 classes = " class='ahx-slide ahx-active' "
             if ext in VIDEO_EXTENSIONS:
-                link = f'''<li> <video id='img_{i}' preload='none' controls {classes}>  
-                           <source id=vsrc_{i} data-src='{furl}#t=0.5'></video> </li> '''
+                link = f'''
+                <li> 
+                <video id='img_{i}' preload='none' controls {classes}>  
+                  <source id=vsrc_{i} data-src='{furl}#t=0.5'>
+                </video> 
+                <div id='cap_{i}' class=ahx-caption>{pic['blurb']}</div>
+                </li> 
+                '''
                 images.append(link)
             elif ext in IMG_EXTENSIONS:
-                link = f"<li> <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> </li>"
+                link = f'''
+                <li>
+                  <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> 
+                  <div id='cap_{i}' class=ahx-caption>{pic['blurb']}</div>
+                </li>
+                '''
                 images.append(link)
             else:
                 #log(f'ERROR: unknown media extension {ext}. Ignoring {pic}')
