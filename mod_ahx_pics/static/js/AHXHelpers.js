@@ -22,8 +22,10 @@ function getContainedFrame(img) {
     //debugger
     var ratio = img.videoWidth / img.videoHeight
   }
-  var h = document.body.clientHeight
-  var w = document.body.clientWidth
+  // var h = document.body.clientHeight
+  // var w = document.body.clientWidth
+  var h = img.clientHeight
+  var w = img.clientWidth
   var width = h * ratio
   var height = h
   if (width > w) {

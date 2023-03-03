@@ -28,7 +28,10 @@ class AHXCarousel {
     this.arrowTimer = null
 
     E('.ahx-carousel-button.ahx-next').addEventListener( 
-      'click', ev => { this._changeImage('next') })
+      'click', ev => { 
+        this._changeImage('next') 
+        document.body.style.zoom=1.0
+      })
     E('.ahx-carousel-button.ahx-prev').addEventListener( 
       'click', ev => { this._changeImage('prev') })
     if (isMobile()) {
@@ -54,16 +57,27 @@ class AHXCarousel {
           e.classList.add( 'ahx-active')
         }
       })
-
+    //debugger
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
     this._showArrows()
     this._setImgNum()
     this._preloadImages( this.slides(), this.activeSlide() )
-    //this._positionCaption()
+    //this._preventZoomOnDoubleTap()
     captionTimer()
   } // constructor
+
+  //--------------------------------
+  _preventZoomOnDoubleTap() {
+    // Prevent zoom on double tap
+    $('*').on('touchend',(e)=> {
+      if (e.target.className.includes('ahx-carousel-button')) { return }
+      if (e.target.className.includes('ahx-captoggle')) { return }
+      if (e.target.className.includes('ahx-clickable')) { return }
+      e.preventDefault()
+    })
+  } // preventZoomOnDoubleTap()
 
   //-----------------------
   _positionCaption() {
@@ -72,12 +86,14 @@ class AHXCarousel {
     } 
     var img = this.activeSlide()
     var frame = getContainedFrame(img) 
+    img.style.top = `0px`
     if (isNaN(frame.width)) return;
     var caption = this.activeCaption()
     var realWidth = caption.clientWidth
     var realHeight = caption.clientHeight
     caption.style.left = `${frame.left + (frame.width - realWidth)/2.0}px`
     caption.style.top = `${frame.top + frame.height - realHeight - 20 }px`
+
     caption.style.opacity = 1
   } // _positionCaption()
 
@@ -104,6 +120,7 @@ class AHXCarousel {
     this.prevSlide = activeSlide
 
     var activeIdx = [...slides].indexOf(activeSlide)
+    console.log(`>>>>>> change ${activeIdx}`)
     var newIdx = activeIdx + offset    
 
     var oldCaption = E(`#cap_${activeIdx}`)
@@ -143,8 +160,10 @@ class AHXCarousel {
     for (var idx=0; idx < slides.length; idx++) {
       const slide = slides[idx]
       if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
-        console.log( `preloading idx ${idx}`)
-        load( slide, idx)
+        if (!slide.classList.contains('ahx-loaded')) {
+          console.log( `preloading idx ${idx}`)
+          load( slide, idx)
+        }
       }
       else if (idx != nextIdx) {
         slide.classList.remove( 'ahx-loaded')

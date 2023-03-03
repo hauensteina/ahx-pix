@@ -23,6 +23,8 @@ def gen_carousel_images( gallery_id, active_pic_id):
         # The images/videos
         images = []
         pic_links = pe.get_gallery_links( gallery_id) # image files in S3
+        capclass = 'ahx-caption'
+        if session.get('is_mobile',''): capclass = 'ahx-caption-mobile' 
         for i,pic in enumerate(pics):
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
             ext = os.path.splitext(pic['filename'])[1].lower()
@@ -36,7 +38,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 <video id='img_{i}' preload='none' controls {classes}>  
                   <source id=vsrc_{i} data-src='{furl}#t=0.5'>
                 </video> 
-                <div id='cap_{i}' class=ahx-caption>{pic['blurb']}</div>
+                <div id='cap_{i}' class={capclass}>{pic['blurb']}</div>
                 </li> 
                 '''
                 images.append(link)
@@ -44,7 +46,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 link = f'''
                 <li>
                   <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> 
-                  <div id='cap_{i}' class=ahx-caption>{pic['blurb']}</div>
+                  <div id='cap_{i}' class={capclass}>{pic['blurb']}</div>
                 </li>
                 '''
                 images.append(link)
@@ -121,7 +123,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
         title_pic = title_pic[0]
         img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 
                                   'static/images/img_not_found.jpg')
-        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
+        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:max(30vh,30vw);')
         title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = I( 'static/images/img_not_found.jpg', 'object-fit:contain;margin:0 auto; height:30vh;')
