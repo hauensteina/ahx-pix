@@ -42,18 +42,18 @@ def main():
 def run():
     rows = read_topics()
     insert_gallery(rows)
-    rows = read_pics()
-    insert_picture(rows)
+    #rows = read_pics()
+    #insert_picture(rows)
 
 def insert_gallery(rows):
     newrows = []
     for row in rows:
         nr = {}
         nr['id'] = str(row['topic_id'])
-        nr['username'] = 'ahn'
+        nr['username'] = 'ahn' if row['user_id'] == 19 else 'jc'
         nr['title'] = row['topic_name']
         nr['blurb'] = row['text']
-        nr['private_flag'] = False
+        nr['private_flag'] = False if row['visibility'] == 'public' else True
         nr['create_date'] = row['date_started']
         nr['change_date'] = row['date_changed']
         newrows.append(nr)
@@ -79,7 +79,7 @@ def read_topics():
                                    host='127.0.0.1',
                                    database='bgc')
     sql = f'''
-    select * from andreas_topics
+    select * from rescue_topics
     '''
     curs = msql.cursor(dictionary=True)
     curs.execute( sql)
@@ -93,7 +93,8 @@ def read_pics():
                                    host='127.0.0.1',
                                    database='bgc')
     sql = f'''
-    select * from andreas_pics
+    select * from picture where
+    topic_id in (select topic_id from rescue_topics)
     '''
     curs = msql.cursor(dictionary=True)
     curs.execute( sql)
@@ -101,9 +102,6 @@ def read_pics():
     for row in curs:
         rows.append(row)
     return rows
-
-
-
 
 if __name__ == '__main__':
   main()
