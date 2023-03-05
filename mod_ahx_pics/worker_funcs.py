@@ -61,8 +61,8 @@ def _resize_media( fnames, size):
             _resize_video( fname, size)
         else:
             log( f'ERROR: unknown media extension: {fname}')
-            log( f'deleting')
-            s3_delete_files([fname])
+            #log( f'deleting')
+            #s3_delete_files([fname])
             
     tend = datetime.datetime.now()
     log( f'{size} size media generated in {tend - tstart}')

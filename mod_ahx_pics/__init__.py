@@ -25,7 +25,8 @@ app = Flask( __name__)
 
 S3_BUCKET = 'ahx-pics'
 # S3 folders
-ORIG_FOLDER = 'pics/orig/'
+#ORIG_FOLDER = 'pics/orig/'
+ORIG_FOLDER = 'pics_complete/'
 LARGE_FOLDER = 'pics/large/'
 MEDIUM_FOLDER = 'pics/medium/'
 SMALL_FOLDER = 'pics/small/'

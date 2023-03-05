@@ -6,6 +6,9 @@ AHN, Jan 2023
 '''
 
 import sys,os,re
+from os.path import dirname
+sys.path.append( f'{dirname(__file__)}/..')
+
 import argparse
 from pdb import set_trace as BP
 
