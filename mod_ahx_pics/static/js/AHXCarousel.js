@@ -155,9 +155,10 @@ class AHXCarousel {
   _preloadImages( slides, nextSlide) {
     var nextIdx = [...slides].indexOf(nextSlide)
     // Load current img
-    load( slides[nextIdx], nextIdx)
+    if (!slides[nextIdx].classList.contains('ahx-loaded')) { load( slides[nextIdx], nextIdx) }
     // Load or unload the others
-    for (var idx=0; idx < slides.length; idx++) {
+    //for (var idx=0; idx < slides.length; idx++) {
+    for (var idx=slides.length-1; idx >= 0; idx--) {
       const slide = slides[idx]
       if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
         if (!slide.classList.contains('ahx-loaded')) {

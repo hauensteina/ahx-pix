@@ -11,7 +11,7 @@ import os
 import datetime
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
-from mod_ahx_pics import log
+from mod_ahx_pics import log,pg
 
 from mod_ahx_pics import (
     ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
@@ -35,8 +35,12 @@ def _get_missing_media(subfolder):
     elif '/large/' in subfolder: prefix = 'lg'
 
     s3_client = s3_get_client()
-    orig_files = s3_get_keys( s3_client, ORIG_FOLDER)
-    orig_files = sorted( [ x['Key'] for x in orig_files ]) 
+    #orig_files = pg.select( f''' select filename from picture where id = '6846' order by gallery_id, position, filename ''')
+    orig_files = pg.select( f''' select filename from picture where gallery_id = '423' order by gallery_id, position, filename ''')
+    #orig_files = pg.select( f''' select filename from picture order by gallery_id, filename ''')
+    # 'pics_complete/1009_176_1.JPG'
+    orig_files = [ f'''{ORIG_FOLDER}{os.path.split(x['filename'])[1]}''' for x in orig_files ]
+
     # pics/orig/name.jpeg -> name
     orig_basenames = [ basename(x) for x in orig_files ]
 
@@ -60,9 +64,7 @@ def _resize_media( fnames, size):
         elif media_type( fname) == 'video':
             _resize_video( fname, size)
         else:
-            log( f'ERROR: unknown media extension: {fname}')
-            #log( f'deleting')
-            #s3_delete_files([fname])
+            log( f'ERROR: unknown media extension: {fname}. Skipping resize.')
             
     tend = datetime.datetime.now()
     log( f'{size} size media generated in {tend - tstart}')
@@ -79,14 +81,13 @@ def _resize_video( fname, size):
         target_folder = MEDIUM_FOLDER
         cmd = FFMPEG_COMPRESSOR
         ext = '.mp4'
+        smallwidth = MEDIUM_THUMB_SIZE
     else: # large
         prefix = 'lg'
         target_folder = LARGE_FOLDER
         ext = os.path.splitext(fname)[1]
-
     try:
         local_fname = s3_download_file(fname)
-        #ext = os.path.splitext(fname)[1].lower()
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
         gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
@@ -111,16 +112,17 @@ def _resize_image( fname, size='small'):
     if size == 'small':
         prefix = 'sm'
         target_folder = SMALL_FOLDER
-        #max_size = (SMALL_THUMB_SIZE, SMALL_THUMB_SIZE)
         max_size = SMALL_THUMB_SIZE
+        qual = 100
     elif size == 'medium': 
         prefix = 'med'
         target_folder = MEDIUM_FOLDER
-        #max_size = (MEDIUM_THUMB_SIZE, MEDIUM_THUMB_SIZE)
         max_size = MEDIUM_THUMB_SIZE
+        qual = 90
     else: # large
         prefix = 'lg'
         target_folder = LARGE_FOLDER
+        max_size = 0
         
     try:
         local_fname = s3_download_file(fname)
@@ -129,35 +131,12 @@ def _resize_image( fname, size='small'):
         gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf' and size != 'large':
-            cmd = FFMPEG_RESIZE_IMG
-            image = Image.open( local_fname)
-            for orientation_key in ExifTags.TAGS.keys() : 
-                if ExifTags.TAGS[orientation_key]=='Orientation' : break 
             try:
-                exif = {}
-                if image._getexif():
-                    exif=dict(image._getexif().items())
-                orientation = exif.get(orientation_key,0)    
-                rot = ''
-                if   orientation == 3 : 
-                    rot = ',transpose=1,transpose=1'
-                    #image=image.rotate(180, expand=True)
-                elif orientation == 6 : 
-                    rot = ',transpose=1'
-                    #image=image.rotate(270, expand=True)
-                elif orientation == 8 : 
-                    rot = ',transpose=2'
-                    #image=image.rotate(90, expand=True)
-                cmd = cmd.replace( '@MAXW', str(max_size))
-                cmd = cmd.replace( '@IN', local_fname)
-                cmd = cmd.replace( '@OUT', local_thumb)
-                cmd = cmd.replace( '@ROT', rot)
+                cmd = f''' convert {local_fname} -auto-orient -resize {max_size}x{max_size}\> -quality {qual} +profile '*' {local_thumb} '''
                 out,err = run_shell( cmd)
-                #image.thumbnail( max_size)            
-                #image.thumbnail( max_size, resample=Resampling.NEAREST, reducing_gap=2.0 )            
             except Exception as e:
                 log(pexc(e))
-                log(f'WARNING: ffmpeg resize of {fname} failed. Using PIL.') 
+                log(f'WARNING: ImageMagick resize of {fname} failed. Using PIL.') 
                 image.thumbnail( (max_size,max_size))
                 image.save( local_thumb, quality=95)
 

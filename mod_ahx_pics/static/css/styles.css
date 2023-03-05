@@ -156,6 +156,7 @@ a:active {
     /* Fade out starts with a delay to blend images during transition */
     transition-delay: 200ms;  
     user-select:none;
+    background-color:black;
 } 
 
 /* 

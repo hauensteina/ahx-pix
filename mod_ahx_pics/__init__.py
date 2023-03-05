@@ -154,8 +154,6 @@ REDIS_CONN = redis.Redis( host=url.hostname, port=url.port,
                           username=url.username, password=url.password, 
                           ssl=ssl, ssl_cert_reqs=None)
 Q = Queue( 'myq', connection=REDIS_CONN, default_timeout=JOB_TIMEOUT)
-from mod_ahx_pics.worker_funcs import gen_thumbnails
-Q.enqueue( gen_thumbnails)
 
 # Postgres
 #-------------
@@ -172,4 +170,7 @@ create_tables( pg)
 # Endpoints for GUI
 #---------------------
 from mod_ahx_pics import routes
+
+from mod_ahx_pics.worker_funcs import gen_thumbnails
+Q.enqueue( gen_thumbnails)
 
