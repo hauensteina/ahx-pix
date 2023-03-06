@@ -92,7 +92,7 @@
     {% if not no_links %}
     <div style='margin-left:5vw;margin-bottom:10px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('edit_info') }}">{{ firstname() }}</a> &nbsp;
+      <a href="{{ url_for('edit_info') }}">{{ f_username() }}</a> &nbsp;
       {% else %}
       <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}
@@ -136,7 +136,7 @@
     {% if no_links %} {% else %}
     <div style='margin-left:50px;'>
       {% if logged_in() %}
-      <a href="{{ url_for('edit_info') }}">{{ firstname() }}</a> &nbsp;
+      <a href="{{ url_for('edit_info') }}">{{ f_username() }}</a> &nbsp;
       {% else %}
       <a href="{{ url_for('login') }}">Log in</a> &nbsp;
       {% endif %}

@@ -36,8 +36,8 @@ def _get_missing_media(subfolder):
 
     s3_client = s3_get_client()
     #orig_files = pg.select( f''' select filename from picture where id = '6846' order by gallery_id, position, filename ''')
-    orig_files = pg.select( f''' select filename from picture where gallery_id = '423' order by gallery_id, position, filename ''')
-    #orig_files = pg.select( f''' select filename from picture order by gallery_id, filename ''')
+    #orig_files = pg.select( f''' select filename from picture where gallery_id = '423' order by gallery_id, position, filename ''')
+    orig_files = pg.select( f''' select filename from picture order by gallery_id, position, filename ''')
     # 'pics_complete/1009_176_1.JPG'
     orig_files = [ f'''{ORIG_FOLDER}{os.path.split(x['filename'])[1]}''' for x in orig_files ]
 

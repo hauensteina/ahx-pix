@@ -25,6 +25,7 @@ def _create_login( pg):
     sql = f'''
     create table {tabname} (
       email text
+      ,username text
       ,password text
       ,fname text
       ,lname text
@@ -34,13 +35,36 @@ def _create_login( pg):
     )
     '''
     pg.run(sql)
-    user = auth.User('hauensteina@gmail.com')
     today = date.today()
+    user = auth.User('hauensteina@gmail.com')
     data = { 
         'email':'hauensteina@gmail.com'
+        ,'username':'ahn'
         ,'fname':'Andreas'
         ,'lname':'Hauenstein'
         ,'admin_flag':True
+        ,'create_date':today
+        ,'change_date':today
+    }   
+    user.create_user( data, 'welcome321!')
+    user = auth.User('jc.chetrit@gmail.com')
+    data = { 
+        'email':'jc.chetrit@gmail.com'
+        ,'username':'jc'
+        ,'fname':'Jean Claude'
+        ,'lname':'Chetrit'
+        ,'admin_flag':False
+        ,'create_date':today
+        ,'change_date':today
+    }   
+    user.create_user( data, 'welcome321!')
+    user = auth.User('jsh@gmail.com')
+    data = { 
+        'email':'jsh@gmail.com'
+        ,'username':'jsh'
+        ,'fname':'Joe'
+        ,'lname':'Schmoe'
+        ,'admin_flag':False
         ,'create_date':today
         ,'change_date':today
     }   

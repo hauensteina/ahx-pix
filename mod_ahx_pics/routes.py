@@ -37,35 +37,42 @@ def ttest():
 #-------------------------------------------------
 def add_user():
     error = None
+    data = {}
     if request.method == 'POST': # form submitted
         email = request.form['email']
+        username = request.form['username']
         password = request.form['password']
         fname = request.form['fname']
         lname = request.form['lname']
         admin_flag = request.form.get( 'admin_flag', False)
 
-        user = auth.User(email)
-        if user.valid:
-            error = 'User exists' 
-        elif len(password) < 8:
-            error = 'Password must have 8 or more characters'
-        if error:
-            return render_template( 'add_user.html', error=error)
-        # All is well, create user
         today = date.today()
         data = { 
             'email':email
+            ,'username':username
             ,'fname':fname
             ,'lname':lname
             ,'admin_flag':admin_flag
             ,'create_date':today
             ,'change_date':today
         }   
-        user.create_user(data, password)
-        flash('User created.')
+        user = auth.User(email)
+        if user.valid:
+            error = 'User exists' 
+        elif len(password) < 8:
+            error = 'Password must have 8 or more characters'
+        if error:
+            return render_template( 'add_user.html', error=error, **data)
+        # All is well, create user
+        try:
+            user.create_user(data, password)
+        except Exception as e:
+            return render_template( 'add_user.html', error=str(e), **data)
+            
+        flash( f'''User {data['username']} created.''')
         return redirect( url_for('index'))
     else: # Initial hit
-        return render_template( 'add_user.html', error=error)
+        return render_template( 'add_user.html', error=error, **data)
 
 @app.route('/carousel', methods=['GET', 'POST'])
 #-------------------------------------------------
@@ -133,6 +140,7 @@ def edit_info():
         return render_template( 'edit_info.html', error=error, no_links=True
                                ,lname=user.data['lname']
                                ,fname=user.data['fname']
+                               ,username=user.data['username']
                                ,email=user.data['email']
                                )
 
@@ -217,9 +225,10 @@ def index_mobile():
 #----------------------------------------------
 def login():
     error = None
+    username = ''
     if request.method == 'POST':
         password = request.form['password']
-        username = request.form['login'].upper()
+        username = request.form['login']
         user = auth.User( username)
         if user.valid and user.password_matches( password):
             login_user(user, remember=False)
@@ -227,7 +236,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
             error = 'Invalid credentials'
-    return render_template('login.html', error=error, no_links=True)
+    return render_template('login.html', username=username, error=error, no_links=True)
 
 @app.route("/logout")
 @login_required

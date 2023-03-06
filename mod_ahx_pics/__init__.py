@@ -90,6 +90,7 @@ app.config['MAX_CONTENT_LENGTH'] = int(1E6)
 def inject_template_funcs():
     return {
         'firstname':firstname
+        ,'f_username':f_username
         ,'getenv':getenv
         ,'is_admin':is_admin
         ,'is_mobile':is_mobile
@@ -101,6 +102,14 @@ def firstname():
     res = ''
     try:
         res = current_user.data['fname']
+    except:
+        pass
+    return res
+
+def f_username():
+    res = ''
+    try:
+        res = current_user.data['username']
     except:
         pass
     return res
