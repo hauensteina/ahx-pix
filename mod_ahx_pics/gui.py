@@ -197,6 +197,7 @@ def gen_gallery_list( galleries, sort_col, next_order):
             val = gal[columns[col]]
             style = 'margin-top:auto;margin-bottom:auto;'
             if col != 'Title': style += 'white-space:nowrap;'
+            if col == 'Title': style += 'width:400px;'
             col_html = H( f'div class="gallery-list-cell"', 
                           H('span', val, style), 
                           f'{pos}')

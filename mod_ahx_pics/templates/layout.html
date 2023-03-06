@@ -99,6 +99,11 @@
       {% if is_admin() %}
       <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;          
       {% endif %}
+      {% if all_pics_flag %}
+      <a href="{{ url_for('index', all_pics_flag=False) }}">My Galleries Only</a> &nbsp;   
+      {% else %}
+      <a href="{{ url_for('index', all_pics_flag=True) }}">Show All Galleries</a> &nbsp;   
+      {% endif %}
     </div>
     {% endif %}
 
@@ -142,6 +147,11 @@
       {% endif %}
       {% if is_admin() %}
       <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;    
+      {% endif %}
+      {% if all_pics_flag %}
+      <a href="{{ url_for('index', all_pics_flag=False) }}">My Galleries Only</a> &nbsp;   
+      {% else %}
+      <a href="{{ url_for('index', all_pics_flag=True) }}">Show All Galleries</a> &nbsp;   
       {% endif %}
     </div>
     {% endif %}

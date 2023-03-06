@@ -100,8 +100,8 @@ a:active {
 /* Gallery styling */
 /*-----------------*/
 
+/*
 .gallery-table {
-    /* width:100%; */
     max-width:1500px;
     margin-left:50px;
     margin-right:50px;
@@ -113,6 +113,7 @@ a:active {
     padding-top:10px;
     padding-bottom:10px;
 }
+*/
 
 /* Image carousel styling */
 /*------------------------*/

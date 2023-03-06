@@ -132,7 +132,6 @@ def logged_in():
 def rrand():
     return str(random.uniform(0,1))
 
-
 bcrypt = Bcrypt( app) # Our password hasher
 login_manager = LoginManager( app)
 login_manager.login_view = 'login' # The route if you should be logged in but aren't

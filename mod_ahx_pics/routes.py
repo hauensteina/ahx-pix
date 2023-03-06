@@ -154,7 +154,7 @@ def gallery():
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
     gallery_html = gui.gen_gallery( gallery, pics)
-    return render_template( 'gallery.html', content=gallery_html)
+    return render_template( 'gallery.html', content=gallery_html, no_links=True)
 
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
 #@show_error
@@ -166,7 +166,7 @@ def gallery_mobile():
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
-    return render_template( 'gallery_mobile.html', content=gallery_html)
+    return render_template( 'gallery_mobile.html', content=gallery_html, no_links=True)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -178,6 +178,8 @@ def index():
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
+    all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
+    session['all_pics_flag'] = all_pics_flag
 
     if 'btn_sort' in parms: 
         sort_col = parms['btn_sort']
@@ -190,9 +192,14 @@ def index():
 
     search_html = gui.gen_gallery_search( title, owner)
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
-    galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+    if all_pics_flag:
+        galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+    else:
+        galleries = pe.get_my_galleries( title, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        
     gallery_html = gui.gen_gallery_list( galleries, sort_col, next_order)
-    res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
+    res = render_template( 'index.html', search_html=search_html, 
+                           gallery_list=gallery_html, all_pics_flag=all_pics_flag)
     return res
 
 @app.route('/index_mobile', methods=['GET', 'POST'])
@@ -204,6 +211,8 @@ def index_mobile():
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
+    all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
+    session['all_pics_flag'] = all_pics_flag
 
     if 'btn_sort' in parms: 
         sort_col = parms['btn_sort']
@@ -216,9 +225,13 @@ def index_mobile():
 
     search_html = gui.gen_gallery_search_mobile( title, owner)
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
-    galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+    if all_pics_flag:
+        galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+    else:
+        galleries = pe.get_my_galleries( title, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
     gallery_html = gui.gen_gallery_list_mobile( galleries, sort_col, next_order)
-    res = render_template( 'index.html', search_html=search_html, gallery_list=gallery_html)
+    res = render_template( 'index.html', search_html=search_html, 
+                           gallery_list=gallery_html, all_pics_flag=all_pics_flag)
     return res
 
 @app.route('/login', methods=['GET', 'POST'])

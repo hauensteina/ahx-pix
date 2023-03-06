@@ -9,6 +9,7 @@ Functions to abstract all data persistence stuff, like postgres and S3 access.
 from pdb import set_trace as BP
 from datetime import datetime, timedelta
 import json
+from flask_login import current_user
 from mod_ahx_pics import pg, log
 from mod_ahx_pics import SMALL_FOLDER, MEDIUM_FOLDER, LINK_EXPIRE_HOURS
 import mod_ahx_pics.helpers as helpers
@@ -25,6 +26,19 @@ def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc
     if gallery_id: where += f''' and id = '{gallery_id}' '''
     sql = f'''
     select * from gallery {where} order by {order_by} 
+    '''
+    rows = pg.select(sql)
+    return rows
+
+def get_my_galleries( title='', order_by='create_date desc'):
+    """
+    Get my galleries as a list of dicts. Filter by title.
+    """
+    username = current_user.data['username']
+    where = ' where true '
+    if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
+    sql = f'''
+    select * from gallery where username = '{username}' order by {order_by} 
     '''
     rows = pg.select(sql)
     return rows
