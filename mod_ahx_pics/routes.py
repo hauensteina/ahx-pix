@@ -8,6 +8,7 @@ from pdb import set_trace as BP
 
 import os, sys, re, json, random
 from datetime import datetime, date
+import shortuuid
 
 import flask
 from flask import request, render_template, flash, redirect, url_for, session, send_file
@@ -15,7 +16,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from functools import wraps
 from itsdangerous import TimestampSigner, SignatureExpired
 
-from mod_ahx_pics import AppError, Q
+from mod_ahx_pics import AppError, Q, pg
 from mod_ahx_pics import app, log, logged_in
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER
 
@@ -47,6 +48,7 @@ def add_user():
         admin_flag = request.form.get( 'admin_flag', False)
 
         today = date.today()
+        iid = shortuuid.uuid() 
         data = { 
             'email':email
             ,'username':username
@@ -264,11 +266,35 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route("/new_gallery")
+@app.route("/new_gallery", methods=['GET', 'POST'])
 @login_required
-#--------------------
+#-----------------------------------------------------
 def new_gallery():
-    return 'Hello'
+    error = None
+    data = {}
+    if request.method == 'POST': # form submitted
+        title = request.form['title']
+        private_flag = request.form.get( 'private_flag', False)
+
+        today = date.today()
+        iid = shortuuid.uuid()
+        data = { 
+            'id':iid
+            ,'username':current_user.data['username']
+            ,'title':title
+            ,'private_flag':private_flag
+            ,'create_date':today
+            ,'change_date':today
+        }           
+        try:
+            pg.insert( 'gallery',[data])
+        except Exception as e:
+            return render_template( 'new_gallery.html', error=str(e), **data)
+            
+        flash( f'''Gallery created.''')
+        return redirect( url_for('index'))
+    else: # Initial hit
+        return render_template( 'new_gallery.html', error=error, **data)
 
 @app.route('/reset_request', methods=['GET', 'POST'])
 #--------------------------------------------------------
