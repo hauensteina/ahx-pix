@@ -75,6 +75,7 @@ def add_user():
         return render_template( 'add_user.html', error=error, **data)
 
 @app.route('/carousel', methods=['GET', 'POST'])
+@login_required
 #-------------------------------------------------
 def carousel():
     """ Full screen swipeable image carousel """
@@ -85,6 +86,7 @@ def carousel():
     return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
 @app.route('/download_img', methods=['GET'])
+@login_required
 #-------------------------------------------
 def download_img():
     """
@@ -145,6 +147,7 @@ def edit_info():
                                )
 
 @app.route('/gallery', methods=['GET', 'POST'])
+@login_required
 #@show_error
 #-------------------------------------------------
 def gallery():
@@ -157,6 +160,7 @@ def gallery():
     return render_template( 'gallery.html', content=gallery_html, no_links=True)
 
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
+@login_required
 #@show_error
 #-------------------------------------------------
 def gallery_mobile():
@@ -171,6 +175,7 @@ def gallery_mobile():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
+@login_required
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
@@ -203,6 +208,7 @@ def index():
     return res
 
 @app.route('/index_mobile', methods=['GET', 'POST'])
+@login_required
 #@show_error
 #-------------------------------------------------
 def index_mobile():
@@ -257,6 +263,12 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route("/new_gallery")
+@login_required
+#--------------------
+def new_gallery():
+    return 'Hello'
 
 @app.route('/reset_request', methods=['GET', 'POST'])
 #--------------------------------------------------------

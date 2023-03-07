@@ -259,59 +259,93 @@ def gen_gallery_list_mobile( galleries, sort_col, next_order):
 def gen_gallery_search( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
 
-    html = f'''
-    <form id='gallery_search' method=post class=search-form>
-      <input type=hidden name=_action value="search_gallery">
-      <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
-        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-          Title:
-        </div>
-        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-          Owner:
-        </div>
+    if session.get('all_pics_flag',''):
+        html = f'''
+        <form id='gallery_search' method=post class=search-form>
+          <input type=hidden name=_action value="search_gallery">
+          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              Title:
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              Owner:
+            </div>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              <input type=text name=title size=20 value='{title}'>
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              <input type=text name=owner size=20 value='{owner}'>
+            </div>
 
-        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-          <input type=text name=title size=20 value='{title}'>
-        </div>
-        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-          <input type=text name=owner size=20 value='{owner}'>
-        </div>
-
-        <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
-          <input type=submit name=btn_search value=Search >
-        </div>
-      </div>
-    </form>
-    '''
+            <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
+              <input type=submit name=btn_search value=Search >
+            </div>
+          </div>
+        </form>
+        '''
+    else:
+        html = f'''
+        <form id='gallery_search' method=post class=search-form>
+          <input type=hidden name=_action value="search_gallery">
+          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0);'>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              Title:
+            </div>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              <input type=text name=title size=20 value='{title}'>
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              <input type=submit name=btn_search value=Search >
+            </div>
+          </div>
+        </form>
+        '''
     return html
 
 def gen_gallery_search_mobile( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
+    if session.get('all_pics_flag',''):
+        html = f'''
+        <form id='gallery_search' method=post class=search-form-mobile>
+          <input type=hidden name=_action value="search_gallery">
+          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              Title:
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              Owner:
+            </div>
 
-    html = f'''
-    <form id='gallery_search' method=post class=search-form-mobile>
-      <input type=hidden name=_action value="search_gallery">
-      <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
-        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-          Title:
-        </div>
-        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-          Owner:
-        </div>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              <input type=text name=title size=15 value='{title}'>
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              <input type=text name=owner size=15 value='{owner}'>
+            </div>
 
-        <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-          <input type=text name=title size=15 value='{title}'>
-        </div>
-        <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-          <input type=text name=owner size=15 value='{owner}'>
-        </div>
-
-        <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
-          <input type=submit name=btn_search value=Search >
-        </div>
-      </div>
-    </form>
-    '''
+            <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
+              <input type=submit name=btn_search value=Search >
+            </div>
+          </div>
+        </form>
+        '''
+    else:
+        html = f'''
+        <form id='gallery_search' method=post class=search-form-mobile>
+          <input type=hidden name=_action value="search_gallery">
+          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              Title:
+            </div>
+            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+              <input type=text name=title size=15 value='{title}'>
+            </div>
+            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
+              <input type=submit name=btn_search value=Search >
+            </div>
+          </div>
+        </form>
+        '''
     return html
 
 def _gen_gallery_link( gallery, action, title):   
