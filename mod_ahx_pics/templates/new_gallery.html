@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class=ahx-mob-or-desk>
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <form method=post>
+    <div style='display:grid;
+                grid-template-columns: fit-content(50%) fit-content(50%);'>
+
+      <div style='margin-bottom:10px;margin-right:5px'>Title:</div>
+      <div><input type=text name=title value='{{title}}'size=40></div> 
+      <div style='margin-bottom:10px;margin-right:5px'>Private</div>
+      <div><input type=checkbox name=private_flag></div> 
+      <div style='margin-top:10px'><input type=submit value='Create Gallery'></div>
+    </div>
+  </form>
+</div>
+
+{% endblock content %}
