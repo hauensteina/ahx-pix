@@ -19,8 +19,8 @@ def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc
     Get galleries as a list of dicts. Filter by title and owner.
     TODO: If logged in, show private pages of user. 
     """
-
-    where = ' where true '
+    username = current_user.data['username']
+    where = f''' where deleted_flag = false and (username='{username}' or private_flag = false)  '''
     if owner: where += f''' and lower(username) like '%%{owner.lower()}%%' '''
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     if gallery_id: where += f''' and id = '{gallery_id}' '''
@@ -35,7 +35,7 @@ def get_my_galleries( title='', order_by='create_date desc'):
     Get my galleries as a list of dicts. Filter by title.
     """
     username = current_user.data['username']
-    where = ' where true '
+    where = ' where deleted_flag '
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     sql = f'''
     select * from gallery where username = '{username}' order by {order_by} 

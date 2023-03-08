@@ -84,6 +84,7 @@ def _create_gallery( pg):
       ,n_hits int
       ,create_date date
       ,change_date date
+      ,deleted_flag boolean not null default false
     )
     '''
     pg.run(sql)

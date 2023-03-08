@@ -99,7 +99,7 @@ def delete_gallery():
             flash('Gallery not deleted')
             return redirect( url_for(home))
         gallery_id = parms['question_parm']        
-        pg.run( f''' delete from gallery where id = '{gallery_id}' ''')
+        pg.run( f''' update gallery set deleted_flag = true where id = '{gallery_id}' ''')
         flash('Gallery deleted')
         return redirect( url_for(home))
     else:
@@ -109,7 +109,7 @@ def delete_gallery():
             error = 'You do not own this gallery.'
             return render_template('index.html', error=error)
         return render_template('question.html', 
-                               msg=f'''Do you really want to delete this gallery?
+                               msg=f'''Do you really want to delete gallery '{gallery['title']}'?
                                 <div style='color:red;'>You cannot undo the delete!</div>''', 
                                question_parm=gallery_id, no_links=True)
 
