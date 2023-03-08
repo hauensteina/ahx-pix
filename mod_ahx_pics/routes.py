@@ -189,7 +189,7 @@ def gallery():
     # I can edit my own galleries only
     if current_user.data['username'] == gallery['username']:
         mylinks = f'''
-        <div style='margin-left:5vw;margin-bottom:10px;'>
+        <div style='margin-left:50px;margin-bottom:10px;'>
           <a href="{url_for('index')}">Edit Title</a> &nbsp;   
           <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
           <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete Gallery</a> &nbsp;   
