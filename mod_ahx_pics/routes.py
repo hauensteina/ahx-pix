@@ -159,7 +159,17 @@ def gallery():
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
     gallery_html = gui.gen_gallery( gallery, pics)
-    return render_template( 'gallery.html', content=gallery_html, no_links=True)
+    mylinks = ''
+    # I can edit my own galleries only
+    if current_user.data['username'] == gallery['username']:
+        mylinks = f'''
+        <div style='margin-left:5vw;margin-bottom:10px;'>
+          <a href="{url_for('index')}">Edit Title</a> &nbsp;   
+          <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
+          <a href="{url_for('index')}">Delete Gallery</a> &nbsp;   
+        </div>
+        '''
+    return render_template( 'gallery.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
 @login_required

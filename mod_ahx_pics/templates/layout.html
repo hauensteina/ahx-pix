@@ -108,6 +108,8 @@
     </div>
     {% endif %}
 
+    {{ custom_links }}
+
     <!-- Flashed messages -->
     <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;'>
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -157,6 +159,8 @@
       <a href="{{ url_for('new_gallery') }}">New Gallery</a> &nbsp;   
     </div>
     {% endif %}
+
+    {{ custom_links|safe }}
 
     <!-- Flashed messages -->
     <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;'>
