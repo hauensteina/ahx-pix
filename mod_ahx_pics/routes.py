@@ -87,6 +87,32 @@ def carousel():
     images = gui.gen_carousel_images( gallery_id, active_pic_id)
     return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
 
+@app.route('/delete_gallery', methods=['GET', 'POST'])
+@login_required
+#-------------------------------------------------------------
+def delete_gallery():
+    """ Delete a gallery (prompt for confirmation first) """
+    home = 'index_mobile' if session['is_mobile'] else 'index'
+    parms = get_parms()
+    if request.method == 'POST': # form submitted
+        if 'btn_no' in parms:
+            flash('Gallery not deleted')
+            return redirect( url_for(home))
+        gallery_id = parms['question_parm']        
+        pg.run( f''' delete from gallery where id = '{gallery_id}' ''')
+        flash('Gallery deleted')
+        return redirect( url_for(home))
+    else:
+        gallery_id = parms['gallery_id']
+        gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
+        if gallery['username'] != current_user.data['username']:
+            error = 'You do not own this gallery.'
+            return render_template('index.html', error=error)
+        return render_template('question.html', 
+                               msg=f'''Do you really want to delete this gallery?
+                                <div style='color:red;'>You cannot undo the delete!</div>''', 
+                               question_parm=gallery_id, no_links=True)
+
 @app.route('/download_img', methods=['GET'])
 @login_required
 #-------------------------------------------
@@ -166,7 +192,7 @@ def gallery():
         <div style='margin-left:5vw;margin-bottom:10px;'>
           <a href="{url_for('index')}">Edit Title</a> &nbsp;   
           <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
-          <a href="{url_for('index')}">Delete Gallery</a> &nbsp;   
+          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete Gallery</a> &nbsp;   
         </div>
         '''
     return render_template( 'gallery.html', content=gallery_html, custom_links=mylinks, no_links=True)
@@ -182,7 +208,17 @@ def gallery_mobile():
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
-    return render_template( 'gallery_mobile.html', content=gallery_html, no_links=True)
+    mylinks = ''
+    # I can edit my own galleries only
+    if current_user.data['username'] == gallery['username']:
+        mylinks = f'''
+        <div style='margin-left:5vw;margin-bottom:10px;'>
+          <a href="{url_for('index')}">Edit Title</a> &nbsp;   
+          <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
+          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete Gallery</a> &nbsp;   
+        </div>
+        '''
+    return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -376,7 +412,7 @@ def get_parms():
         parms = dict(request.form)
     else:
         parms = dict(request.args)
-    # strip all input parameters    
+    # strip all parameters    
     parms = { k:v.strip() for k, v in parms.items()}
     print(f'>>>>>>>>>PARMS:{parms}')
     return parms

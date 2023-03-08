@@ -108,10 +108,10 @@
     </div>
     {% endif %}
 
-    {{ custom_links }}
+    {{ custom_links|safe }}
 
     <!-- Flashed messages -->
-    <div style='margin-left:50px;margin-bottom:5px;margin-top:5px;min-height:30px;'>
+    <div style='margin-left:5vw;margin-bottom:5px;margin-top:5px;min-height:30px;'>
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
       {% for category, message in messages %}

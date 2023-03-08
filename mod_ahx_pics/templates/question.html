@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class=ahx-mob-or-desk>
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <form method=post>
+    <div style='display:grid;
+                grid-template-columns: fit-content(50%) 1fr;'>
+      <div style='grid-column-start:1;grid-column-end:3;'> {{ msg|safe }} </div>
+      <div style='margin-top:10px;margin-right:20px;'><input type=submit  name=btn_no value='No'></div>
+      <div style='margin-top:10px'><input type=submit  name=btn_yes value='Yes'></div>
+    </div>
+    <input type=hidden name=question_parm value='{{question_parm}}'></div>
+  </form>
+</div>
+
+{% endblock content %}
