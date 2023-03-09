@@ -58,6 +58,10 @@ class AHXCarousel {
         }
       })
     //debugger
+    if (isMobile()) {
+      E('.ahx-carousel-button.ahx-next').hidden = true
+      E('.ahx-carousel-button.ahx-prev').hidden = true
+    }
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
@@ -242,12 +246,14 @@ class AHXCarousel {
   } // check_key()
 
   // Show arrows on mouse move
-  //--------------------------------------------------
+  //------------------------------
   _showArrows() {
     var self = this
     function showControls() {
-      E('.ahx-carousel-button.ahx-next').hidden = false
-      E('.ahx-carousel-button.ahx-prev').hidden = false
+      if (!isMobile()) {
+        E('.ahx-carousel-button.ahx-next').hidden = false
+        E('.ahx-carousel-button.ahx-prev').hidden = false
+      }
       E('.ahx-x').hidden = false
       E('#ahx-topcont').hidden = false
       self._resetArrowTimer()
@@ -258,10 +264,10 @@ class AHXCarousel {
   } // showArrows()
 
   // Hide arrows after a timeout; show on mouse move
-  //---------------------------
+  //---------------------------------------------------
   _resetArrowTimer() {
     const TIMEOUT = 2000
-    function timerFired() { 
+    function timerFired() { //return;
                             E('.ahx-carousel-button.ahx-next').hidden = true
                             E('.ahx-carousel-button.ahx-prev').hidden = true
                             E('.ahx-x').hidden = true
