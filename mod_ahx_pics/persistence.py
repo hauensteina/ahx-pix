@@ -25,7 +25,7 @@ def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     if gallery_id: where += f''' and id = '{gallery_id}' '''
     sql = f'''
-    select * from gallery {where} order by {order_by} 
+    select * from gallery {where} order by {order_by} limit 200
     '''
     rows = pg.select(sql)
     return rows

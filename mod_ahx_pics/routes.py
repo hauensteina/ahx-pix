@@ -13,12 +13,13 @@ import shortuuid
 import flask
 from flask import request, render_template, flash, redirect, url_for, session, send_file
 from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.utils import secure_filename
 from functools import wraps
 from itsdangerous import TimestampSigner, SignatureExpired
 
 from mod_ahx_pics import AppError, Q, pg
 from mod_ahx_pics import app, log, logged_in
-from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER
+from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER, UPLOAD_FOLDER
 
 from mod_ahx_pics.worker_funcs import gen_thumbnails 
 import mod_ahx_pics.helpers as helpers
@@ -184,15 +185,18 @@ def gallery():
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
+    session['gallery_id'] = gallery['id']
+    session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery( gallery, pics)
     mylinks = ''
     # I can edit my own galleries only
     if current_user.data['username'] == gallery['username']:
         mylinks = f'''
-        <div style='margin-left:50px;margin-bottom:10px;'>
+        <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
+          <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('index')}">Edit Title</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
-          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete Gallery</a> &nbsp;   
+          <a href="{url_for('index')}">Edit Pics</a> &nbsp;   
+          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
         '''
     return render_template( 'gallery.html', content=gallery_html, custom_links=mylinks, no_links=True)
@@ -207,15 +211,18 @@ def gallery_mobile():
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
     gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
+    session['gallery_id'] = gallery['id']
+    session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
     mylinks = ''
     # I can edit my own galleries only
     if current_user.data['username'] == gallery['username']:
         mylinks = f'''
-        <div style='margin-left:5vw;margin-bottom:10px;'>
+        <div style='margin-left:5vw;margin-bottom:10px;width:100vw;'>
+          <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('index')}">Edit Title</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Pictures</a> &nbsp;   
-          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete Gallery</a> &nbsp;   
+          <a href="{url_for('index')}">Edit Pics</a> &nbsp;   
+          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a>
         </div>
         '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
@@ -402,6 +409,51 @@ def reset_token():
             flash( f'Invalid user {user_id}', 'error')
             return redirect( url_for('reset_request'))
         return render_template('reset_token.html', user_id=user_id)
+
+@app.route("/upload_pics", methods=['GET', 'POST'])
+@login_required
+#-----------------------------------------------------
+def upload_pics():
+
+    def allowed_file(filename):
+        return os.path.splitext(filename)[1].lower() in [
+            '.jpg','.jpeg','.png','.pdf','.gif','.mp4','.mov','.zip'
+        ]
+
+    error = None
+    data = {}
+    data['gallery_title'] = session['gallery_title']
+    if request.method == 'POST': # Upload button clicked
+        gallery_page = 'gallery_mobile' if session['is_mobile'] else 'gallery'
+        if 'file' not in request.files:
+            flash('No file part', 'error')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('Please select a file', 'error')
+            return redirect(request.url)
+        if not allowed_file(file.filename):
+            flash( f'''{file.filename} is not a valid media file''', 'error')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            fname = f'''{UPLOAD_FOLDER}/{filename}'''
+            file.save(fname)
+            # @@@ cont here
+            # unzip ?
+            # Copy to S3
+            # Insert into DB
+            # Everything should work, but slow because no thumbnails
+            # worker should pic up gen_thumbnails job from REDIS
+            # Todo: Worker needs to quickly pass over non-existing img files from the db
+            # The status of thumbnail generation is flashed as (small img gen: k/n med img gen: k/n) 
+
+            flash( f'''File {file.filename} was uploaded''') 
+            return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
+    else: # Initial hit
+        return render_template( 'upload_pics.html', error=error, **data, no_links=True )
 
 # Utility funcs
 ##################

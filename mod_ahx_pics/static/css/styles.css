@@ -3,6 +3,34 @@
 .green-border { border-style:solid; border-color:green; }
 .blue-border { border-style:solid; border-color:blue; }
 
+
+.heading { 
+    color: #7c795d; 
+    font-family: 'Source Sans Pro', sans-serif; 
+    font-size: 28px; 
+    font-weight: 400; 
+    line-height: 32px; 
+    margin: 0 0 24px; 
+}
+
+.page-title {
+    color: #7c795d; 
+    font-family: 'Source Sans Pro', sans-serif; 
+    font-size: 28px; 
+    font-weight: 400; 
+    line-height: 32px; 
+    margin: 0 0 24px; 
+}
+
+.page-title-mobile {
+    color: #7c795d; 
+    font-family: 'Source Sans Pro', sans-serif; 
+    font-size: 28px; 
+    font-weight: 400; 
+    line-height: 32px; 
+    margin: 0 0 24px; 
+}
+
 /* flask flashed msgs */
 .message { color:green; }
 .error { color:red; } 

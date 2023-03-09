@@ -18,7 +18,7 @@
     <meta name='keywords' content='Photo Viewer Demo'>
     <meta name='author' content='Andreas Hauenstein'>
 
-    <title>AHX Pics</title>
+    <title>PIX</title>
     <link rel='icon' href='static/images/world_100.png' type='image/ico' />
     <link rel='shortcut icon' href='static/images/world_100.png' type='image/ico' />
 
@@ -84,13 +84,13 @@
         </a>
       </div>
       <div style='padding-left:15px;margin:auto 0;'>
-        <span style='font-size: 1.5em;white-space:nowrap;'>Picture Galleries</span>
+        <span class=page-title-mobile>PIX</span>
       </div>
     </div>
 
     <!-- Links at the top -->
     {% if not no_links %}
-    <div style='margin-left:5vw;margin-bottom:10px;'>
+    <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
       {% if logged_in() %}
       <a href="{{ url_for('edit_info') }}">{{ f_username() }}</a> &nbsp;
       {% else %}
@@ -129,14 +129,14 @@
     <!-- Page Heading -->
     <div style='display:grid;
                 grid-template-columns: fit-content(50%) fit-content(50%);
-                margin-left:40px; margin-bottom:5px;'>
+                margin-left:40px; margin-bottom:5px; margin-top:10px;'>
       <div style='height:8vh'>
         <a href="{{ url_for('index') }}">
           <img height=100% src='static/images/world_500.png' style='margin:auto 0;'>
         </a>
       </div>
       <div style='padding-left:15px;margin:auto 0;'>
-        <span style='font-size: 1.5em;'>Picture Galleries</span>
+        <span class=page-title>PIX</span>
       </div>
     </div>
 

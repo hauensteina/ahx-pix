@@ -39,6 +39,7 @@ MEDIUM_THUMB_SIZE = 1000
 
 # Local download folder
 DOWNLOAD_FOLDER='downloads'
+UPLOAD_FOLDER='uploads'
 
 # Limit background job time
 JOB_TIMEOUT=3600
