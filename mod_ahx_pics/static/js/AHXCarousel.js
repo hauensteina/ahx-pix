@@ -200,18 +200,16 @@ class AHXCarousel {
 
   //-------------------------------
   _enableSwiping() {
-    var downX = 0
-    var upX = 0
     this.slides().forEach( imgOrVideo => {
       imgOrVideo.onpointerdown = ev => {
         ev.preventDefault()
-        downX = ev.clientX
+         this.downX = ev.clientX
       }
       imgOrVideo.onpointerup = ev => {
         ev.preventDefault()
-        upX = ev.clientX
-        if (Math.abs(upX - downX) < 10) return
-        if (upX > downX) { this._changeImage('prev') }
+        this.upX = ev.clientX
+        if (Math.abs(this.upX -  this.downX) < 10) return
+        if (this.upX >  this.downX) { this._changeImage('prev') }
         else { this._changeImage('next') }
       }
     }) // slides.foreach
