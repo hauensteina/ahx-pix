@@ -72,6 +72,13 @@ def pexc( e):
     msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
     return msg
 
+def unzip(fname):
+    """ Unzip, if it's a zip file. """
+    return [fnmame]
+
+# HTML stuff
+#-----------------------
+
 def html_tag( tag, content='', style=''):
     """
     Make a piece of HTML surrounded by tag,

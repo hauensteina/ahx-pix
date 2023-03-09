@@ -9,9 +9,10 @@ Functions for background execution via Redis Queue
 from pdb import set_trace as BP
 import os
 import datetime
+import shortuuid
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell
-from mod_ahx_pics import log,pg
+from mod_ahx_pics import log,pg,Q
 
 from mod_ahx_pics import (
     ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
@@ -55,21 +56,24 @@ def _get_missing_media(subfolder):
                             if x in set(missing_target_basenames) ]
     return missing_orig_fnames
     
-def _resize_media( fnames, size):
+def _resize_media( fnames, gallery_id, size):
     tstart = datetime.datetime.now()
     for idx,fname in enumerate(fnames):
+        if not os.path.exists(fname):
+            log( f'''_resize_media(): File {fname} not found. Skipping''')
+            continue
         log( f' {idx+1}/{len(fnames)} Generating {size} version for {fname}') 
         if media_type( fname) == 'image':
-            _resize_image( fname, size)
+            _resize_image( fname, gallery_id, size)
         elif media_type( fname) == 'video':
-            _resize_video( fname, size)
+            _resize_video( fname, gallery_id, size)
         else:
             log( f'ERROR: unknown media extension: {fname}. Skipping resize.')
             
     tend = datetime.datetime.now()
     log( f'{size} size media generated in {tend - tstart}')
 
-def _resize_video( fname, size):
+def _resize_video( fname, gallery_id, size):
     """ Compress video. The small version is just a single thumbnail frame. """
     if size == 'small':
         prefix = 'sm'
@@ -87,9 +91,10 @@ def _resize_video( fname, size):
         target_folder = LARGE_FOLDER
         ext = os.path.splitext(fname)[1]
     try:
-        local_fname = s3_download_file(fname)
+        #local_fname = s3_download_file(fname)
+        local_fname = fname
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        gallery_id = basename(fname).split('_')[1]
+        #gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if size == 'large': # Large version remains unchanged
             local_thumb = local_fname
@@ -102,12 +107,12 @@ def _resize_video( fname, size):
         log( f'EXCEPTION: {pexc(e)}')
     finally:
         try:
-            os.remove(local_fname)
+            #os.remove(local_fname)
             os.remove(local_thumb)
         except:
             pass
     
-def _resize_image( fname, size='small'):
+def _resize_image( fname, gallery_id, size='small'):
     """ Resize images to either small or medium size and store in target folder """
     if size == 'small':
         prefix = 'sm'
@@ -125,10 +130,11 @@ def _resize_image( fname, size='small'):
         max_size = 0
         
     try:
-        local_fname = s3_download_file(fname)
+        #local_fname = s3_download_file(fname)
+        local_fname = fname
         ext = os.path.splitext(fname)[1].lower()
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        gallery_id = basename(fname).split('_')[1]
+        #gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf' and size != 'large':
             try:
@@ -149,7 +155,7 @@ def _resize_image( fname, size='small'):
         log( f'EXCEPTION: {pexc(e)}')
     finally:
         try:
-            os.remove(local_fname)
+            #os.remove(local_fname)
             os.remove(local_thumb)
         except:
             pass
@@ -172,3 +178,27 @@ def gen_thumbnails():
 
     log('Done.')
 
+def f01_unzip(fname, orig_fname, gallery_id):
+    """ Unzip if its a zip file and kick off the pipeline """
+    log( f'''WORKER:  01_unzip({fname}) starting''')
+    if os.path.splitext(fname)[1].lower() == '.zip':
+        log('ERROR: Unzip not implemented yet.')
+        return
+    else:
+        fnames = [fname]
+        
+    for fname in fnames:
+        pic_id = shortuuid.uuid()
+        Q.enqueue( f02_gen_thumbs, fname, gallery_id, pic_id)
+    log( f'''WORKER:  01_unzip({fname}) done''')
+
+def f02_gen_thumbs(fname, gallery_id, pic_id):
+    log(f'''WORKER: 02_gen_thumbs({fname},{gallery_id},{pic_id}) starting''')
+    # Generate smaller images and upload to S3
+    _resize_media( [fname], gallery_id, 'small')
+    _resize_media( [fname], gallery_id, 'medium')
+    _resize_media( [fname], gallery_id, 'large')
+    # Tell the DB about the new image
+    # @@@cont here
+
+    log(f'''WORKER: 02_gen_thumbs() done''')

@@ -27,6 +27,8 @@ import mod_ahx_pics.persistence as pe
 import mod_ahx_pics.gui as gui
 import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
+from mod_ahx_pics import worker_funcs as wf
+
 
 @app.route('/ttest')
 #-----------------------
@@ -423,6 +425,7 @@ def upload_pics():
     error = None
     data = {}
     data['gallery_title'] = session['gallery_title']
+    gallery_id = session['gallery_id']
     if request.method == 'POST': # Upload button clicked
         gallery_page = 'gallery_mobile' if session['is_mobile'] else 'gallery'
         if 'file' not in request.files:
@@ -438,11 +441,15 @@ def upload_pics():
             flash( f'''{file.filename} is not a valid media file''', 'error')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            tempf = shortuuid.uuid()
+            ext = os.path.splitext( file.filename)[1].lower()
+            filename = f'''{gallery_id}_{tempf}{ext}'''
             fname = f'''{UPLOAD_FOLDER}/{filename}'''
+            orig_fname = file.filename
             file.save(fname)
+            # Each step will trigger the next
+            Q.enqueue( wf.f01_unzip, fname, orig_fname, gallery_id)
             # @@@ cont here
-            # unzip ?
             # Copy to S3
             # Insert into DB
             # Everything should work, but slow because no thumbnails
@@ -450,7 +457,7 @@ def upload_pics():
             # Todo: Worker needs to quickly pass over non-existing img files from the db
             # The status of thumbnail generation is flashed as (small img gen: k/n med img gen: k/n) 
 
-            flash( f'''File {file.filename} was uploaded''') 
+            flash( f'''File {file.filename} was uploaded and is processing.''') 
             return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
     else: # Initial hit
         return render_template( 'upload_pics.html', error=error, **data, no_links=True )

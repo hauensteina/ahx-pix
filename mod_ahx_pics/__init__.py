@@ -181,5 +181,5 @@ create_tables( pg)
 from mod_ahx_pics import routes
 
 from mod_ahx_pics.worker_funcs import gen_thumbnails
-Q.enqueue( gen_thumbnails)
-
+#Q.enqueue( gen_thumbnails)
+Q.empty()
