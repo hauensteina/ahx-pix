@@ -441,14 +441,12 @@ def upload_pics():
             flash( f'''{file.filename} is not a valid media file''', 'error')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            tempf = shortuuid.uuid()
-            ext = os.path.splitext( file.filename)[1].lower()
-            filename = f'''{gallery_id}_{tempf}{ext}'''
-            fname = f'''{UPLOAD_FOLDER}/{filename}'''
-            orig_fname = file.filename
+            tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
+            os.mkdir( tempfolder)            
+            fname = secure_filename(file.filename)
+            fname = f'''{tempfolder}/{fname}'''
             file.save(fname)
-            # Each step will trigger the next
-            Q.enqueue( wf.f01_unzip, fname, orig_fname, gallery_id)
+            Q.enqueue( wf.add_new_images, fname, gallery_id)
             # @@@ cont here
             # Copy to S3
             # Insert into DB

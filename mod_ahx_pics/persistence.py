@@ -35,10 +35,10 @@ def get_my_galleries( title='', order_by='create_date desc'):
     Get my galleries as a list of dicts. Filter by title.
     """
     username = current_user.data['username']
-    where = ' where deleted_flag '
+    where = f''' where deleted_flag = false and username = '{username}' '''
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     sql = f'''
-    select * from gallery where username = '{username}' order by {order_by} 
+    select * from gallery {where} order by {order_by} 
     '''
     rows = pg.select(sql)
     return rows

@@ -83,7 +83,7 @@ app.config.update(
     SECRET_KEY = os.environ['AHX_FLASK_SECRET'] # For encrypted session cookie
 )
 
-app.config['MAX_CONTENT_LENGTH'] = int(1E6)
+app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 # Make some functions available in the jinja templates.
 # Black Magic.

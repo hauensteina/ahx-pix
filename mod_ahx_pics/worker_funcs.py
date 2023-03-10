@@ -7,7 +7,7 @@ Functions for background execution via Redis Queue
 """
 
 from pdb import set_trace as BP
-import os
+import os, shutil, json
 import datetime
 import shortuuid
 from PIL import Image, ExifTags
@@ -160,6 +160,7 @@ def _resize_image( fname, gallery_id, size='small'):
         except:
             pass
 
+""" TODO: This is outdated and needs fixing """
 def gen_thumbnails():
     log(f'>>>>>>> generating thumbnails')
     # Paths to originals that still need thumbnails
@@ -178,27 +179,55 @@ def gen_thumbnails():
 
     log('Done.')
 
-def f01_unzip(fname, orig_fname, gallery_id):
+def f01_unzip(fname):
     """ Unzip if its a zip file and kick off the pipeline """
-    log( f'''WORKER:  01_unzip({fname}) starting''')
-    if os.path.splitext(fname)[1].lower() == '.zip':
-        log('ERROR: Unzip not implemented yet.')
-        return
-    else:
-        fnames = [fname]
-        
-    for fname in fnames:
-        pic_id = shortuuid.uuid()
-        Q.enqueue( f02_gen_thumbs, fname, gallery_id, pic_id)
-    log( f'''WORKER:  01_unzip({fname}) done''')
+    log('  ERROR: Unzip not implemented yet.')
 
-def f02_gen_thumbs(fname, gallery_id, pic_id):
-    log(f'''WORKER: 02_gen_thumbs({fname},{gallery_id},{pic_id}) starting''')
+def f02_gen_thumbs( s3name, gallery_id):
+    log(f'''  WORKER: f02_gen_thumbs({s3name},{gallery_id}) starting''')
     # Generate smaller images and upload to S3
-    _resize_media( [fname], gallery_id, 'small')
-    _resize_media( [fname], gallery_id, 'medium')
-    _resize_media( [fname], gallery_id, 'large')
-    # Tell the DB about the new image
-    # @@@cont here
+    _resize_media( [s3name], gallery_id, 'small')
+    _resize_media( [s3name], gallery_id, 'medium')
+    _resize_media( [s3name], gallery_id, 'large')
+    log(f'''  WORKER: f02_gen_thumbs() done''')
 
-    log(f'''WORKER: 02_gen_thumbs() done''')
+def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
+    """ Tell the DB about the new image """
+    log(f'''  WORKER: f03_insert_db({s3name},{gallery_id}) starting''')
+    today = datetime.date.today()
+    s3name = os.path.split(s3name)[1]
+    data = {
+        'id':pic_id
+        ,'gallery_id':gallery_id
+        ,'blurb':''
+        ,'filename':s3name
+        ,'orig_fname': orig_fname
+        ,'title_flag':False
+        ,'create_date':today
+        ,'change_date':today
+    }
+    pg.insert( 'picture', [data])
+    log(f'''  WORKER: f03_insert_db() done''')
+
+def _set_gallery_status( gallery_id, msg):
+    data = { 'status': json.dumps({'msg':msg}) }
+    pg.update_row( 'gallery', 'id', gallery_id, data)
+
+def add_new_images( fname, gallery_id):
+    """ Add new images to a gallery """
+    log( f'''WORKER:  add_new_images( {fname}, {gallery_id}) starting''')
+    fnames = [fname]
+    if os.path.splitext(fname)[1].lower() == '.zip':
+        fnames = f01_unzip( fname)
+    for idx,fname in enumerate(fnames):
+        BP()
+        _set_gallery_status( gallery_id, f'''Adding image {fname} ({idx+1}/{len(fnames)})''')
+        pic_id = shortuuid.uuid()
+        ext = os.path.splitext(fname)[1].lower()
+        path = os.path.split(fname)[0]
+        s3name = f'''{path}/{gallery_id}_{pic_id}{ext}'''
+        shutil.copyfile( fname, s3name)
+        f02_gen_thumbs( s3name, gallery_id)
+        f03_insert_db( s3name, fname, gallery_id, pic_id)
+    _set_gallery_status( gallery_id, f'ok')
+    log( f'''WORKER:  add_new_images() done''')

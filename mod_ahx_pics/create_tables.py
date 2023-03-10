@@ -85,6 +85,8 @@ def _create_gallery( pg):
       ,create_date date
       ,change_date date
       ,deleted_flag boolean not null default false
+      ,piclist text not null default ''::text
+      ,status text not null default ''::text
     )
     '''
     pg.run(sql)
@@ -99,6 +101,7 @@ def _create_picture( pg):
       ,gallery_id text
       ,blurb text
       ,filename text
+      ,orig_fname text
       ,position int
       ,title_flag boolean
       ,create_date date
