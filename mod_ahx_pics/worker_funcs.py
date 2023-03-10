@@ -201,7 +201,7 @@ def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
         ,'gallery_id':gallery_id
         ,'blurb':''
         ,'filename':s3name
-        ,'orig_fname': orig_fname
+        ,'orig_fname': os.path.split(orig_fname)[1]
         ,'title_flag':False
         ,'create_date':today
         ,'change_date':today
@@ -220,7 +220,6 @@ def add_new_images( fname, gallery_id):
     if os.path.splitext(fname)[1].lower() == '.zip':
         fnames = f01_unzip( fname)
     for idx,fname in enumerate(fnames):
-        BP()
         _set_gallery_status( gallery_id, f'''Adding image {fname} ({idx+1}/{len(fnames)})''')
         pic_id = shortuuid.uuid()
         ext = os.path.splitext(fname)[1].lower()
