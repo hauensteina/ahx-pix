@@ -15,7 +15,7 @@ from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log,pg,Q
 
 from mod_ahx_pics import (
-    ORIG_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
+    LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
 )
 
 from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
@@ -24,43 +24,12 @@ from mod_ahx_pics import DOWNLOAD_FOLDER
 from mod_ahx_pics.helpers import (
     basename, s3_get_keys, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
 )
-
-def _get_missing_media(subfolder):
-    """
-    Find all fnames where 1009_176_1.JPG exists in orig folder,
-    but sm_1009_176_1.jpg does not exist in small folder.
-    Same for medium (aka web) size.
-    """
-    prefix = 'sm'
-    if '/medium/' in subfolder: prefix = 'med'
-    elif '/large/' in subfolder: prefix = 'lg'
-
-    s3_client = s3_get_client()
-    #orig_files = pg.select( f''' select filename from picture where id = '6846' order by gallery_id, position, filename ''')
-    #orig_files = pg.select( f''' select filename from picture where gallery_id = '423' order by gallery_id, position, filename ''')
-    orig_files = pg.select( f''' select filename from picture order by gallery_id, position, filename ''')
-    # 'pics_complete/1009_176_1.JPG'
-    orig_files = [ f'''{ORIG_FOLDER}{os.path.split(x['filename'])[1]}''' for x in orig_files ]
-
-    # pics/orig/name.jpeg -> name
-    orig_basenames = [ basename(x) for x in orig_files ]
-
-    # pics/small/name.jpeg -> name
-    existing_target_files = s3_get_keys( s3_client, subfolder)
-    existing_target_files =  [ x['Key'] for x in existing_target_files ] 
-    existing_target_basenames = [ basename(x) for x in existing_target_files ]
-
-    missing_target_basenames = [ x for x in orig_basenames 
-                                 if not f'{prefix}_{x}' in set(existing_target_basenames) ]
-    missing_orig_fnames = [ orig_files[i] for (i,x) in enumerate(orig_basenames) 
-                            if x in set(missing_target_basenames) ]
-    return missing_orig_fnames
     
 def _resize_media( fnames, gallery_id, size):
     tstart = datetime.datetime.now()
     for idx,fname in enumerate(fnames):
         if not os.path.exists(fname):
-            log( f'''_resize_media(): File {fname} not found. Skipping''')
+            #log( f'''_resize_media(): File {fname} not found. Skipping''')
             continue
         log( f' {idx+1}/{len(fnames)} Generating {size} version for {fname}') 
         if media_type( fname) == 'image':
@@ -91,10 +60,8 @@ def _resize_video( fname, gallery_id, size):
         target_folder = LARGE_FOLDER
         ext = os.path.splitext(fname)[1]
     try:
-        #local_fname = s3_download_file(fname)
         local_fname = fname
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        #gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if size == 'large': # Large version remains unchanged
             local_thumb = local_fname
@@ -130,11 +97,9 @@ def _resize_image( fname, gallery_id, size='small'):
         max_size = 0
         
     try:
-        #local_fname = s3_download_file(fname)
         local_fname = fname
         ext = os.path.splitext(fname)[1].lower()
         local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        #gallery_id = basename(fname).split('_')[1]
         s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf' and size != 'large':
             try:
@@ -155,27 +120,61 @@ def _resize_image( fname, gallery_id, size='small'):
         log( f'EXCEPTION: {pexc(e)}')
     finally:
         try:
-            #os.remove(local_fname)
             os.remove(local_thumb)
         except:
             pass
 
-""" TODO: This is outdated and needs fixing """
 def gen_thumbnails():
-    log(f'>>>>>>> generating thumbnails')
-    # Paths to originals that still need thumbnails
-    missing_small  = _get_missing_media( SMALL_FOLDER)
-    _resize_media( missing_small, 'small')
+    """ Generate missing thumbnails """
+    s3_client = s3_get_client()
 
-    log(f'>>>>>>> generating web size')
-    # Paths to originals that still need web size versions
-    missing_medium  = _get_missing_media( MEDIUM_FOLDER)
-    _resize_media( missing_medium, 'medium')
+    def convert(key, size='small'):
+        #BP()
+        basename = key.split( '/lg_')[1] # 'pics/large/1/lg_1_1_1' -> 1_1_1
+        local_fname = s3_download_file(key)
+        ext = os.path.splitext( local_fname)[1]
+        pieces = key.split('_')
+        gallery_id = pieces[1] # new format lg_A2rpJaviLdEvcQe7NtDNcg_Wamv3yj5Y2KxkBMbRm3iFF.jpg
+        #pic_id = pieces[2]
+        if len(gallery_id) < 10:
+            gallery_id = pieces[2] # old format lg_1149_1_1.jpg
+            #pic_id = pieces[1]
+        s3name = f'''{DOWNLOAD_FOLDER}/{basename}{ext}'''
+        shutil.move( local_fname, s3name)
+        _resize_media( [s3name], gallery_id, size)
+        os.remove(s3name)
 
-    log(f'>>>>>>> generating large size')
-    # Paths to originals that still need large size versions
-    missing_large  = _get_missing_media( LARGE_FOLDER)
-    _resize_media( missing_large, 'large')
+    # Find all large images
+    large_images = s3_get_keys( s3_client, LARGE_FOLDER)
+    large_images = [ os.path.splitext(x['Key'])[0] for x in large_images ]
+    # Find all medium images
+    medium_images = [ x.replace('/large/','/medium/') for x in large_images ]
+    medium_images = [ x.replace('/lg_','/med_') for x in medium_images ]
+    # Find all small images
+    small_images = [ x.replace('/large/','/small/') for x in large_images ]
+    small_images = [ x.replace('/lg_','/sm_') for x in small_images ]
+
+    # Find missing small images
+    existing_small_images = s3_get_keys( s3_client, SMALL_FOLDER)
+    existing_small_images = [ os.path.splitext(x['Key'])[0] for x in existing_small_images ]
+    missing_small_images = [ x for x in small_images if not x in existing_small_images ]
+
+    # Generate missing small images
+    for x in missing_small_images:
+        log( f'''gen_thumbnails(): generating {x}''')
+        idx = small_images.index(x)
+        convert( large_images[idx], 'small')
+
+    # Find missing medium images
+    existing_medium_images = s3_get_keys( s3_client, MEDIUM_FOLDER)
+    existing_medium_images = [ os.path.splitext(x['Key'])[0] for x in existing_medium_images ]
+    missing_medium_images = [ x for x in medium_images if not x in existing_medium_images ]
+
+    # Generate missing medium images
+    for x in missing_medium_images:
+        log( f'''gen_thumbnails(): generating {x}''')
+        idx = medium_images.index(x)
+        convert( large_images[idx], 'medium')
 
     log('Done.')
 
