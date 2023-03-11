@@ -148,7 +148,12 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     html = ''
     for pic in pics:
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        ext = os.path.splitext( pic['filename'])[1].lower()
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
+        if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
+            fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
+            visit_url = f''' '{url_for( "download_file", fname=fname)}' '''
+            #log ( f''' Non image file url {visit_url}''')
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']

@@ -139,6 +139,25 @@ def download_img():
         pass
     return resp
 
+@app.route('/download_file', methods=['GET'])
+@login_required
+#-------------------------------------------
+def download_file():
+    """
+    Download a file from s3. Used for non-image files
+    """
+    parms = get_parms()
+    fname = parms['fname']
+    local_fname = helpers.s3_download_file(fname)
+    ext = os.path.splitext(local_fname)[1]
+    fh = open( local_fname, 'br')
+    resp = send_file( fh, as_attachment=True, download_name=f'{os.path.split(fname)[1]}')
+    try:
+        os.remove( local_fname)
+    except:
+        pass
+    return resp
+
 @app.route('/edit_info', methods=['GET', 'POST'])
 @login_required
 #---------------------------------------------------
