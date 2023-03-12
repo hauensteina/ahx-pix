@@ -147,8 +147,10 @@ class AHXCarousel {
 
   //------------------------------------------------------
   _downloadImage( slide) {
+    var src = slide.src
+    if (slide.tagName == 'VIDEO') { src = E(`#${slide.id} source`).getAttribute('src') }    
     var url = '/download_img?q=' + Math.random() + 
-        '&slide_src=' + encodeURIComponent(slide.src)
+        '&slide_src=' + encodeURIComponent(src)
     window.location.href = url
   } // _downloadImage()
 
