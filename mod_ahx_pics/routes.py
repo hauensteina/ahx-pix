@@ -132,7 +132,7 @@ def download_img():
     local_fname = helpers.s3_download_file( s3_path)
     ext = os.path.splitext(local_fname)[1]
     fh = open( local_fname, 'br')
-    resp = send_file( fh, as_attachment=True, download_name=f'{gallery_id}_{picture_id}{ext}')
+    resp = send_file( fh, as_attachment=True, download_name=f'{picture_id}_{gallery_id}{ext}')
     try:
         os.remove( local_fname)
     except:

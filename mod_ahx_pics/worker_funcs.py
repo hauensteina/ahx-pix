@@ -135,11 +135,7 @@ def gen_thumbnails():
         local_fname = s3_download_file(key)
         ext = os.path.splitext( local_fname)[1]
         pieces = key.split('_')
-        gallery_id = pieces[1] # new format lg_A2rpJaviLdEvcQe7NtDNcg_Wamv3yj5Y2KxkBMbRm3iFF.jpg
-        #pic_id = pieces[2]
-        if len(gallery_id) < 10:
-            gallery_id = pieces[2] # old format lg_1149_1_1.jpg
-            #pic_id = pieces[1]
+        gallery_id = pieces[2] 
         s3name = f'''{DOWNLOAD_FOLDER}/{basename}{ext}'''
         shutil.move( local_fname, s3name)
         _resize_media( [s3name], gallery_id, size)
@@ -228,12 +224,12 @@ def add_new_images( fname, gallery_id):
         pic_id = shortuuid.uuid()
         ext = os.path.splitext(fname)[1].lower()
         path = os.path.split(fname)[0]
-        s3name = f'''{path}/{gallery_id}_{pic_id}{ext}'''
+        s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
         shutil.copyfile( fname, s3name)
         if ext in MEDIA_EXTENSIONS:
             f02_gen_thumbs( s3name, gallery_id)
         else:
-            target_name = f'''pics_complete/{gallery_id}_{pic_id}{ext}'''
+            target_name = f'''pics_complete/{pic_id}_{gallery_id}{ext}'''
             s3_upload_files( [s3name], [target_name])
         f03_insert_db( s3name, fname, gallery_id, pic_id)
     _set_gallery_status( gallery_id, f'ok')
