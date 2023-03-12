@@ -15,7 +15,8 @@ from mod_ahx_pics.helpers import pexc, media_type, run_shell
 from mod_ahx_pics import log,pg,Q
 
 from mod_ahx_pics import (
-    LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE
+    LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE, 
+    IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_EXTENSIONS
 )
 
 from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
@@ -195,10 +196,14 @@ def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
     log(f'''  WORKER: f03_insert_db({s3name},{gallery_id}) starting''')
     today = datetime.date.today()
     s3name = os.path.split(s3name)[1]
+    blurb = ''
+    ext = os.path.splitext(s3name)[1].lower()
+    if ext not in MEDIA_EXTENSIONS:
+        blurb = os.path.split(orig_fname)[1]
     data = {
         'id':pic_id
         ,'gallery_id':gallery_id
-        ,'blurb':''
+        ,'blurb':blurb
         ,'filename':s3name
         ,'orig_fname': os.path.split(orig_fname)[1]
         ,'title_flag':False
@@ -225,7 +230,11 @@ def add_new_images( fname, gallery_id):
         path = os.path.split(fname)[0]
         s3name = f'''{path}/{gallery_id}_{pic_id}{ext}'''
         shutil.copyfile( fname, s3name)
-        f02_gen_thumbs( s3name, gallery_id)
+        if ext in MEDIA_EXTENSIONS:
+            f02_gen_thumbs( s3name, gallery_id)
+        else:
+            target_name = f'''pics_complete/{gallery_id}_{pic_id}{ext}'''
+            s3_upload_files( [s3name], [target_name])
         f03_insert_db( s3name, fname, gallery_id, pic_id)
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')

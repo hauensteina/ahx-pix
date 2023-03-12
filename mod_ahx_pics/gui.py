@@ -152,7 +152,8 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
         if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
             fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
-            visit_url = f''' '{url_for( "download_file", fname=fname)}' '''
+            orig_fname = os.path.split(pic['orig_fname'])[1]
+            visit_url = f''' '{url_for( "download_file", fname=fname, orig_fname=orig_fname)}' '''
             #log ( f''' Non image file url {visit_url}''')
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')

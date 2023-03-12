@@ -46,6 +46,7 @@ JOB_TIMEOUT=3600
 
 IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.pdf']
 VIDEO_EXTENSIONS = ['.mov', '.mp4']
+MEDIA_EXTENSIONS = IMG_EXTENSIONS + VIDEO_EXTENSIONS
 
 FFMPEG_COMPRESSOR = 'ffmpeg -i @IN  -c:v libx264 -crf 28 @OUT'
 FFMPEG_VIDEO_THUMB = 'ffmpeg -i @IN  -ss 00:00:01.000 -vframes 1 @OUT'

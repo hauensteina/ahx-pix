@@ -148,10 +148,11 @@ def download_file():
     """
     parms = get_parms()
     fname = parms['fname']
+    orig_fname = parms['orig_fname']
     local_fname = helpers.s3_download_file(fname)
     ext = os.path.splitext(local_fname)[1]
     fh = open( local_fname, 'br')
-    resp = send_file( fh, as_attachment=True, download_name=f'{os.path.split(fname)[1]}')
+    resp = send_file( fh, as_attachment=True, download_name=f'{os.path.split(orig_fname)[1]}')
     try:
         os.remove( local_fname)
     except:
@@ -456,24 +457,17 @@ def upload_pics():
         if file.filename == '':
             flash('Please select a file', 'error')
             return redirect(request.url)
-        if not allowed_file(file.filename):
-            flash( f'''{file.filename} is not a valid media file''', 'error')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
+        #if not allowed_file(file.filename):
+        #    flash( f'''{file.filename} is not a valid media file''', 'error')
+        #    return redirect(request.url)
+        if file: # and allowed_file(file.filename):
             tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
             os.mkdir( tempfolder)            
             fname = secure_filename(file.filename)
             fname = f'''{tempfolder}/{fname}'''
+            # This will work with one dyno. To scale, the file would have to move to S3.
             file.save(fname)
             Q.enqueue( wf.add_new_images, fname, gallery_id)
-            # @@@ cont here
-            # Copy to S3
-            # Insert into DB
-            # Everything should work, but slow because no thumbnails
-            # worker should pic up gen_thumbnails job from REDIS
-            # Todo: Worker needs to quickly pass over non-existing img files from the db
-            # The status of thumbnail generation is flashed as (small img gen: k/n med img gen: k/n) 
-
             flash( f'''File {file.filename} was uploaded and is processing.''') 
             return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
     else: # Initial hit
