@@ -128,6 +128,7 @@ def download_img():
     # 'https://ahx-pics.s3.amazonaws.com/pics/medium/423/med_6865_423_0.jpeg?...' -> 6865
     picture_id = slide_src.split('?')[0].split('_')[1]
     gallery_id = slide_src.split('?')[0].split('_')[2]
+    gallery_id = os.path.splitext(gallery_id)[0]
     s3_path = helpers.s3_path_for_pic( gallery_id, picture_id, 'large') 
     local_fname = helpers.s3_download_file( s3_path)
     ext = os.path.splitext(local_fname)[1]
