@@ -222,6 +222,7 @@ def _set_gallery_status( gallery_id, msg):
 def add_new_images( fname, gallery_id):
     """ Add new images to a gallery """
     log( f'''WORKER:  add_new_images( {fname}, {gallery_id}) starting''')
+    subfolder = os.path.split(fname)[0]
     fnames = [fname]
     if os.path.splitext(fname)[1].lower() == '.zip':
         fnames = f01_unzip( fname)
@@ -238,5 +239,6 @@ def add_new_images( fname, gallery_id):
             target_name = f'''pics_complete/{pic_id}_{gallery_id}{ext}'''
             s3_upload_files( [s3name], [target_name])
         f03_insert_db( s3name, fname, gallery_id, pic_id)
+    shutil.rmtree(subfolder)   
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')
