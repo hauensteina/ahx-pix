@@ -436,12 +436,6 @@ def reset_token():
 @login_required
 #-----------------------------------------------------
 def upload_pics():
-
-    def allowed_file(filename):
-        return os.path.splitext(filename)[1].lower() in [
-            '.jpg','.jpeg','.png','.pdf','.gif','.mp4','.mov','.zip'
-        ]
-
     error = None
     data = {}
     data['gallery_title'] = session['gallery_title']
@@ -457,9 +451,6 @@ def upload_pics():
         if file.filename == '':
             flash('Please select a file', 'error')
             return redirect(request.url)
-        #if not allowed_file(file.filename):
-        #    flash( f'''{file.filename} is not a valid media file''', 'error')
-        #    return redirect(request.url)
         if file: # and allowed_file(file.filename):
             tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
             os.mkdir( tempfolder)            

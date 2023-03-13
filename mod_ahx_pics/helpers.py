@@ -8,8 +8,6 @@ from pdb import set_trace as BP
 import sys,os,subprocess
 import inspect
 import uuid
-#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-#from itsdangerous import URLSafeTimedSerializer as Serializer
 from itsdangerous import TimestampSigner
 from flask_mail import Message
 from flask import url_for
@@ -72,9 +70,17 @@ def pexc( e):
     msg = f'{func}():{exc_tb.tb_lineno}: {str(e)}'
     return msg
 
-def unzip(fname):
-    """ Unzip, if it's a zip file. """
-    return [fnmame]
+def list_files(path):
+    """ Recursively list all files below path """
+    res = []
+    files = os.listdir(path)
+    for file in files:
+        full_path = os.path.join( path, file)
+        if os.path.isfile( full_path):
+            res.append( full_path)
+        else:
+            res += list_files( full_path)
+    return res
 
 # HTML stuff
 #-----------------------

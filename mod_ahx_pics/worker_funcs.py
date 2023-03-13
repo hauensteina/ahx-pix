@@ -10,8 +10,9 @@ from pdb import set_trace as BP
 import os, shutil, json
 import datetime
 import shortuuid
+from zipfile import ZipFile
 from PIL import Image, ExifTags
-from mod_ahx_pics.helpers import pexc, media_type, run_shell
+from mod_ahx_pics.helpers import pexc, media_type, run_shell, list_files
 from mod_ahx_pics import log,pg,Q
 
 from mod_ahx_pics import (
@@ -177,7 +178,12 @@ def gen_thumbnails():
 
 def f01_unzip(fname):
     """ Unzip if its a zip file and kick off the pipeline """
-    log('  ERROR: Unzip not implemented yet.')
+    subfolder = f'''{os.path.split(fname)[0]}/unzipped'''
+    with ZipFile( fname, 'r') as zf:
+        zf.extractall( path=subfolder)
+    files = list_files(subfolder)
+    files = [ x for x in files if os.path.splitext(x)[1] ]
+    return files
 
 def f02_gen_thumbs( s3name, gallery_id):
     log(f'''  WORKER: f02_gen_thumbs({s3name},{gallery_id}) starting''')
