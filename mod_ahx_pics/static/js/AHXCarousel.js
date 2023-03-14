@@ -93,6 +93,7 @@ class AHXCarousel {
     img.style.top = `0px`
     if (isNaN(frame.width)) return;
     var caption = this.activeCaption()
+    if (!caption) return
     var realWidth = caption.clientWidth
     var realHeight = caption.clientHeight
     caption.style.left = `${frame.left + (frame.width - realWidth)/2.0}px`
@@ -128,8 +129,7 @@ class AHXCarousel {
     var newIdx = activeIdx + offset    
 
     var oldCaption = E(`#cap_${activeIdx}`)
-    var newCaption = E(`#cap_${newIdx}`)
-    oldCaption.style.opacity = 0
+    if (oldCaption) oldCaption.style.opacity = 0
 
     if (newIdx < 0) { newIdx = slides.length - 1 }
     if (newIdx >= slides.length) { newIdx = 0 }

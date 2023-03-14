@@ -210,6 +210,7 @@ Position and size is set in AHXCarousel._positionImgCaption()
     opacity: 0;	  
     max-width:50%;
     user-select:none;
+    pointer-events:none;
 }
 /*--------------------*/
 .ahx-caption-mobile {

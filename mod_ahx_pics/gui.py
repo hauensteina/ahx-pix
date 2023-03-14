@@ -28,6 +28,11 @@ def gen_carousel_images( gallery_id, active_pic_id):
         for i,pic in enumerate(pics):
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
             ext = os.path.splitext(pic['filename'])[1].lower()
+            caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
+            # Some captions are just filenames. Hide them. 
+            if len(pic['blurb'].split()) == 1 and len(os.path.splitext(pic['blurb'])[1]) > 0: 
+                caption = ''
+
             classes = " class='ahx-slide' "
             if pic['id'] == active_pic_id: 
                 found_active = True
@@ -38,7 +43,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 <video id='img_{i}' preload='none' controls {classes}>  
                   <source id=vsrc_{i} data-src='{furl}#t=0.5'>
                 </video> 
-                <div id='cap_{i}' class={capclass}>{pic['blurb']}</div>
+                {caption}
                 </li> 
                 '''
                 images.append(link)
@@ -46,7 +51,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 link = f'''
                 <li>
                   <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> 
-                  <div id='cap_{i}' class={capclass}>{pic['blurb']}</div>
+                  {caption}
                 </li>
                 '''
                 images.append(link)
@@ -58,20 +63,10 @@ def gen_carousel_images( gallery_id, active_pic_id):
         html = '\n'.join(images)
         return html
         
-    def gen_captions(pics):
-        captions = []
-        for i,pic in enumerate(pics):
-            captions.append( f'''
-            <div id='cap_{i}' hidden> {pic['blurb']} </div>
-            ''')
-        html = '\n'.join(captions)
-        return html
-
     s3_client = ''
     found_active = False
     pics = pe.get_gallery_pics( gallery_id) # pic filenames in DB 
     html = gen_images( pics)
-    html += gen_captions( pics)
     return html
 
 def gen_gallery( gallery, pics, n_cols=5):
@@ -154,10 +149,11 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
             fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
             orig_fname = os.path.split(pic['orig_fname'])[1]
             visit_url = f''' '{url_for( "download_file", fname=fname, orig_fname=orig_fname)}' '''
-            #log ( f''' Non image file url {visit_url}''')
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']
+        # Some captions are just filenames. Hide them. 
+        if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: caption_h = ''
         pic_h = H( 'div', pic_h + caption_h, 
                    f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
         html += pic_h
