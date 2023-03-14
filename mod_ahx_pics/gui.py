@@ -83,13 +83,13 @@ def gen_gallery( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 
-                                  'static/images/img_not_found.jpg')
-        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
-        title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), '')
+        title_pic_h = ''
+        if img_link:
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
+            title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
-        title_pic_h = I( 'static/images/img_not_found.jpg', 'object-fit:contain;margin:0 auto; height:30vh;')
-        title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
+        title_pic_h = ''
 
     # Blurb
     gallery_blurb_h = H( 'div', gallery['blurb'], 
@@ -116,13 +116,13 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     title_pic = [x for x in pics if x['title_flag']]
     if title_pic:
         title_pic = title_pic[0]
-        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), 
-                                  'static/images/img_not_found.jpg')
-        title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:max(30vh,30vw);')
-        title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
+        img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), '')
+        title_pic_h = ''
+        if img_link:        
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:max(30vh,30vw);')
+            title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
-        title_pic_h = I( 'static/images/img_not_found.jpg', 'object-fit:contain;margin:0 auto; height:30vh;')
-        title_pic_h +=  H( 'span', 'Not Found', 'margin:0 auto; font-size:1.2em')
+        title_pic_h = ''
 
     # Blurb
     gallery_blurb_h = H( 'div', gallery['blurb'], 
