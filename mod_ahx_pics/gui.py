@@ -33,6 +33,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
             # Some captions are just filenames. Hide them. 
             if len(pic['blurb'].split()) == 1 and len(os.path.splitext(pic['blurb'])[1]) > 0: 
                 caption = ''
+            if 'NEW PICTURE' in pic['blurb']: caption = ''
 
             classes = " class='ahx-slide' "
             if pic['id'] == active_pic_id: 
@@ -156,6 +157,8 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         caption_h = pic['blurb']
         # Some captions are just filenames. Hide them. 
         if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: caption_h = ''
+        if 'NEW PICTURE' in caption_h: caption_h = ''
+            
         pic_h = H( 'div', pic_h + caption_h, 
                    f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
         html += pic_h
