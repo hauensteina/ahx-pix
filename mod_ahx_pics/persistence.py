@@ -44,11 +44,29 @@ def get_my_galleries( title='', order_by='create_date desc'):
     return rows
 
 def get_gallery_pics( gallery_id):
-    sql = f'''
-    select * from picture where gallery_id = '{gallery_id}' order by position
-    ''' 
-    rows = pg.select(sql)
-    return rows
+    """ Get gallery pics, sorted by gallery.piclist """
+
+    def add_pics_to_piclist( gallery, pics):
+        """ 
+        The gallery table has a list defining the order of the pics.
+        Add any missing pics at the end of the list.
+        """
+        piclist = []
+        if gallery['piclist']:
+            piclist = json.loads( gallery['piclist'])
+        newpics = []
+        for pic in pics:
+            if not pic['id'] in piclist:
+                newpics.append( pic['id'])
+        piclist += newpics
+        pg.update_row( 'gallery', 'id', gallery['id'], { 'piclist': json.dumps(piclist) }) 
+        return piclist
+
+    gallery = pg.select(f'''select * from gallery where id = '{gallery_id}' ''')[0]
+    pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' order by position ''')
+    piclist = add_pics_to_piclist( gallery, pics)
+    pics = sorted( pics, key = lambda x: piclist.index(x['id']))
+    return pics
 
 def get_gallery_links( gallery_id):
     """
