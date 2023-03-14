@@ -20,6 +20,7 @@ import mod_ahx_pics.persistence as pe
 def gen_carousel_images( gallery_id, active_pic_id):
 
     def gen_images( pics):
+        pics = [ x for x in pics if not x['title_flag'] ]
         # The images/videos
         images = []
         pic_links = pe.get_gallery_links( gallery_id) # image files in S3
@@ -142,6 +143,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     colw = f'{100.0/n_cols}% '
     html = ''
     for pic in pics:
+        if pic['title_flag']: continue
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         ext = os.path.splitext( pic['filename'])[1].lower()
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
