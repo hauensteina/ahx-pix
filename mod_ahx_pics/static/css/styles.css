@@ -231,6 +231,7 @@ Position and size is set in AHXCarousel._positionImgCaption()
     max-width:75%;
     /* border-style:solid; border-color:blue; */
     user-select:none;
+    pointer-events:none;
 }
 
 

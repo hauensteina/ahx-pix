@@ -57,10 +57,11 @@
 
     <script src='static/js/AHXHelpers.js'> </script>
     <script>
+     /* Tell the server whether we are on a phone */
      {% if not is_mobile() %}
-     if (isMobile()) { document.location.href = '/index_mobile' }
+     if (isMobile()) { document.location.href = `/set_mobile?mobile_flag=true&url=${document.location.href}` }
      {% else %}
-     if (!isMobile()) { document.location.href = '/index' }
+     if (!isMobile()) { document.location.href = `/set_mobile?mobile_flag=false&url=${document.location.href}` }
      {% endif %}
     </script>
     {% block js %}

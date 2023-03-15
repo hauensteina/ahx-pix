@@ -257,7 +257,8 @@ def gallery_mobile():
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
-    session['is_mobile'] = False
+    if session['is_mobile']: return redirect( url_for('index_mobile'))
+    #log('@@@@@@@@@@@@@@@@ session is_mobile false')
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
@@ -291,7 +292,9 @@ def index():
 #-------------------------------------------------
 def index_mobile():
     """ Main entry point for phones. """
-    session['is_mobile'] = True
+    #session['is_mobile'] = True
+    #log('>>>>>>>>>>>>>>>>seesion is_mobile true')
+    if not session['is_mobile']: return redirect( url_for('index'))
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
@@ -432,6 +435,15 @@ def reset_token():
             flash( f'Invalid user {user_id}', 'error')
             return redirect( url_for('reset_request'))
         return render_template('reset_token.html', user_id=user_id)
+
+@app.route("/set_mobile", methods=['GET','POST'])
+#---------------------------------------------------
+def set_mobile():
+    parms = get_parms()
+    url = parms['url']
+    mobile_flag = True if parms['mobile_flag'].lower() == 'true' else False
+    session['is_mobile'] = mobile_flag
+    return redirect(url)
 
 @app.route("/upload_pics", methods=['GET', 'POST'])
 @login_required
