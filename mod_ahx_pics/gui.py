@@ -30,9 +30,12 @@ def gen_carousel_images( gallery_id, active_pic_id):
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
             ext = os.path.splitext(pic['filename'])[1].lower()
             caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
+
             # Some captions are just filenames. Hide them. 
-            if len(pic['blurb'].split()) == 1 and len(os.path.splitext(pic['blurb'])[1]) > 0: 
-                caption = ''
+            if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
+                if len(pic['blurb'].split()) == 1 and len(os.path.splitext(pic['blurb'])[1]) > 0: 
+                    caption = ''
+ 
             if 'NEW PICTURE' in pic['blurb']: caption = ''
 
             classes = " class='ahx-slide' "
@@ -156,7 +159,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']
         # Some captions are just filenames. Hide them. 
-        if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: caption_h = ''
+        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
+            if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: 
+                caption_h = ''
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
         style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
