@@ -159,8 +159,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: caption_h = ''
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
-        pic_h = H( 'div', pic_h + caption_h, 
-                   f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;')
+        style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:red;'
+        pic_h = H( 'div', pic_h + caption_h, style)
         html += pic_h
 
     html = H('div', html,
