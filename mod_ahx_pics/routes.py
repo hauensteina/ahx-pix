@@ -257,7 +257,7 @@ def gallery_mobile():
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
-    if session['is_mobile']: return redirect( url_for('index_mobile'))
+    if session.get('is_mobile',''): return redirect( url_for('index_mobile'))
     #log('@@@@@@@@@@@@@@@@ session is_mobile false')
     parms = get_parms()
     title = parms.get('title','')
@@ -294,7 +294,7 @@ def index_mobile():
     """ Main entry point for phones. """
     #session['is_mobile'] = True
     #log('>>>>>>>>>>>>>>>>seesion is_mobile true')
-    if not session['is_mobile']: return redirect( url_for('index'))
+    if not session.get('is_mobile',''): return redirect( url_for('index'))
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
@@ -454,7 +454,7 @@ def upload_pics():
     data['gallery_title'] = session['gallery_title']
     gallery_id = session['gallery_id']
     if request.method == 'POST': # Upload button clicked
-        gallery_page = 'gallery_mobile' if session['is_mobile'] else 'gallery'
+        gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
         if 'file' not in request.files:
             flash('No file part', 'error')
             return redirect(request.url)
@@ -465,6 +465,7 @@ def upload_pics():
             flash('Please select a file', 'error')
             return redirect(request.url)
         if file: # and allowed_file(file.filename):
+            #BP()
             tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
             os.mkdir( tempfolder)            
             fname = secure_filename(file.filename)
@@ -472,8 +473,9 @@ def upload_pics():
             # This will work with one dyno. To scale, the file would have to move to S3.
             file.save(fname)
             Q.enqueue( wf.add_new_images, fname, gallery_id)
-            flash( f'''File {file.filename} was uploaded and is processing.''') 
-            return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
+            #flash( f'''File {file.filename} was uploaded and is processing.''') 
+            #return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
+            return 'ok'
     else: # Initial hit
         return render_template( 'upload_pics.html', error=error, **data, no_links=True )
 

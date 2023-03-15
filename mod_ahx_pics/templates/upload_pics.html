@@ -1,5 +1,10 @@
 {% extends 'layout.html' %}
 
+{% block js %}
+  <script src="static/js/dropzone.min.js"></script>
+  <link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" /> 
+{% endblock js %}
+
 {% block content %}
 <div class=ahx-mob-or-desk>
   <div style='min-height:30px;color:red;'>
@@ -13,11 +18,11 @@
   You can upload individual images or videos, or zip files containing collections of images or videos.
   <br>
   <br>
-  <form method=post enctype=multipart/form-data>
-    <input type=file name=file>
-    <br>
-    <br>
-    <input type=submit value=Upload>
+  <form action='upload_pics' method=post enctype=multipart/form-data class='dropzone'>
+    <!-- <input type=file name=file>
+         <br>
+         <br>
+         <input type=submit value=Upload> -->
   </form>
 
   <!-- <form method=post>
