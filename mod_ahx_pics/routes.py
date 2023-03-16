@@ -238,16 +238,6 @@ def gallery_mobile():
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
     mylinks = ''
-    # I can edit my own galleries only
-    if current_user.data['username'] == gallery['username']:
-        mylinks = f'''
-        <div style='margin-left:5vw;margin-bottom:10px;width:100vw;'>
-          <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Title</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Pics</a> &nbsp;   
-          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a>
-        </div>
-        '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -258,7 +248,6 @@ def gallery_mobile():
 def index():
     """ Main entry point. Show heading and list of galleries """
     if session.get('is_mobile',''): return redirect( url_for('index_mobile'))
-    #log('@@@@@@@@@@@@@@@@ session is_mobile false')
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
@@ -453,6 +442,7 @@ def upload_pics():
     data = {}
     data['gallery_title'] = session['gallery_title']
     gallery_id = session['gallery_id']
+    data['gallery_id'] = gallery_id
     if request.method == 'POST': # Upload button clicked
         gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
         if 'file' not in request.files:

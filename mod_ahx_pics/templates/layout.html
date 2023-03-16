@@ -105,7 +105,9 @@
       {% else %}
       <a href="{{ url_for('index', all_pics_flag=True) }}">Show All Galleries</a> &nbsp;   
       {% endif %}
+      {% if not is_mobile() %}
       <a href="{{ url_for('new_gallery') }}">New Gallery</a> &nbsp;   
+      {% endif %}
     </div>
     {% endif %}
 
