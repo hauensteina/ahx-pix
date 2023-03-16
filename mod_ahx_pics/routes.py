@@ -36,6 +36,12 @@ def ttest():
     """ Try things here """
     return render_template( 'ttest.html', msg='ttest')
 
+@app.route('/ws_dd')
+#-----------------------
+def ws_dd():
+    """ Try things here """
+    return render_template( 'ws_dd.html')
+
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
 #-------------------------------------------------

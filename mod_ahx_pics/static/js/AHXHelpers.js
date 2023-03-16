@@ -7,8 +7,15 @@ function E( selector) {
 }
 
 /* Shorthand for document.querySelectorAll */
-function A( selector) { 
-  return document.querySelectorAll( selector)
+function A( selector) {
+  // Convert to array before returning
+  return [ ...document.querySelectorAll( selector) ]
+}
+
+/* Shorthand for obj.querySelectorAll */
+function AO( obj, selector) {
+  // Convert to array before returning
+  return [ ...obj.querySelectorAll( selector) ]
 }
 
 /* Check whether we're on a phone or pad */

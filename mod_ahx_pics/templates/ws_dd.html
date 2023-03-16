@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
+
+  </head>
+
+  <body>
+    <div class=container>
+      <p class=draggable draggable=true>1</p>
+      <p class=draggable draggable=true>2</p>
+    </div>
+    <div class=container>
+      <p class=draggable draggable=true>3</p>
+      <p class=draggable draggable=true>4</p>
+    </div>
+
+    <style>
+     .container {
+       background-color:#333;
+       padding:1rem;
+       margin-top:1rem;
+     }
+     .draggable {
+       padding:1rem;
+       margin:1rem;
+       background-color:white;
+       border: 1px solid black;
+       cursor:move;
+     }
+     .draggable.dragging {
+       opacity:0.5;
+     }
+    </style>
+
+    <script src='static/js/AHXHelpers.js'> </script>
+
+    <script>
+     //-----------------------------------------
+     const draggables = A('.draggable')
+     const containers = A('.container')
+
+     draggables.forEach( d => {
+       d.addEventListener('dragstart', () => {
+         d.classList.add('dragging')
+       })
+       d.addEventListener('dragend', () => {
+         d.classList.remove('dragging')
+       })
+     }) // draggables.forEach()
+
+     containers.forEach( c => {
+       c.addEventListener('dragover', (e) => {
+         e.preventDefault() // Allow drop and show '+' icon
+         const target = getTarget( c, e.clientY)
+         const d = E('.dragging')
+         if (target) {
+           c.insertBefore( d, target)
+         } else {
+           c.appendChild(d) 
+         }
+       })
+     }) // containers.forEach()
+
+     //----------------------------------------
+     function getTarget( container, mouseY) {
+       const targets = AO( container, '.draggable:not(.dragging)')
+
+       var target = targets.reduce( (acc, elt) => {
+         const box = elt.getBoundingClientRect()
+         const offset = mouseY - (box.top + box.height  / 2)
+         if (offset < 0 && offset > acc.offset) {
+           return { offset:offset, element:elt }
+         } else {
+           return acc
+         }
+       }, { offset:-1E9 }) 
+
+       return target.element
+     } // getTarget()
+
+    </script>
+  </body>
+</html>
+
+
+
