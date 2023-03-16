@@ -50,14 +50,13 @@ class AHXCarousel {
           let e = E('.ahx-captoggle.ahx-active')
           e.style.color = CAPTION_OFF 
           e.classList.remove( 'ahx-active')
-          this.activeCaption().style.opacity = 0
+          if (this.activeCaption()) this.activeCaption().style.opacity = 0
         } else {
           let e = E('.ahx-captoggle')
           e.style.color = CAPTION_ON 
           e.classList.add( 'ahx-active')
         }
       })
-    //debugger
     if (isMobile()) {
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
@@ -113,7 +112,7 @@ class AHXCarousel {
   }
   activeCaption() {
     var activeIdx = [...this.slides()].indexOf(this.activeSlide())
-    return E(`#cap_${activeIdx}`)
+    return E(`#cap_${activeIdx}`) 
   }
 
   //------------------------------------------------------
