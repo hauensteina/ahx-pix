@@ -1,8 +1,8 @@
 {% extends 'layout.html' %}
 
 {% block js %}
-  <script src="static/js/dropzone.min.js"></script>
-  <link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" /> 
+<script src="static/js/dropzone.min.js"></script>
+<link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" /> 
 {% endblock js %}
 
 {% block content %}
@@ -12,24 +12,20 @@
     <strong>Error:</strong> {{ error }}
     {% endif %}
   </div>
-  <div class=heading>
-    Upload Images and Videos for Gallery '{{gallery_title}}'
-  </div>
-  You can upload individual images or videos, or zip files containing collections of images or videos.
-  <br>
-  <br>
-  <form action='upload_pics' method=post enctype=multipart/form-data class='dropzone'>
-  </form>
-  <form action='gallery' method=get style='margin-top:20px;' >
-    <div style='display:grid; grid-template-columns:1fr fit-content(0) 1fr;'>
-      <div>&nbsp;</div>
-      <div>
-        <input type=hidden name=gallery_id value={{gallery_id}}>
-        <input type=submit value=Done > 
-      </div>
-      <div>&nbsp;</div>
+  <div style='display:grid;justify-items:center;'>
+    <div class=heading>
+      Upload Images and Videos for Gallery '{{gallery_title}}'
     </div>
-  </form>
+    <div style='margin-bottom:50px;'>
+    You can upload individual images or videos, or zip files containing collections of images or videos.
+    </div>
+    <form action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:100%;'>
+    </form>
+    <form action='gallery' method=get style='margin-top:20px;' >
+          <input type=hidden name=gallery_id value={{gallery_id}}>
+          <input type=submit value=Done > 
+    </form>
+  </div>
 </div>
 
-{% endblock content %}
+  {% endblock content %}
