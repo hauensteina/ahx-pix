@@ -3,7 +3,6 @@
 .green-border { border-style:solid; border-color:green; }
 .blue-border { border-style:solid; border-color:blue; }
 
-
 .heading { 
     color: #7c795d; 
     font-family: 'Source Sans Pro', sans-serif; 
@@ -359,3 +358,4 @@ Position and size is set in AHXCarousel._positionImgCaption()
     color:white;
     background-color: rgba(0, 0, 0, .2)
 }
+

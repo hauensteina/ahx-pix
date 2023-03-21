@@ -29,7 +29,6 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
-
 @app.route('/ttest')
 #-----------------------
 def ttest():
@@ -39,8 +38,14 @@ def ttest():
 @app.route('/ws_dd')
 #-----------------------
 def ws_dd():
-    """ Try things here """
+    """ Drag and Drop from Web Dev Simplified """
     return render_template( 'ws_dd.html')
+
+@app.route('/ed_img')
+#-----------------------
+def ed_img():
+    """ Div with an image, caption, delete toggle """
+    return render_template( 'ed_img.html')
 
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
