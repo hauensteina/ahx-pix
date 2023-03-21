@@ -120,20 +120,15 @@
          const target = getTarget( e.clientX, row)
          const d = E('.ahx-dragging')
          if (target) {
-           //debugger
-           console.log('>>>>>>>>>>>>>>>swap')
            // The dragged image goes to the left of the target 
            container.insertBefore( d, target) 
-           //debugger
          } else { // no target, => end of the row
-           //console.log('>>>>>>>>nothing')
            container.appendChild(d) 
          }
        })
 
        //------------------------------------------------
        function getTarget( mouseX, row) {
-         //debugger
          const allTargets = AO( container, '.ahx-draggable:not(.ahx-dragging)')
          // Only consider pics in this row
          const targets = allTargets.filter( (elt) => {
@@ -147,7 +142,6 @@
          var target = targets.reduce( (acc, curr) => {
            const box = curr.getBoundingClientRect()
            const offset = mouseX - (box.left + box.width / 2)
-           //console.log(offset)
            if (offset < 0 && offset > acc.offset) {
              return { offset:offset, element:curr }
            } else {
