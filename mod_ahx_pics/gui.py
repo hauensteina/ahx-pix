@@ -17,6 +17,26 @@ from  mod_ahx_pics.helpers import html_tag as H
 from  mod_ahx_pics.helpers import html_img as I
 import mod_ahx_pics.persistence as pe
 
+def gen_edit_pics( gallery_id):
+    pic_links = pe.get_gallery_links( gallery_id)
+    pics = pe.get_gallery_pics( gallery_id)
+    picdivs = ''
+    for pic in pics:
+        if pic['title_flag']: continue
+        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        picdiv = f'''
+          <div class=ahx-draggable draggable=true >
+            <div class=ahx-pic>
+              <img src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+            </div> 
+            <div style='display:grid;justify-items:center;'>
+              <textarea class=ahx-ta name='{pic["id"]}' rows=2 placeholder='Image caption'></textarea>
+            </div>
+          </div>
+        '''
+        picdivs += picdiv
+    return picdivs
+
 def gen_carousel_images( gallery_id, active_pic_id):
 
     def gen_images( pics):

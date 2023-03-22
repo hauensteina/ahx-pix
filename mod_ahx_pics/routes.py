@@ -29,6 +29,15 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
+@app.route('/edit_pics')
+#--------------------------
+def edit_pics():
+    """ Move pics around and edit the captions. """
+    parms = get_parms()
+    gallery_id = parms['gallery_id']
+    picdivs = gui.gen_edit_pics(gallery_id)
+    return render_template( 'edit_pics.html', picdivs=picdivs)
+
 @app.route('/ttest')
 #-----------------------
 def ttest():
@@ -41,15 +50,9 @@ def ws_dd():
     """ Drag and Drop from Web Dev Simplified """
     return render_template( 'ws_dd.html')
 
-@app.route('/ed_img')
-#-----------------------
-def ed_img():
-    """ Div with an image, caption, delete toggle """
-    return render_template( 'ed_img.html')
-
 @app.route('/add_user', methods=['GET', 'POST'])
 @login_required
-#-------------------------------------------------
+#--------------------------------------------------
 def add_user():
     error = None
     data = {}
@@ -129,7 +132,7 @@ def delete_gallery():
 
 @app.route('/download_img', methods=['GET'])
 @login_required
-#-------------------------------------------
+#----------------------------------------------
 def download_img():
     """
     Return original full resolution image as attachment.
@@ -153,7 +156,7 @@ def download_img():
 
 @app.route('/download_file', methods=['GET'])
 @login_required
-#-------------------------------------------
+#----------------------------------------------
 def download_file():
     """
     Download a file from s3. Used for non-image files
@@ -229,7 +232,7 @@ def gallery():
         <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('index')}">Edit Title</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Pics</a> &nbsp;   
+          <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
           <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
         '''
@@ -238,7 +241,7 @@ def gallery():
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
 @login_required
 #@show_error
-#-------------------------------------------------
+#-------------------------------------------------------
 def gallery_mobile():
     """ View a gallery on a phone """
     parms = get_parms()
