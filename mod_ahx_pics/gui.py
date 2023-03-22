@@ -27,10 +27,10 @@ def gen_edit_pics( gallery_id):
         picdiv = f'''
           <div class=ahx-draggable draggable=true >
             <div class=ahx-pic>
-              <img src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+              <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
             </div> 
             <div style='display:grid;justify-items:center;'>
-              <textarea class=ahx-ta name='{pic["id"]}' placeholder='Image caption'>{pic['blurb']}</textarea>
+              <textarea class=ahx-ta name='ta_{pic["id"]}' placeholder='Image caption'>{pic['blurb']}</textarea>
             </div>
           </div>
         '''

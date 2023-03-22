@@ -2,9 +2,10 @@
 
 {% block content %}
 
-<form style='margin-left:50px;'>
-  <input id=btn_save type="submit" name=save_changes value="Save Changes" disabled />
-  <input id=btn_del type="submit" name=del_selected value="Delete selected" disabled />
+<form style='margin-left:50px;' method=post>
+  <input id=marked_pic_ids type=hidden name=marked_pic_ids>
+  <input id=btn_save type=submit name=save_changes value='Save Changes' disabled >
+  <input id=btn_del type=submit name=del_selected value='Delete selected' disabled >
   <div class=ahx-container style='display:grid; grid-template-columns:33.3% 33.3% 33.3%; max-width:1000px;'>
     {{ picdivs|safe }}
   </div>
@@ -55,21 +56,28 @@
 <script>
  // Pictures get a red frame if selected by click
  //---------------------------------------------------
- var pics = A('.ahx-pic')
- pics.forEach( p => { 
-   p.addEventListener( 'click', ev => {
-     var classes = [... ev.target.classList]
-     if (classes.includes( 'ahx-selected')) {
-       ev.target.classList.remove( 'ahx-selected')
-     } else {
-       ev.target.classList.add( 'ahx-selected')
-     }
-     E('#btn_del').disabled = true
-     if (A('.ahx-selected').length > 0) {
-       E('#btn_del').disabled = false
-     }
-   })
- }) 
+ function setupSelect() {
+   var pics = A('.ahx-pic')
+   pics.forEach( p => { 
+     p.addEventListener( 'click', ev => {
+       // Mark/unmark pic as selected
+       var classes = [... ev.target.classList]
+       if (classes.includes( 'ahx-selected')) {
+         ev.target.classList.remove( 'ahx-selected')
+       } else {
+         ev.target.classList.add( 'ahx-selected')
+       }
+       // Enable/disable delete button
+       E('#btn_del').disabled = true
+       if (A('.ahx-selected').length > 0) {
+         E('#btn_del').disabled = false
+       }
+       // Store list of marked pics in hidden form input #marked_pic_ids
+       const marked = A('.ahx-selected').reduce( (acc, curr) => { return acc.concat(curr.id) }, [] )
+       E('#marked_pic_ids').value = JSON.stringify(marked)
+     })
+   }) 
+ } // setupSelect()
 
  // Pictures can be reordered by drag and drop
  //----------------------------------
@@ -157,6 +165,7 @@
    } // getRow()
  } // setupDragging()
  
+ setupSelect()
  setupDragging()
 </script>
 {% endblock js_end %}

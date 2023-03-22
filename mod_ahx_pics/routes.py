@@ -29,15 +29,19 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
-@app.route('/edit_pics')
-#--------------------------
+@app.route('/edit_pics', methods=['GET', 'POST'])
+@login_required
+#--------------------------------------------------
 def edit_pics():
     """ Move pics around and edit the captions. """
+    parms = get_parms()
     if request.method == 'POST': # form submitted
+        delete_pic_ids = parms['marked_pic_ids']
+        caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
+        # @@@ cont here
         BP()
         tt=42
     else:
-        parms = get_parms()
         gallery_id = parms['gallery_id']
         picdivs = gui.gen_edit_pics(gallery_id)
         return render_template( 'edit_pics.html', picdivs=picdivs, no_links=True)
