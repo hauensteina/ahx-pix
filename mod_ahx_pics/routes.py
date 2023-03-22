@@ -33,10 +33,14 @@ from mod_ahx_pics import worker_funcs as wf
 #--------------------------
 def edit_pics():
     """ Move pics around and edit the captions. """
-    parms = get_parms()
-    gallery_id = parms['gallery_id']
-    picdivs = gui.gen_edit_pics(gallery_id)
-    return render_template( 'edit_pics.html', picdivs=picdivs)
+    if request.method == 'POST': # form submitted
+        BP()
+        tt=42
+    else:
+        parms = get_parms()
+        gallery_id = parms['gallery_id']
+        picdivs = gui.gen_edit_pics(gallery_id)
+        return render_template( 'edit_pics.html', picdivs=picdivs, no_links=True)
 
 @app.route('/ttest')
 #-----------------------
