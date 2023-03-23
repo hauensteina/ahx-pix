@@ -1,5 +1,9 @@
 {% extends 'layout.html' %}
 
+{% block js %}
+<script src='static/js/edit_pics.js'> </script>
+{% endblock js %}
+
 {% block content %}
 
 <form style='margin-left:50px;' method=post>
@@ -53,118 +57,7 @@
 <!-- ============================ JS ======================================= -->
 
 {% block js_end %}
-<script>
- // Pictures get a red frame if selected by click
- //---------------------------------------------------
- function setupSelect() {
-   var pics = A('.ahx-pic')
-   pics.forEach( p => { 
-     p.addEventListener( 'click', ev => {
-       // Mark/unmark pic as selected
-       var classes = [... ev.target.classList]
-       if (classes.includes( 'ahx-selected')) {
-         ev.target.classList.remove( 'ahx-selected')
-       } else {
-         ev.target.classList.add( 'ahx-selected')
-       }
-       // Enable/disable delete button
-       E('#btn_del').disabled = true
-       if (A('.ahx-selected').length > 0) {
-         E('#btn_del').disabled = false
-       }
-       // Store list of marked pics in hidden form input #marked_pic_ids
-       const marked = A('.ahx-selected').reduce( (acc, curr) => { return acc.concat(curr.id) }, [] )
-       E('#marked_pic_ids').value = JSON.stringify(marked)
-     })
-   }) 
- } // setupSelect()
-
- // Pictures can be reordered by drag and drop
- //----------------------------------
- function setupDragging() {
-   //-----------------------------------------------
-   const draggables = A('.ahx-draggable')
-   const container = E('.ahx-container')
-
-   draggables.forEach( d => {
-     d.addEventListener('dragstart', () => {
-       d.classList.add('ahx-dragging')
-     })
-     d.addEventListener('dragend', () => {
-       d.classList.remove('ahx-dragging')
-     })
-   }) // draggables.forEach()
-
-   container.addEventListener('dragover', (e) => {
-     e.preventDefault() // Allow drop and show '+' icon
-     const row = getRow(e.clientY)
-     const target = getTarget( e.clientX, row)
-     const d = E('.ahx-dragging')
-     if (target) {
-       // The dragged image goes to the left of the target 
-       container.insertBefore( d, target) 
-     } else { // no target, => end of the row
-       container.appendChild(d) 
-     }
-   })
-
-   //------------------------------------------------
-   function getTarget( mouseX, row) {
-     const allTargets = AO( container, '.ahx-draggable:not(.ahx-dragging)')
-     // Only consider pics in this row
-     const targets = allTargets.filter( (elt) => {
-       const box = elt.getBoundingClientRect()
-       const myrow = getRow( (box.top + box.bottom) / 2 )
-       if (myrow == row) return true
-       return false
-     })
-     
-     // Find the closest pic to the right of the mouse
-     var target = targets.reduce( (acc, curr) => {
-       const box = curr.getBoundingClientRect()
-       const offset = mouseX - (box.left + box.width / 2)
-       if (offset < 0 && offset > acc.offset) {
-         return { offset:offset, element:curr }
-       } else {
-         return acc
-       }
-     }, { offset:-1E9 }) 
-
-     if (target.element) return target.element
-     
-     // No target => end of row
-     // Return first pic of next row as target
-     const nextRowTargets = allTargets.filter( (elt) => {
-       const box = elt.getBoundingClientRect()
-       const myrow = getRow( (box.top + box.bottom) / 2 )
-       if (myrow == row + 1) return true
-       return false
-     })
-     return nextRowTargets[0]
-
-   } // getTarget()
-
-   // When dragging a pic, get the row we are dragging over
-   //---------------------------------------------------------
-   function getRow(mouseY) {
-     const draggables = A('.ahx-draggable')
-     const closest = draggables.reduce( (acc, curr) => {
-       const abox = acc.getBoundingClientRect()
-       const cbox = curr.getBoundingClientRect()
-       const amid = (abox.top + abox.bottom) / 2
-       const cmid = (cbox.top + cbox.bottom) / 2
-       if (Math.abs(cmid - mouseY) < Math.abs(amid - mouseY)) {
-         return curr
-       } else {
-         return acc
-       }
-     })
-     const closestIdx = draggables.indexOf(closest)
-     const row = closestIdx / 3
-     return row
-   } // getRow()
- } // setupDragging()
- 
+<script> 
  setupSelect()
  setupDragging()
 </script>
