@@ -29,6 +29,35 @@ function setupSelect() {
 //-----------------------------------------------
 function setupDragging() {
 
+  //----------------------------------------
+  function startScrolling(draggedElement) {
+    const scrollSize = 100
+    setupDragging.scrollInterval = setInterval(() => {
+      // Define the threshold where the auto-scroll should start 
+      const bottomThreshold = window.innerHeight * 0.9 
+      const topThreshold = window.innerHeight * 0.1 
+      // Get the position of the dragged element
+      const elementRect = draggedElement.getBoundingClientRect()
+      // Get the position of the bottom of the viewport
+      const viewportBottom = window.scrollY + window.innerHeight 
+      // Get the position of the top of the viewport
+      const viewportTop = window.scrollY
+      // Scroll down
+      if (elementRect.bottom > bottomThreshold && viewportBottom < document.body.scrollHeight) { 
+        window.scrollBy(0, scrollSize) // Scroll the page by scrollSize pixels
+      }
+      // Scroll up
+      else if (elementRect.top < topThreshold && viewportTop > 0) { 
+        window.scrollBy(0, -scrollSize) // Scroll the page by scrollSize pixels
+      }
+    }, 50)
+  } // startScrolling()
+
+  //----------------------------------------
+  function stopScrolling() {
+    clearInterval( setupDragging.scrollInterval)
+  }
+
   //const draggables = A('.ahx-draggable')
   const container = E('.ahx-container')
 
@@ -41,9 +70,11 @@ function setupDragging() {
   A('.ahx-draggable').forEach( d => {
     d.addEventListener('dragstart', (e) => {
       d.classList.add('ahx-dragging')
+      startScrolling(d)
     })
     d.addEventListener('dragend', (e) => {
       d.classList.remove('ahx-dragging')
+      stopScrolling()
     })
     d.addEventListener('dragover', (e) => {
       e.preventDefault()
@@ -52,13 +83,14 @@ function setupDragging() {
       const box = d.getBoundingClientRect()
       const mouseX = e.clientX
       //console.log(`>>>>>>> ${mouseX} ${box.right}`)
-      if (mouseX + box.width / 2 > box.right) { 
+      if (mouseX + box.width / 4 > box.right) { 
         container.insertBefore( d, dragged)
-      } else if (mouseX - box.width / 2 < box.left ) { 
+        //} else if (mouseX - box.width / 2.1 < box.left ) { 
+      } else { 
         container.insertBefore( dragged, d)
       }
     }) // dragover
   }) // draggables.forEach()
 } // setupDragging()
-
+setupDragging.scrollInterval = null
 
