@@ -7,9 +7,11 @@
 {% block content %}
 
 <form style='margin-left:50px;' method=post>
+  <input type=hidden name=gallery_id value={{gallery_id}} >
   <input id=marked_pic_ids type=hidden name=marked_pic_ids>
   <input id=btn_save type=submit name=save_changes value='Save Changes' disabled >
   <input id=btn_del type=submit name=del_selected value='Delete selected' disabled >
+  <input id=btn_revert type=submit name=revert value='Revert' disabled >
   <div class=ahx-container style='display:grid; grid-template-columns:33.3% 33.3% 33.3%; max-width:1000px;'>
     {{ picdivs|safe }}
   </div>
@@ -58,6 +60,7 @@
 
 {% block js_end %}
 <script> 
+ setupCaptionHandlers()
  setupSelect()
  setupDragging()
 </script>

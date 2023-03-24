@@ -34,17 +34,39 @@ from mod_ahx_pics import worker_funcs as wf
 #--------------------------------------------------
 def edit_pics():
     """ Move pics around and edit the captions. """
+
+    def delete_pics( gallery_id, pic_ids):
+        pass
+
+    def update_captions( gallery_id, caption_dict):
+        pass
+
+    def update_order( gallery_id, pic_ids):
+        pass
+
     parms = get_parms()
+    gallery_id = parms['gallery_id']
+
     if request.method == 'POST': # form submitted
-        delete_pic_ids = parms['marked_pic_ids']
-        caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
-        # @@@ cont here
-        BP()
-        tt=42
-    else:
-        gallery_id = parms['gallery_id']
+        delete_pic_ids = json.loads( parms['marked_pic_ids'])
+        if 'revert' in parms:
+            flash( f'''Changes reverted.''')
+            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))            
+        elif delete_pic_ids:
+            delete_pics( gallery_id, delete_pic_ids)
+            n = len(delete_pic_ids)
+            flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
+            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))
+        else:
+            caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
+            update_captions( caption_dict)
+            update_order( caption_dict.keys())
+            next_page = request.args.get('next') # Magically populated to where we came from
+            flash( f'''Gallery updated.''')
+            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))
+    else: # initial hit
         picdivs = gui.gen_edit_pics(gallery_id)
-        return render_template( 'edit_pics.html', picdivs=picdivs, no_links=True)
+        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
 
 @app.route('/ttest')
 #-----------------------

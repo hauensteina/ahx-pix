@@ -1,5 +1,42 @@
 'use strict;'
 
+// Enable correct buttons if an edit happened
+//---------------------------------------------
+function editHappened(edit_type) {
+  if (edit_type == 'select_pic') {
+    if (A('.ahx-selected').length > 0) {
+      E('#btn_del').disabled = false
+      E('#btn_save').disabled = true
+    } else {
+      E('#btn_del').disabled = true
+      E('#btn_save').disabled = !editHappened.flag
+    }
+  } // select_pic
+  else if (edit_type == 'edit_caption') {
+    editHappened.flag = true
+    if (E('#btn_del').disabled) {
+      E('#btn_save').disabled = false
+    } else {
+      E('#btn_save').disabled = true
+    }
+  } // edit_caption
+
+  E('#btn_revert').disabled = true
+  if (editHappened.flag || A('.ahx-selected').length > 0) { E('#btn_revert').disabled = false }
+} // editHappened()
+editHappened.flag = false
+
+// Event handlers for the pic caption textareas
+//------------------------------------------------
+function setupCaptionHandlers() {
+  var tas = A('.ahx-ta')
+  tas.forEach( t => {
+    t.addEventListener( 'input', ev => {
+      editHappened('edit_caption')
+    })
+  }) // forEach 
+} // setupCaptionHandlers()
+
 // Pictures get a red frame if selected by click
 //---------------------------------------------------
 function setupSelect() {
@@ -13,26 +50,23 @@ function setupSelect() {
       } else {
         ev.target.classList.add( 'ahx-selected')
       }
-      // Enable/disable delete button
-      E('#btn_del').disabled = true
-      if (A('.ahx-selected').length > 0) {
-        E('#btn_del').disabled = false
-      }
       // Store list of marked pics in hidden form input #marked_pic_ids
       const marked = A('.ahx-selected').reduce( (acc, curr) => { return acc.concat(curr.id) }, [] )
       E('#marked_pic_ids').value = JSON.stringify(marked)
+      editHappened( 'select_pic')
     })
-  }) 
+  }) // forEach 
 } // setupSelect()
 
 // Pictures can be reordered by drag and drop
 //-----------------------------------------------
 function setupDragging() {
 
-  //----------------------------------------
+  //------------------------------------------
   function startScrolling(draggedElement) {
     const scrollSize = 100
-    setupDragging.scrollInterval = setInterval(() => {
+    const scrollInterval = 50 // ms
+    setupDragging.scrollTimer = setInterval(() => {
       // Define the threshold where the auto-scroll should start 
       const bottomThreshold = window.innerHeight * 0.9 
       const topThreshold = window.innerHeight * 0.1 
@@ -45,17 +79,17 @@ function setupDragging() {
       // Scroll down
       if (elementRect.bottom > bottomThreshold && viewportBottom < document.body.scrollHeight) { 
         window.scrollBy(0, scrollSize) // Scroll the page by scrollSize pixels
-      }
       // Scroll up
-      else if (elementRect.top < topThreshold && viewportTop > 0) { 
+      } else if (elementRect.top < topThreshold && viewportTop > 0) { 
         window.scrollBy(0, -scrollSize) // Scroll the page by scrollSize pixels
-      }
-    }, 50)
+      } 
+    }, scrollInterval)
   } // startScrolling()
 
-  //----------------------------------------
+  //-------------------------------------------
   function stopScrolling() {
-    clearInterval( setupDragging.scrollInterval)
+    clearInterval( setupDragging.scrollTimer)
+    setupDragging.scrollTimer = null
   }
 
   //const draggables = A('.ahx-draggable')
@@ -92,5 +126,4 @@ function setupDragging() {
     }) // dragover
   }) // draggables.forEach()
 } // setupDragging()
-setupDragging.scrollInterval = null
-
+setupDragging.scrollTimer = null
