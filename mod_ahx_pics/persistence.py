@@ -63,7 +63,7 @@ def get_gallery_pics( gallery_id):
         return piclist
 
     gallery = pg.select(f'''select * from gallery where id = '{gallery_id}' ''')[0]
-    pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' order by position ''')
+    pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' and deleted_flag = false order by position ''')
     piclist = add_pics_to_piclist( gallery, pics)
     pics = sorted( pics, key = lambda x: piclist.index(x['id']))
     return pics

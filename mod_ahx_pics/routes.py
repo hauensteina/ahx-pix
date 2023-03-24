@@ -36,7 +36,10 @@ def edit_pics():
     """ Move pics around and edit the captions. """
 
     def delete_pics( gallery_id, pic_ids):
-        pass
+        idlist = [ f''' '{x}' ''' for x in pic_ids ]
+        idlist = ','.join(idlist)
+        sql = f''' update picture set deleted_flag = true where id in ({idlist}) '''
+        pg.run( sql)
 
     def update_captions( gallery_id, caption_dict):
         pass
@@ -44,29 +47,52 @@ def edit_pics():
     def update_order( gallery_id, pic_ids):
         pass
 
+    def reload( gallery_id):
+        return redirect( url_for( 'edit_pics', gallery_id=gallery_id))
+
+    def initial_page( gallery_id):
+        session['gallery_id'] = gallery_id
+        picdivs = gui.gen_edit_pics(gallery_id)
+        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
+
     parms = get_parms()
-    gallery_id = parms['gallery_id']
+    gallery_id = parms.get( 'gallery_id', session['gallery_id'])
 
     if request.method == 'POST': # form submitted
-        delete_pic_ids = json.loads( parms['marked_pic_ids'])
-        if 'revert' in parms:
+        # Back to the gallery
+        if 'gallery' in parms:
+            return redirect( url_for( 'gallery', gallery_id=gallery_id))
+        # Revert changes
+        elif 'revert' in parms:
             flash( f'''Changes reverted.''')
-            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))            
-        elif delete_pic_ids:
+            return reload( gallery_id)      
+        # Delete pics after confirmation
+        elif 'del_selected' in parms: # Delete clicked; ask for confirmation
+            delete_pic_ids = json.loads( parms['marked_pic_ids'])
+            session['delete_pic_ids'] = delete_pic_ids
+            n = len(delete_pic_ids)
+            return render_template('question.html', 
+                                   msg=f'''Do you really want to delete {len(delete_pic_ids)} pic{'s' if n > 1 else ''}?
+                                   <div style='color:red;'>You cannot undo the delete!</div>''', no_links=True)
+        elif 'btn_no' in parms:
+            flash( 'Delete cancelled.')
+            return reload( gallery_id)
+        elif 'btn_yes' in parms:
+            delete_pic_ids = session['delete_pic_ids']
             delete_pics( gallery_id, delete_pic_ids)
             n = len(delete_pic_ids)
             flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
-            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))
-        else:
+            return reload( gallery_id)
+        elif 'btn_save' in parms:
             caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
             update_captions( caption_dict)
             update_order( caption_dict.keys())
-            next_page = request.args.get('next') # Magically populated to where we came from
             flash( f'''Gallery updated.''')
-            return redirect( url_for( 'edit_pics', gallery_id = parms['gallery_id']))
+            return reload( gallery_id)
+        else: # just show the edit page
+            return initial_page( gallery_id)
     else: # initial hit
-        picdivs = gui.gen_edit_pics(gallery_id)
-        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
+        return initial_page( gallery_id)
 
 @app.route('/ttest')
 #-----------------------
@@ -136,7 +162,7 @@ def carousel():
 
 @app.route('/delete_gallery', methods=['GET', 'POST'])
 @login_required
-#-------------------------------------------------------------
+#---------------------------------------------------------------
 def delete_gallery():
     """ Delete a gallery (prompt for confirmation first) """
     home = 'index_mobile' if session['is_mobile'] else 'index'

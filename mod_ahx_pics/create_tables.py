@@ -106,6 +106,7 @@ def _create_picture( pg):
       ,title_flag boolean
       ,create_date date
       ,change_date date
+      ,deleted_flag boolean not null default false
     )
     '''
     pg.run(sql)

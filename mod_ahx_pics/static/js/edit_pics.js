@@ -43,12 +43,15 @@ function setupSelect() {
   var pics = A('.ahx-pic')
   pics.forEach( p => { 
     p.addEventListener( 'click', ev => {
+      var target = ev.target
+      // Maybe the image wasn't clicked => get it.
+      if (target.tagName == 'DIV') { target = ev.target.children[0] }
       // Mark/unmark pic as selected
-      var classes = [... ev.target.classList]
+      var classes = [... target.classList]
       if (classes.includes( 'ahx-selected')) {
-        ev.target.classList.remove( 'ahx-selected')
+        target.classList.remove( 'ahx-selected')
       } else {
-        ev.target.classList.add( 'ahx-selected')
+        target.classList.add( 'ahx-selected')
       }
       // Store list of marked pics in hidden form input #marked_pic_ids
       const marked = A('.ahx-selected').reduce( (acc, curr) => { return acc.concat(curr.id) }, [] )
