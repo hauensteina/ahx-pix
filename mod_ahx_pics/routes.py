@@ -47,7 +47,9 @@ def edit_pics():
             pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
 
     def update_order( gallery_id, pic_ids):
-        pass
+        piclist = json.dumps( [ x for x in pic_ids] )
+        sql = f''' update gallery set piclist = %s where id = %s '''
+        pg.run( sql, (piclist, gallery_id))
 
     def reload( gallery_id):
         return redirect( url_for( 'edit_pics', gallery_id=gallery_id))
