@@ -35,14 +35,16 @@ from mod_ahx_pics import worker_funcs as wf
 def edit_pics():
     """ Move pics around and edit the captions. """
 
-    def delete_pics( gallery_id, pic_ids):
+    def delete_pics( pic_ids):
         idlist = [ f''' '{x}' ''' for x in pic_ids ]
         idlist = ','.join(idlist)
         sql = f''' update picture set deleted_flag = true where id in ({idlist}) '''
         pg.run( sql)
 
-    def update_captions( gallery_id, caption_dict):
-        pass
+    def update_captions( caption_dict):
+        for pic_id in caption_dict:
+            sql = f''' update picture set blurb = %s where id = %s '''
+            pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
 
     def update_order( gallery_id, pic_ids):
         pass
@@ -60,14 +62,14 @@ def edit_pics():
 
     if request.method == 'POST': # form submitted
         # Back to the gallery
-        if 'gallery' in parms:
+        if 'btn_gallery' in parms:
             return redirect( url_for( 'gallery', gallery_id=gallery_id))
         # Revert changes
-        elif 'revert' in parms:
+        elif 'btn_revert' in parms:
             flash( f'''Changes reverted.''')
             return reload( gallery_id)      
         # Delete pics after confirmation
-        elif 'del_selected' in parms: # Delete clicked; ask for confirmation
+        elif 'btn_del' in parms: # Delete clicked; ask for confirmation
             delete_pic_ids = json.loads( parms['marked_pic_ids'])
             session['delete_pic_ids'] = delete_pic_ids
             n = len(delete_pic_ids)
@@ -79,15 +81,15 @@ def edit_pics():
             return reload( gallery_id)
         elif 'btn_yes' in parms:
             delete_pic_ids = session['delete_pic_ids']
-            delete_pics( gallery_id, delete_pic_ids)
+            delete_pics( delete_pic_ids)
             n = len(delete_pic_ids)
             flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
             return reload( gallery_id)
         elif 'btn_save' in parms:
             caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
             update_captions( caption_dict)
-            update_order( caption_dict.keys())
-            flash( f'''Gallery updated.''')
+            update_order( gallery_id, caption_dict.keys())
+            flash( f'''Changes saved.''')
             return reload( gallery_id)
         else: # just show the edit page
             return initial_page( gallery_id)

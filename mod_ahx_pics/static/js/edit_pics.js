@@ -12,7 +12,7 @@ function editHappened(edit_type) {
       E('#btn_save').disabled = !editHappened.flag
     }
   } // select_pic
-  else if (edit_type == 'edit_caption') {
+  else if (edit_type == 'edit_caption' || edit_type == 'pic_moved' ) {
     editHappened.flag = true
     if (E('#btn_del').disabled) {
       E('#btn_save').disabled = false
@@ -122,9 +122,11 @@ function setupDragging() {
       //console.log(`>>>>>>> ${mouseX} ${box.right}`)
       if (mouseX + box.width / 4 > box.right) { 
         container.insertBefore( d, dragged)
-        //} else if (mouseX - box.width / 2.1 < box.left ) { 
-      } else { 
+        editHappened( 'pic_moved')
+      //} else if (mouseX - box.width / 4 < box.left ) { 
+      } else {
         container.insertBefore( dragged, d)
+        editHappened( 'pic_moved')
       }
     }) // dragover
   }) // draggables.forEach()
