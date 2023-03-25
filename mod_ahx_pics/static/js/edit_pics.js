@@ -69,7 +69,7 @@ function setupDragging() {
 
   //------------------------------------------
   function startScrolling(draggedElement) {
-    const scrollSize = 100
+    const scrollSize = 100 // px
     const scrollInterval = 50 // ms
     setupDragging.scrollTimer = setInterval(() => {
       // Define the threshold where the auto-scroll should start 
@@ -141,10 +141,8 @@ function setupDragging() {
       if (dragged == d) return
       const [target_row,target_col,target_idx] = rowcol( 'get', d.children[0].id )
       const [source_row,source_col,source_idx] = rowcol( 'get', dragged.children[0].id )
-      //if (target_row > 0 && target_col == 0) return
       const box = d.getBoundingClientRect()
       const mouseX = e.clientX
-      //console.log(`>>>>>>> ${mouseX} ${box.right}`)
       // If dragging to right edge, insert after the target d
       if (mouseX + box.width / 4 > box.right && target_col == ROWLEN - 1 ) { 
         if (target_row < source_row) return
@@ -152,12 +150,11 @@ function setupDragging() {
         //console.log('>>>>>>>> right')
         editHappened( 'pic_moved')
         rowcol('compute')
-      //} else if (mouseX - box.width / 4 < box.left ) { 
       } else {
         if (target_idx == source_idx+1) return
         if (target_row > source_row && target_col == 0) return
-        //container.insertBefore( dragged, d)
-        console.log('>>>>>>>> left')
+        container.insertBefore( dragged, d)
+        //console.log('>>>>>>>> left')
         editHappened( 'pic_moved')
         rowcol('compute')
       }
