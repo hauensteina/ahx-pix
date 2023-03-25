@@ -242,3 +242,29 @@ def add_new_images( fname, gallery_id):
     shutil.rmtree(subfolder)   
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')
+
+def add_title_image( fname, gallery_id):
+    """ Add new title image to a gallery """
+    log( f'''WORKER:  add_title_image( {fname}, {gallery_id}) starting''')
+    _set_gallery_status( gallery_id, f'''Adding title image {fname}''')
+
+    subfolder = os.path.split(fname)[0]
+    pic_id = shortuuid.uuid()
+    ext = os.path.splitext(fname)[1].lower()
+    if not ext in MEDIA_EXTENSIONS:
+        log( f'''WORKER:  add_title_image(): Unknown extension {ext}. Ignoring.''')
+        shutil.rmtree(subfolder)   
+        return
+        
+    path = os.path.split(fname)[0]
+    s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
+    shutil.copyfile( fname, s3name)
+    f02_gen_thumbs( s3name, gallery_id)
+    f03_insert_db( s3name, fname, gallery_id, pic_id)
+    sql = f''' update picture set title_flag = false where gallery_id=%s'''
+    pg.run( sql, [gallery_id])
+    sql = f''' update picture set title_flag = true where id=%s '''
+    pg.run( sql, [pic_id])
+    shutil.rmtree(subfolder)   
+    _set_gallery_status( gallery_id, f'ok')
+    log( f'''WORKER:  add_title_image() done''')

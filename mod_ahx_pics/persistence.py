@@ -68,6 +68,11 @@ def get_gallery_pics( gallery_id):
     pics = sorted( pics, key = lambda x: piclist.index(x['id']))
     return pics
 
+def get_title_pic( gallery_id):
+    """ Get the gallery title pic """
+    pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' and deleted_flag = false and title_flag = true ''')
+    return pics[0]
+
 def get_gallery_links( gallery_id):
     """
     Get presigned S3 links for all small and medium pics. 

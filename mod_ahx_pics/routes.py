@@ -29,74 +29,61 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
-@app.route('/edit_pics', methods=['GET', 'POST'])
+@app.route("/edit_title", methods=['GET', 'POST'])
 @login_required
-#--------------------------------------------------
-def edit_pics():
-    """ Move pics around and edit the captions. """
+#-----------------------------------------------------
+def edit_title():
 
-    def delete_pics( pic_ids):
-        idlist = [ f''' '{x}' ''' for x in pic_ids ]
-        idlist = ','.join(idlist)
-        sql = f''' update picture set deleted_flag = true where id in ({idlist}) '''
-        pg.run( sql)
+    def save_changes(parms, gallery_id):
+        title = parms.get('title','').strip()
+        caption = parms.get('caption','').strip()
+        blurb = parms.get('blurb','').strip()
 
-    def update_captions( caption_dict):
-        for pic_id in caption_dict:
-            sql = f''' update picture set blurb = %s where id = %s '''
-            pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
+        sql = f'''update gallery set title=%s where id=%s'''
+        pg.run( sql, (title.strip(),gallery_id))
 
-    def update_order( gallery_id, pic_ids):
-        piclist = json.dumps( [ x for x in pic_ids] )
-        sql = f''' update gallery set piclist = %s where id = %s '''
-        pg.run( sql, (piclist, gallery_id))
+        sql = f'''update gallery set blurb=%s where id=%s'''
+        pg.run( sql, (blurb.strip(),gallery_id))
 
-    def reload( gallery_id):
-        return redirect( url_for( 'edit_pics', gallery_id=gallery_id))
+        sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
+        pg.run( sql, (caption.strip(),gallery_id))
 
-    def initial_page( gallery_id):
-        session['gallery_id'] = gallery_id
-        picdivs = gui.gen_edit_pics(gallery_id)
-        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
-
-    parms = get_parms()
-    gallery_id = parms.get( 'gallery_id', session['gallery_id'])
-
-    if request.method == 'POST': # form submitted
-        # Back to the gallery
-        if 'btn_gallery' in parms:
-            return redirect( url_for( 'gallery', gallery_id=gallery_id))
-        # Revert changes
-        elif 'btn_revert' in parms:
-            flash( f'''Changes reverted.''')
-            return reload( gallery_id)      
-        # Delete pics after confirmation
-        elif 'btn_del' in parms: # Delete clicked; ask for confirmation
-            delete_pic_ids = json.loads( parms['marked_pic_ids'])
-            session['delete_pic_ids'] = delete_pic_ids
-            n = len(delete_pic_ids)
-            return render_template('question.html', 
-                                   msg=f'''Do you really want to delete {len(delete_pic_ids)} pic{'s' if n > 1 else ''}?
-                                   <div style='color:red;'>You cannot undo the delete!</div>''', no_links=True)
-        elif 'btn_no' in parms:
-            flash( 'Delete cancelled.')
-            return reload( gallery_id)
-        elif 'btn_yes' in parms:
-            delete_pic_ids = session['delete_pic_ids']
-            delete_pics( delete_pic_ids)
-            n = len(delete_pic_ids)
-            flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
-            return reload( gallery_id)
-        elif 'btn_save' in parms:
-            caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
-            update_captions( caption_dict)
-            update_order( gallery_id, caption_dict.keys())
-            flash( f'''Changes saved.''')
-            return reload( gallery_id)
-        else: # just show the edit page
-            return initial_page( gallery_id)
-    else: # initial hit
-        return initial_page( gallery_id)
+    error = None
+    data = {}
+    data['gallery_title'] = session['gallery_title']
+    gallery_id = session['gallery_id']
+    gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
+    data['blurb'] = gallery.get('blurb','')
+    data['gallery_id'] = gallery_id
+    title_pic = pe.get_title_pic(gallery_id)
+    data['caption'] = title_pic.get('blurb','')
+    if request.method == 'POST': # Save button clicked
+        if 'file' not in request.files: # Save button clicked
+            parms = get_parms()
+            if 'save' in parms:
+                save_changes( get_parms(), gallery_id)
+                flash('Title changes saved.')
+            else:
+                flash('Title changes discarded.')
+            return redirect( url_for('gallery', gallery_id=gallery_id))
+        else: # Title pic was dropped
+            file = request.files['file']
+            # If the user does not select a file, the browser submits an
+            # empty file without a filename.
+            if file.filename == '':
+                flash('Please select a file', 'error')
+                return redirect(request.url)
+            if file: 
+                tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
+                os.mkdir( tempfolder)            
+                fname = secure_filename(file.filename)
+                fname = f'''{tempfolder}/{fname}'''
+                # This will work with one dyno. To scale, the file would have to move to S3.
+                file.save(fname)
+                Q.enqueue( wf.add_title_image, fname, gallery_id)
+                return 'ok'
+    else: # Initial hit
+        return render_template( 'edit_title.html', error=error, **data, no_links=True )
 
 @app.route('/ttest')
 #-----------------------
@@ -272,6 +259,75 @@ def edit_info():
                                ,email=user.data['email']
                                )
 
+@app.route('/edit_pics', methods=['GET', 'POST'])
+@login_required
+#--------------------------------------------------
+def edit_pics():
+    """ Move pics around and edit the captions. """
+
+    def delete_pics( pic_ids):
+        idlist = [ f''' '{x}' ''' for x in pic_ids ]
+        idlist = ','.join(idlist)
+        sql = f''' update picture set deleted_flag = true where id in ({idlist}) '''
+        pg.run( sql)
+
+    def update_captions( caption_dict):
+        for pic_id in caption_dict:
+            sql = f''' update picture set blurb = %s where id = %s '''
+            pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
+
+    def update_order( gallery_id, pic_ids):
+        piclist = json.dumps( [ x for x in pic_ids] )
+        sql = f''' update gallery set piclist = %s where id = %s '''
+        pg.run( sql, (piclist, gallery_id))
+
+    def reload( gallery_id):
+        return redirect( url_for( 'edit_pics', gallery_id=gallery_id))
+
+    def initial_page( gallery_id):
+        session['gallery_id'] = gallery_id
+        picdivs = gui.gen_edit_pics(gallery_id)
+        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
+
+    parms = get_parms()
+    gallery_id = parms.get( 'gallery_id', session['gallery_id'])
+
+    if request.method == 'POST': # form submitted
+        # Back to the gallery
+        if 'btn_gallery' in parms:
+            return redirect( url_for( 'gallery', gallery_id=gallery_id))
+        # Revert changes
+        elif 'btn_revert' in parms:
+            flash( f'''Changes reverted.''')
+            return reload( gallery_id)      
+        # Delete pics after confirmation
+        elif 'btn_del' in parms: # Delete clicked; ask for confirmation
+            delete_pic_ids = json.loads( parms['marked_pic_ids'])
+            session['delete_pic_ids'] = delete_pic_ids
+            n = len(delete_pic_ids)
+            return render_template('question.html', 
+                                   msg=f'''Do you really want to delete {len(delete_pic_ids)} pic{'s' if n > 1 else ''}?
+                                   <div style='color:red;'>You cannot undo the delete!</div>''', no_links=True)
+        elif 'btn_no' in parms:
+            flash( 'Delete cancelled.')
+            return reload( gallery_id)
+        elif 'btn_yes' in parms:
+            delete_pic_ids = session['delete_pic_ids']
+            delete_pics( delete_pic_ids)
+            n = len(delete_pic_ids)
+            flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
+            return reload( gallery_id)
+        elif 'btn_save' in parms:
+            caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
+            update_captions( caption_dict)
+            update_order( gallery_id, caption_dict.keys())
+            flash( f'''Changes saved.''')
+            return reload( gallery_id)
+        else: # just show the edit page
+            return initial_page( gallery_id)
+    else: # initial hit
+        return initial_page( gallery_id)
+
 @app.route('/gallery', methods=['GET', 'POST'])
 @login_required
 #@show_error
@@ -281,7 +337,7 @@ def gallery():
     parms = get_parms()
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
-    gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
+    gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
     session['gallery_id'] = gallery['id']
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery( gallery, pics)
@@ -291,7 +347,7 @@ def gallery():
         mylinks = f'''
         <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
-          <a href="{url_for('index')}">Edit Title</a> &nbsp;   
+          <a href="{url_for('edit_title')}">Edit Title</a> &nbsp;   
           <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
           <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
