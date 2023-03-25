@@ -125,7 +125,8 @@ function setupDragging() {
     e.preventDefault()
   })
 
-  A('.ahx-draggable').forEach( d => {
+  var draggables = A('.ahx-draggable')
+  draggables.forEach( d => {
     d.addEventListener('dragstart', (e) => {
       rowcol('compute')
       d.classList.add('ahx-dragging')
@@ -144,14 +145,16 @@ function setupDragging() {
       const box = d.getBoundingClientRect()
       const mouseX = e.clientX
       // If dragging to right edge, insert after the target d
-      if (mouseX + box.width / 4 > box.right && target_col == ROWLEN - 1 ) { 
+      if (mouseX + box.width / 4 > box.right && 
+          ( (target_col == ROWLEN - 1) || (target_idx == draggables.length - 1 ))) 
+      { 
         if (target_row < source_row) return
         container.insertBefore( d, dragged)
         //console.log('>>>>>>>> right')
         editHappened( 'pic_moved')
         rowcol('compute')
-      } else {
-        if (target_idx == source_idx+1) return
+      } else { // Main case
+        //if (target_idx == source_idx+1 && target_idx < draggables.length - 1) return
         if (target_row > source_row && target_col == 0) return
         container.insertBefore( dragged, d)
         //console.log('>>>>>>>> left')

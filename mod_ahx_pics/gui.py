@@ -23,6 +23,10 @@ def gen_edit_pics( gallery_id):
     picdivs = ''
     for pic in pics:
         if pic['title_flag']: continue
+        blurb = pic['blurb']
+        ext = os.path.splitext(pic['filename'])[1].lower()
+        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
+            if _bad_caption(blurb): blurb = '' 
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         picdiv = f'''
           <div class=ahx-draggable draggable=true >
@@ -30,7 +34,7 @@ def gen_edit_pics( gallery_id):
               <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
             </div> 
             <div style='display:grid;justify-items:center;'>
-              <textarea class=ahx-ta name='ta_{pic["id"]}' placeholder='Image caption'>{pic['blurb']}</textarea>
+              <textarea class=ahx-ta name='ta_{pic["id"]}' placeholder='Type caption here'>{blurb}</textarea>
             </div>
           </div>
         '''
@@ -51,10 +55,8 @@ def gen_carousel_images( gallery_id, active_pic_id):
             ext = os.path.splitext(pic['filename'])[1].lower()
             caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
 
-            # Some captions are just filenames. Hide them. 
             if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
-                if len(pic['blurb'].split()) == 1 and len(os.path.splitext(pic['blurb'])[1]) > 0: 
-                    caption = ''
+                if _bad_caption( pic['blurb']): caption = ''
  
             if 'NEW PICTURE' in pic['blurb']: caption = ''
 
@@ -180,8 +182,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         caption_h = pic['blurb']
         # Some captions are just filenames. Hide them. 
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
-            if len(caption_h.split()) == 1 and len(os.path.splitext(caption_h)[1]) > 0: 
-                caption_h = ''
+            if _bad_caption( caption_h): caption_h = ''
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
         style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
@@ -388,3 +389,6 @@ def _gen_gallery_link( gallery, action, title):
     link = H(f'a href={url}', title)
     return link
 
+def _bad_caption( blurb):
+    """ Return False if the caption looks like just a filename """
+    return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )
