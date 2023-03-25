@@ -29,61 +29,6 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
-@app.route("/edit_title", methods=['GET', 'POST'])
-@login_required
-#-----------------------------------------------------
-def edit_title():
-
-    def save_changes(parms, gallery_id):
-        title = parms.get('title','').strip()
-        caption = parms.get('caption','').strip()
-        blurb = parms.get('blurb','').strip()
-
-        sql = f'''update gallery set title=%s where id=%s'''
-        pg.run( sql, (title.strip(),gallery_id))
-
-        sql = f'''update gallery set blurb=%s where id=%s'''
-        pg.run( sql, (blurb.strip(),gallery_id))
-
-        sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
-        pg.run( sql, (caption.strip(),gallery_id))
-
-    error = None
-    data = {}
-    data['gallery_title'] = session['gallery_title']
-    gallery_id = session['gallery_id']
-    gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
-    data['blurb'] = gallery.get('blurb','')
-    data['gallery_id'] = gallery_id
-    title_pic = pe.get_title_pic(gallery_id)
-    data['caption'] = title_pic.get('blurb','')
-    if request.method == 'POST': # Save button clicked
-        if 'file' not in request.files: # Save button clicked
-            parms = get_parms()
-            if 'save' in parms:
-                save_changes( get_parms(), gallery_id)
-                flash('Title changes saved.')
-            else:
-                flash('Title changes discarded.')
-            return redirect( url_for('gallery', gallery_id=gallery_id))
-        else: # Title pic was dropped
-            file = request.files['file']
-            # If the user does not select a file, the browser submits an
-            # empty file without a filename.
-            if file.filename == '':
-                flash('Please select a file', 'error')
-                return redirect(request.url)
-            if file: 
-                tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
-                os.mkdir( tempfolder)            
-                fname = secure_filename(file.filename)
-                fname = f'''{tempfolder}/{fname}'''
-                # This will work with one dyno. To scale, the file would have to move to S3.
-                file.save(fname)
-                Q.enqueue( wf.add_title_image, fname, gallery_id)
-                return 'ok'
-    else: # Initial hit
-        return render_template( 'edit_title.html', error=error, **data, no_links=True )
 
 @app.route('/ttest')
 #-----------------------
@@ -327,6 +272,62 @@ def edit_pics():
             return initial_page( gallery_id)
     else: # initial hit
         return initial_page( gallery_id)
+
+@app.route("/edit_title", methods=['GET', 'POST'])
+@login_required
+#-----------------------------------------------------
+def edit_title():
+
+    def save_changes(parms, gallery_id):
+        title = parms.get('title','').strip()
+        caption = parms.get('caption','').strip()
+        blurb = parms.get('blurb','').strip()
+
+        sql = f'''update gallery set title=%s where id=%s'''
+        pg.run( sql, (title.strip(),gallery_id))
+
+        sql = f'''update gallery set blurb=%s where id=%s'''
+        pg.run( sql, (blurb.strip(),gallery_id))
+
+        sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
+        pg.run( sql, (caption.strip(),gallery_id))
+
+    error = None
+    data = {}
+    data['gallery_title'] = session['gallery_title']
+    gallery_id = session['gallery_id']
+    gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
+    data['blurb'] = gallery.get('blurb','')
+    data['gallery_id'] = gallery_id
+    title_pic = pe.get_title_pic(gallery_id)
+    data['caption'] = title_pic.get('blurb','')
+    if request.method == 'POST': # Save button clicked
+        if 'file' not in request.files: # Save button clicked
+            parms = get_parms()
+            if 'save' in parms:
+                save_changes( get_parms(), gallery_id)
+                flash('Title changes saved.')
+            else:
+                flash('Title changes discarded.')
+            return redirect( url_for('gallery', gallery_id=gallery_id))
+        else: # Title pic was dropped
+            file = request.files['file']
+            # If the user does not select a file, the browser submits an
+            # empty file without a filename.
+            if file.filename == '':
+                flash('Please select a file', 'error')
+                return redirect(request.url)
+            if file: 
+                tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
+                os.mkdir( tempfolder)            
+                fname = secure_filename(file.filename)
+                fname = f'''{tempfolder}/{fname}'''
+                # This will work with one dyno. To scale, the file would have to move to S3.
+                file.save(fname)
+                Q.enqueue( wf.add_title_image, fname, gallery_id)
+                return 'ok'
+    else: # Initial hit
+        return render_template( 'edit_title.html', error=error, **data, no_links=True )
 
 @app.route('/gallery', methods=['GET', 'POST'])
 @login_required
@@ -585,7 +586,6 @@ def upload_pics():
             flash('Please select a file', 'error')
             return redirect(request.url)
         if file: # and allowed_file(file.filename):
-            #BP()
             tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
             os.mkdir( tempfolder)            
             fname = secure_filename(file.filename)
@@ -593,8 +593,6 @@ def upload_pics():
             # This will work with one dyno. To scale, the file would have to move to S3.
             file.save(fname)
             Q.enqueue( wf.add_new_images, fname, gallery_id)
-            #flash( f'''File {file.filename} was uploaded and is processing.''') 
-            #return redirect( url_for( gallery_page, gallery_id=session['gallery_id']))
             return 'ok'
     else: # Initial hit
         return render_template( 'upload_pics.html', error=error, **data, no_links=True )

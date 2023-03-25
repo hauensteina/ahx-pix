@@ -18,6 +18,7 @@ from  mod_ahx_pics.helpers import html_img as I
 import mod_ahx_pics.persistence as pe
 
 def gen_edit_pics( gallery_id):
+    """ Generate the page to drag and drop pic order and edit captions. """
     pic_links = pe.get_gallery_links( gallery_id)
     pics = pe.get_gallery_pics( gallery_id)
     picdivs = ''
@@ -42,6 +43,7 @@ def gen_edit_pics( gallery_id):
     return picdivs
 
 def gen_carousel_images( gallery_id, active_pic_id):
+    """ Generate the page showing one full screen pic at a time. """
 
     def gen_images( pics):
         pics = [ x for x in pics if not x['title_flag'] ]
