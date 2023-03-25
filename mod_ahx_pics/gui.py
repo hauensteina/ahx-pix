@@ -26,7 +26,7 @@ def gen_edit_pics( gallery_id):
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         picdiv = f'''
           <div class=ahx-draggable draggable=true >
-            <div class=ahx-pic>
+            <div class=ahx-pic id='pic_{pic["id"]}'>
               <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
             </div> 
             <div style='display:grid;justify-items:center;'>
