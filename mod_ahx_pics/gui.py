@@ -56,7 +56,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
             ext = os.path.splitext(pic['filename'])[1].lower()
             caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
-
+            
             if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
                 if _bad_caption( pic['blurb']): caption = ''
  
@@ -188,7 +188,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
         style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
-        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:red;'
+        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
         pic_h = H( 'div', pic_h + caption_h, style)
         html += pic_h
 
@@ -393,4 +393,6 @@ def _gen_gallery_link( gallery, action, title):
 
 def _bad_caption( blurb):
     """ Return False if the caption looks like just a filename """
+    if not blurb: return True
+    if not blurb.strip(): return True
     return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )

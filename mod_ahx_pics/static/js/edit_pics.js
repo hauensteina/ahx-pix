@@ -16,6 +16,9 @@ function editHappened(edit_type) {
   } // select_pic
   else if (edit_type == 'edit_caption' || edit_type == 'pic_moved' ) {
     editHappened.flag = true
+    E('#btn_del').disabled = true
+    var selected = A('.ahx-selected')
+    selected.forEach( x => { x.classList.remove( 'ahx-selected') })
     if (E('#btn_del').disabled) {
       E('#btn_save').disabled = false
     } else {
