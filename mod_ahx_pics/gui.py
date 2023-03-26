@@ -354,6 +354,7 @@ def gen_gallery_search_mobile( title='', owner=''):
 def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     """ Arrange image thumbs as a grid """
     
+    MAX_CAP_LEN = 100
     colw = f'{100.0/n_cols}% '
     html = ''
     for pic in pics:
@@ -368,6 +369,8 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']
+        if len(caption_h) > MAX_CAP_LEN:
+            caption_h = caption_h[:MAX_CAP_LEN] + '...'
         # Some captions are just filenames. Hide them. 
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
             if _bad_caption( caption_h): caption_h = ''
