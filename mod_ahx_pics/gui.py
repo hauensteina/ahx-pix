@@ -17,31 +17,6 @@ from  mod_ahx_pics.helpers import html_tag as H
 from  mod_ahx_pics.helpers import html_img as I
 import mod_ahx_pics.persistence as pe
 
-def gen_edit_pics( gallery_id):
-    """ Generate the page to drag and drop pic order and edit captions. """
-    pic_links = pe.get_gallery_links( gallery_id)
-    pics = pe.get_gallery_pics( gallery_id)
-    picdivs = ''
-    for pic in pics:
-        if pic['title_flag']: continue
-        blurb = pic['blurb']
-        ext = os.path.splitext(pic['filename'])[1].lower()
-        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
-            if _bad_caption(blurb): blurb = '' 
-        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
-        picdiv = f'''
-          <div class=ahx-draggable draggable=true >
-            <div class=ahx-pic id='pic_{pic["id"]}'>
-              <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
-            </div> 
-            <div style='display:grid;justify-items:center;'>
-              <textarea class=ahx-ta name='ta_{pic["id"]}' placeholder='Type caption here'>{blurb}</textarea>
-            </div>
-          </div>
-        '''
-        picdivs += picdiv
-    return picdivs
-
 def gen_carousel_images( gallery_id, active_pic_id):
     """ Generate the page showing one full screen pic at a time. """
 
@@ -97,6 +72,31 @@ def gen_carousel_images( gallery_id, active_pic_id):
     pics = pe.get_gallery_pics( gallery_id) # pic filenames in DB 
     html = gen_images( pics)
     return html
+
+def gen_edit_pics( gallery_id):
+    """ Generate the page to drag and drop pic order and edit captions. """
+    pic_links = pe.get_gallery_links( gallery_id)
+    pics = pe.get_gallery_pics( gallery_id)
+    picdivs = ''
+    for pic in pics:
+        if pic['title_flag']: continue
+        blurb = pic['blurb']
+        ext = os.path.splitext(pic['filename'])[1].lower()
+        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
+            if _bad_caption(blurb): blurb = '' 
+        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        picdiv = f'''
+          <div class=ahx-draggable draggable=true >
+            <div class=ahx-pic id='pic_{pic["id"]}'>
+              <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+            </div> 
+            <div style='display:grid;justify-items:center;'>
+              <textarea form=frm_pics class=ahx-ta name='ta_{pic["id"]}' placeholder='Type caption here'>{blurb}</textarea>
+            </div>
+          </div>
+        '''
+        picdivs += picdiv
+    return picdivs
 
 def gen_gallery( gallery, pics, n_cols=5):
     """
@@ -162,38 +162,6 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
              'display:grid; grid-template-columns:fit-content(1200px); margin-left:5vw; margin-right:5vw;')
-    return html
-
-
-def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
-    """ Arrange image thumbs as a grid """
-    
-    colw = f'{100.0/n_cols}% '
-    html = ''
-    for pic in pics:
-        if pic['title_flag']: continue
-        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
-        ext = os.path.splitext( pic['filename'])[1].lower()
-        visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
-        if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
-            fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
-            orig_fname = os.path.split(pic['orig_fname'])[1]
-            visit_url = f''' '{url_for( "download_file", fname=fname, orig_fname=orig_fname)}' '''
-        onclick = f''' onclick="window.location.href={visit_url}" '''
-        pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
-        caption_h = pic['blurb']
-        # Some captions are just filenames. Hide them. 
-        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
-            if _bad_caption( caption_h): caption_h = ''
-        if 'NEW PICTURE' in caption_h: caption_h = ''
-            
-        style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
-        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
-        pic_h = H( 'div', pic_h + caption_h, style)
-        html += pic_h
-
-    html = H('div', html,
-             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
     return html
 
 def gen_gallery_list( galleries, sort_col, next_order):
@@ -291,7 +259,6 @@ def gen_gallery_list_mobile( galleries, sort_col, next_order):
     html = H('div', html, layout)
     return html
 
-
 def gen_gallery_search( title='', owner=''):
     """ Generate a form to search galleries by title and owner """
 
@@ -384,6 +351,46 @@ def gen_gallery_search_mobile( title='', owner=''):
         '''
     return html
 
+def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
+    """ Arrange image thumbs as a grid """
+    
+    colw = f'{100.0/n_cols}% '
+    html = ''
+    for pic in pics:
+        if pic['title_flag']: continue
+        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        ext = os.path.splitext( pic['filename'])[1].lower()
+        visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
+        if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
+            fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
+            orig_fname = os.path.split(pic['orig_fname'])[1]
+            visit_url = f''' '{url_for( "download_file", fname=fname, orig_fname=orig_fname)}' '''
+        onclick = f''' onclick="window.location.href={visit_url}" '''
+        pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
+        caption_h = pic['blurb']
+        # Some captions are just filenames. Hide them. 
+        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
+            if _bad_caption( caption_h): caption_h = ''
+        if 'NEW PICTURE' in caption_h: caption_h = ''
+            
+        style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
+        pic_h = H( 'div', pic_h + caption_h, style)
+        html += pic_h
+
+    html = H('div', html,
+             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
+    return html
+
+### Helpers ###
+###############
+
+def _bad_caption( blurb):
+    """ Return False if the caption looks like just a filename """
+    if not blurb: return True
+    if not blurb.strip(): return True
+    return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )
+
 def _gen_gallery_link( gallery, action, title):   
     """ Generate an html link to a gallery """
     url = url_for( 'gallery', 
@@ -391,8 +398,3 @@ def _gen_gallery_link( gallery, action, title):
     link = H(f'a href={url}', title)
     return link
 
-def _bad_caption( blurb):
-    """ Return False if the caption looks like just a filename """
-    if not blurb: return True
-    if not blurb.strip(): return True
-    return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )

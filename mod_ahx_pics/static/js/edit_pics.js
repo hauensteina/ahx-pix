@@ -2,6 +2,14 @@
 
 const ROWLEN = 3
 
+//-------------------------
+function clearFlash() {
+  var flash = E('#flash_msg')
+  if (flash) {
+    flash.innerHTML = ''
+  }
+} // clearFlash()
+
 // Enable correct buttons if an edit happened
 //---------------------------------------------
 function editHappened(edit_type) {

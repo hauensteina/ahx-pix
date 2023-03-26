@@ -232,7 +232,8 @@ def edit_pics():
     def initial_page( gallery_id):
         session['gallery_id'] = gallery_id
         picdivs = gui.gen_edit_pics(gallery_id)
-        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, no_links=True)
+        return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, 
+                                no_links=True, no_header=True, no_flash=True)
 
     parms = get_parms()
     gallery_id = parms.get( 'gallery_id', session['gallery_id'])
