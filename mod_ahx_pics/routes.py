@@ -301,7 +301,8 @@ def edit_title():
     data['blurb'] = gallery.get('blurb','')
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
-    data['caption'] = title_pic.get('blurb','')
+    data['caption'] = ''
+    if title_pic: data['caption'] = title_pic.get('blurb','')
     if request.method == 'POST': # Save button clicked
         if 'file' not in request.files: # Save button clicked
             parms = get_parms()

@@ -71,7 +71,8 @@ def get_gallery_pics( gallery_id):
 def get_title_pic( gallery_id):
     """ Get the gallery title pic """
     pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' and deleted_flag = false and title_flag = true ''')
-    return pics[0]
+    if pics: return pics[0]
+    return None
 
 def get_gallery_links( gallery_id):
     """
