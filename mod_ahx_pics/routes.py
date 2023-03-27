@@ -29,7 +29,6 @@ import mod_ahx_pics.auth as auth
 from  mod_ahx_pics.helpers import html_tag as H
 from mod_ahx_pics import worker_funcs as wf
 
-
 @app.route('/ttest')
 #-----------------------
 def ttest():
@@ -101,18 +100,20 @@ def carousel():
 #---------------------------------------------------------------
 def delete_gallery():
     """ Delete a gallery (prompt for confirmation first) """
-    home = 'index_mobile' if session['is_mobile'] else 'index'
+    gallery_id = session['gallery_id']
+    home = 'index_mobile' if session.get('is_mobile','') else 'index'
+    gallery = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
     parms = get_parms()
     if request.method == 'POST': # form submitted
         if 'btn_no' in parms:
             flash('Gallery not deleted')
-            return redirect( url_for(home))
-        gallery_id = parms['question_parm']        
+            return redirect( url_for(gallery, gallery_id=gallery_id))
+        #gallery_id = session['gallery_id']        
         pg.run( f''' update gallery set deleted_flag = true where id = '{gallery_id}' ''')
         flash('Gallery deleted')
         return redirect( url_for(home))
     else:
-        gallery_id = parms['gallery_id']
+        #gallery_id = parms['gallery_id']
         gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
         if gallery['username'] != current_user.data['username']:
             error = 'You do not own this gallery.'
@@ -120,7 +121,7 @@ def delete_gallery():
         return render_template('question.html', 
                                msg=f'''Do you really want to delete gallery '{gallery['title']}'?
                                 <div style='color:red;'>You cannot undo the delete!</div>''', 
-                               question_parm=gallery_id, no_links=True)
+                               no_links=True)
 
 @app.route('/download_img', methods=['GET'])
 @login_required
