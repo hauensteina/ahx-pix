@@ -356,7 +356,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     
     MAX_CAP_LEN = 100
     colw = f'{100.0/n_cols}% '
-    html = ''
+    html = []
     for pic in pics:
         if pic['title_flag']: continue
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
@@ -379,10 +379,11 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
         if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
         pic_h = H( 'div', pic_h + caption_h, style)
-        html += pic_h
-
+        html.append(pic_h)
+    
+    html = '\n'.join(html)    
     html = H('div', html,
-             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px ''')
+             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px; min-width:90vw; ''')
     return html
 
 ### Helpers ###
