@@ -105,7 +105,7 @@ def delete_gallery():
     gallery = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
     parms = get_parms()
     if request.method == 'POST': # form submitted
-        if 'btn_no' in parms:
+        if 'btn_one' in parms:
             flash('Gallery not deleted')
             return redirect( url_for(gallery, gallery_id=gallery_id))
         #gallery_id = session['gallery_id']        
@@ -121,6 +121,7 @@ def delete_gallery():
         return render_template('question.html', 
                                msg=f'''Do you really want to delete gallery '{gallery['title']}'?
                                 <div style='color:red;'>You cannot undo the delete!</div>''', 
+                               value1='Back to safety', value2='DELETE', style2='color:red;',
                                no_links=True)
 
 @app.route('/download_img', methods=['GET'])
@@ -254,11 +255,13 @@ def edit_pics():
             n = len(delete_pic_ids)
             return render_template('question.html', 
                                    msg=f'''Do you really want to delete {len(delete_pic_ids)} pic{'s' if n > 1 else ''}?
-                                   <div style='color:red;'>You cannot undo the delete!</div>''', no_links=True)
-        elif 'btn_no' in parms:
+                                   <div style='color:red;'>You cannot undo the delete!</div>''', 
+                                   value1='Back to safety', value2='DELETE', style2='color:red;',
+                                   no_links=True)
+        elif 'btn_one' in parms:
             flash( 'Delete cancelled.')
             return reload( gallery_id)
-        elif 'btn_yes' in parms:
+        elif 'btn_two' in parms:
             delete_pic_ids = session['delete_pic_ids']
             delete_pics( delete_pic_ids)
             n = len(delete_pic_ids)
