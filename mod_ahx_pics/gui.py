@@ -86,7 +86,8 @@ def gen_edit_pics( gallery_id):
             if _bad_caption(blurb): blurb = '' 
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         picdiv = f'''
-          <div class=ahx-draggable draggable=true >
+          <div class='ahx-draggable' draggable=true>
+           
             <div class=ahx-pic id='pic_{pic["id"]}'>
               <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
             </div> 

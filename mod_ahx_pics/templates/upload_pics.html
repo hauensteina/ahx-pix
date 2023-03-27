@@ -21,9 +21,9 @@
     </div>
     <form action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:100%;'>
     </form>
-    <form action='gallery' method=get style='margin-top:20px;' >
+    <form method=post style='margin-top:20px;' >
           <input type=hidden name=gallery_id value={{gallery_id}}>
-          <input type=submit value=Upload > 
+          <input type=submit name=btn_upload value=Upload > 
     </form>
   </div>
 </div>

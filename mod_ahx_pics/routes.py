@@ -312,7 +312,7 @@ def edit_title():
             parms = get_parms()
             if 'save' in parms:
                 save_changes( get_parms(), gallery_id)
-                flash('Title changes saved.')
+                flash('Title changes saved. Refresh until the picture shows.')
             else:
                 flash('Title changes discarded.')
             return redirect( url_for('gallery', gallery_id=gallery_id))
@@ -580,8 +580,12 @@ def upload_pics():
     data['gallery_title'] = session['gallery_title']
     gallery_id = session['gallery_id']
     data['gallery_id'] = gallery_id
-    if request.method == 'POST': # Upload button clicked
-        gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+    parms = get_parms()
+    gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+    if request.method == 'POST': # File dropped or upload button clicked
+        if 'btn_upload' in parms:
+            flash( 'Upload started. Keep refreshing until the pictures show up.')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         if 'file' not in request.files:
             flash('No file part', 'error')
             return redirect(request.url)
@@ -591,7 +595,7 @@ def upload_pics():
         if file.filename == '':
             flash('Please select a file', 'error')
             return redirect(request.url)
-        if file: # and allowed_file(file.filename):
+        if file: 
             tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
             os.mkdir( tempfolder)            
             fname = secure_filename(file.filename)
