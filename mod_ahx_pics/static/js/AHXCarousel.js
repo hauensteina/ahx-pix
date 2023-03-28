@@ -69,6 +69,9 @@ class AHXCarousel {
     this._preloadImages( this.slides(), this.activeSlide() )
     //this._preventZoomOnDoubleTap()
     captionTimer()
+    var scroll = window.setInterval(function() { 
+      //window.scrollTo(0,100) ; 
+    }, 2000) 
   } // constructor
 
   //--------------------------------

@@ -158,6 +158,29 @@ a:active {
     list-style: none;
 }
 
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+ /* Styles for iPad portrait mode */
+ 
+/* Prevent bottom cutoff if browser chrome visible */
+    .ahx-carousel {
+	width: 100vw;
+	height: 94vh;
+	position:relative;
+	touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) and (orientation: landscape) {
+  /* Styles for iPad landscape mode */
+/* Prevent bottom cutoff if browser chrome visible */
+    .ahx-carousel {
+	width: 100vw;
+	height: 92vh;
+	position:relative;
+	touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
+    }
+}
+
 .ahx-slide.ahx-active {
     display:block;
     opacity: 1;
@@ -199,7 +222,7 @@ Position and size is set in AHXCarousel._positionImgCaption()
     overflow:auto;
     background:none; 
     border:none;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: rgba(255,255,255, .7);
     cursor: pointer;
     border-radius: .5rem;
@@ -219,7 +242,7 @@ Position and size is set in AHXCarousel._positionImgCaption()
     overflow:auto;
     background:none; 
     border:none;
-    font-size: 1.5rem;
+    font-size: 1.0rem;
     color: rgba(255,255,255, .9);
     cursor: pointer;
     border-radius: .5rem;
@@ -281,21 +304,6 @@ Position and size is set in AHXCarousel._positionImgCaption()
     margin: 0 .5rem;
     background-color: rgba(0, 0, 0, .5);
     user-select:none;	     
-/*
-    position:absolute;
-    z-index: 20;
-    background:none; 
-    border:none;
-    font-size: 2rem;
-    top:5%;
-    left:1rem;
-    color: rgba(255,255,255, .7);
-    cursor: pointer;
-    border-radius: .25rem;
-    padding: 0 1.0rem;
-    background-color: rgba(0, 0, 0, .5);
-    user-select:none; 	     
-*/
 }
 .ahx-x:hover {
     color:white;

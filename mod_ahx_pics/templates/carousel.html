@@ -5,7 +5,6 @@
   <head>
     <!-- Required meta tags -->
     <meta charset='utf-8'>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name='description' content='ahx-pics'>
     <meta name='keywords' content='Photo Viewer'>
@@ -23,9 +22,9 @@
     <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/styles.css") }}'>
   </head>
 
-  <body>
+  <body style='background-color:black;'>
     <section>
-      <div id='ahx-carousel' class='ahx-carousel' style='width:100%;user-select:none;'>
+      <div id='ahx-carousel' class='ahx-carousel' style='user-select:none;'>
         <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
         <button class='ahx-carousel-button ahx-next'>&#x21e8;</button>
         <div id='ahx-topcont' class=ahx-clickable
