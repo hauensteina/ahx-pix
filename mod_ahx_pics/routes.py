@@ -374,7 +374,11 @@ def gallery_mobile():
     session['gallery_id'] = gallery['id']
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
-    mylinks = ''
+    mylinks = f'''
+    <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
+      <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
+    </div>
+    '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/', methods=['GET', 'POST'])
@@ -457,7 +461,7 @@ def login():
         username = request.form['login']
         user = auth.User( username)
         if user.valid and user.password_matches( password):
-            login_user(user, remember=False)
+            login_user(user, remember=True)
             next_page = request.args.get('next') # Magically populated to where we came from
             return redirect(next_page) if next_page else redirect(url_for('index'))
         else:
@@ -575,6 +579,31 @@ def set_mobile():
 @login_required
 #-----------------------------------------------------
 def upload_pics():
+
+    def upload_files(dropped=False):
+        if 'file' not in request.files:
+            flash( 'No file part.')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
+        if len(request.files.getlist('file')) == 0:
+            flash( 'Zero files.')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
+        if request.files.getlist('file')[0].filename == '':
+            flash( 'Uploading. Keep refreshing until the pics appear.')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
+        files = request.files.getlist('file')
+
+        for file in files:
+            tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
+            os.mkdir( tempfolder)            
+            fname = secure_filename(file.filename)
+            fname = f'''{tempfolder}/{fname}'''
+            # This will work with one dyno. To scale, the file would have to move to S3.
+            file.save(fname)
+            Q.enqueue( wf.add_new_images, fname, gallery_id)
+        if not dropped:
+            flash( 'Uploading. Keep refreshing until the pics show up.')
+        return redirect( url_for( gallery_page, gallery_id=gallery_id))
+        
     error = None
     data = {}
     data['gallery_title'] = session['gallery_title']
@@ -583,27 +612,15 @@ def upload_pics():
     parms = get_parms()
     gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
     if request.method == 'POST': # File dropped or upload button clicked
-        if 'btn_upload' in parms:
-            flash( 'Upload started. Keep refreshing until the pictures show up.')
-            return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        if 'file' not in request.files:
-            flash('No file part', 'error')
-            return redirect(request.url)
-        file = request.files['file']
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            flash('Please select a file', 'error')
-            return redirect(request.url)
-        if file: 
-            tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
-            os.mkdir( tempfolder)            
-            fname = secure_filename(file.filename)
-            fname = f'''{tempfolder}/{fname}'''
-            # This will work with one dyno. To scale, the file would have to move to S3.
-            file.save(fname)
-            Q.enqueue( wf.add_new_images, fname, gallery_id)
+        #BP()
+        if 'btn_upload_desktop' in parms:
+            return upload_files()
+        elif 'btn_upload_mobile' in parms:
+            return upload_files()
+        else: # Files from dropzone drop
+            upload_files(dropped=True)
             return 'ok'
+
     else: # Initial hit
         return render_template( 'upload_pics.html', error=error, **data, no_links=True )
 

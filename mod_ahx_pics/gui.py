@@ -383,8 +383,12 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         html.append(pic_h)
     
     html = '\n'.join(html)    
-    html = H('div', html,
-             f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px; min-width:90vw; ''')
+    if session.get('is_mobile',''):
+        html = H('div', html,
+                 f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px; min-width:90vw; ''')
+    else:
+        html = H('div', html,
+                 f''' display:grid; grid-template-columns:{colw * n_cols}; width:50em;''')        
     return html
 
 ### Helpers ###

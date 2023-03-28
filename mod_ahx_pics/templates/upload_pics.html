@@ -6,7 +6,37 @@
 {% endblock js %}
 
 {% block content %}
-<div class=ahx-mob-or-desk>
+
+{% if is_mobile() %}
+
+<div class=ahx-outer style='margin-left:0;'> 
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <div style='text-align:center;'>
+    Upload photos and videos for<br>
+    '{{gallery_title}}'
+  </div>
+  <form action='upload_pics' method=post enctype=multipart/form-data style='margin-top:20px;' >
+    <div style='text-align:center;'>
+      <label class="ahx-file-upload"> 
+        <input id=file-upload type="file" name=file multiple style='display:none;'>
+        Choose files or photos 
+      </label>
+      <div id=file-count>0 file(s) selected.</div>
+    </div>
+    <div style='text-align:center;'>
+      <input type=submit name=btn_upload_mobile value=Done style='margin-top:20px;'> 
+    </div>
+  </form>
+</div>
+</div>
+
+{% else %}
+
+<div class=ahx-outer style='margin-left:0;'> 
   <div style='min-height:30px;color:red;'>
     {% if error %}
     <strong>Error:</strong> {{ error }}
@@ -14,18 +44,54 @@
   </div>
   <div style='display:grid;justify-items:center;'>
     <div class=heading>
-      Upload Images and Videos for Gallery '{{gallery_title}}'
+      Upload photos and videos for gallery '{{gallery_title}}'
     </div>
     <div style='margin-bottom:50px;'>
-    You can upload individual images or videos, or zip files containing collections of images or videos.
+      You can upload individual images or videos, or zip files containing collections of images or videos.
     </div>
-    <form action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:100%;'>
+    <form id=dropform action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:80%;'>
     </form>
-    <form method=post style='margin-top:20px;' >
-          <input type=hidden name=gallery_id value={{gallery_id}}>
-          <input type=submit name=btn_upload value=Upload > 
-    </form>
+    <div style='text-align:center;margin-top:10px;'>
+      or 
+      <div style='margin-top:10px;'> 
+        <label class="ahx-file-upload"> 
+          <input id=file-upload type="file" name=file multiple form=dropform style='display:none;'>
+          Choose files or photos 
+        </label>
+        <div id=file-count>0 file(s) selected.</div>
+      </div>
+    </div>
+    <div style='text-align:center;margin-top:40px;'>
+      <input type=submit form=dropform name=btn_upload_desktop value=Done 
+             style='margin-top:20px;font-size:1.0em;'> 
+      <!-- style='margin-top:20px;font-size:1.0em;border-radius:0.5rem;color:#7c795d;border-color:#7c795d;'>  -->
+    </div>
   </div>
 </div>
 
-  {% endblock content %}
+{% endif %}
+
+{% endblock content %}
+
+{% block js_end %}
+<script>
+ E('#file-upload').addEventListener("change", function() {
+   const count = this.files.length
+   E('#file-count').innerText = count + " file(s) selected"
+ });
+</script>
+{% endblock js_end %}
+
+
+{% block css %}
+<style>
+ .ahx-file-upload {
+   border: 1px solid #aaa;
+   display: inline-block;
+   padding: 0 5px 0 5px;
+   cursor: pointer;
+   border-radius: .25rem;
+ }
+</style>
+{% endblock css %}
+

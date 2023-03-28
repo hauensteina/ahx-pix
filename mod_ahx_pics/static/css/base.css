@@ -48,8 +48,8 @@ body,  button,  input,  table,  textarea,  select {
 }
 
 body {
-	display:flex;
-	flex-direction:column;
+/*	display:flex;
+	flex-direction:column; */
 	background:white /* hsl(220, 100%, 95%)*/ ;
 }
 
