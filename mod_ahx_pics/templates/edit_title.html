@@ -6,17 +6,17 @@
 {% endblock js %}
 
 {% block content %}
-<div class=ahx-mob-or-desk>
+{% if is_mobile() %}
+
+<!-- Mobile phone version -->
+<!-- ==================== -->
+
+<div class=ahx-mob-or-desk style='width:90vw;'>
   <div style='min-height:30px;color:red;'>
     {% if error %}
     <strong>Error:</strong> {{ error }}
     {% endif %}
   </div>
-  <!-- <div style='display:grid;justify-items:center;'>
-       <div class=heading>
-       {{gallery_title}}
-       </div>
-       </div> -->
   <div style='display:grid;justify-items:center;'>
     <form id=textform action=edit_title method=post>
       <div style='margin-bottom:40px;margin-right:5px'>
@@ -26,11 +26,13 @@
   </div>
   <div style='display:grid;justify-items:center;'>
     <form id=picform action=edit_title method=post enctype=multipart/form-data class='dropzone' style='width:100%;'>
-      <div class=dz-message data-dz-message>Drop new title image here</div>
+      <div class=dz-message data-dz-message>Click to select image</div>
     </form>
   </div>
   <div style='display:grid;justify-items:left;margin-top:10px;'>
-    <span><input form=textform type=text name=caption size=40 placeholder='Image Caption' value='{{caption}}'></span>
+    <span style='width:100%;margin:0;padding:0;'>
+      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption' value='{{caption}}'>
+    </span>
   </div>
   <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
   <div style='display:grid;justify-items:center;'>
@@ -39,7 +41,44 @@
       <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>
     </span>
   </div>
-
 </div>
+
+{% else %}
+
+<!-- Desktop version -->
+<!-- =============== -->
+<div class=ahx-mob-or-desk style='max-width:600px;'>
+  <div style='min-height:30px;color:red;'>
+    {% if error %}
+    <strong>Error:</strong> {{ error }}
+    {% endif %}
+  </div>
+  <div style='display:grid;justify-items:center;'>
+    <form id=textform action=edit_title method=post>
+      <div style='margin-bottom:40px;margin-right:5px'>
+        <input type=text name=title value='{{gallery_title}}'size=40>
+      </div>       
+    </form>
+  </div>
+  <div style='display:grid;justify-items:center;'>
+    <form id=picform action=edit_title method=post enctype=multipart/form-data class='dropzone' style='width:100%;'>
+      <div class=dz-message data-dz-message>Click, or drop new title image here</div>
+    </form>
+  </div>
+  <div style='display:grid;justify-items:left;margin-top:10px;'>
+    <span style='width:100%;margin:0;padding:0;'>
+      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption' value='{{caption}}'>
+    </span>
+  </div>
+  <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
+  <div style='display:grid;justify-items:center;'>
+    <span>
+      <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'>
+      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>
+    </span>
+  </div>
+</div>
+
+{% endif %}
 
 {% endblock content %}

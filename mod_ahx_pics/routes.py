@@ -303,6 +303,8 @@ def edit_title():
     data['gallery_title'] = session['gallery_title']
     gallery_id = session['gallery_id']
     gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
+    gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+
     data['blurb'] = gallery.get('blurb','')
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
@@ -316,7 +318,7 @@ def edit_title():
                 flash('Title changes saved. Refresh until the picture shows.')
             else:
                 flash('Title changes discarded.')
-            return redirect( url_for('gallery', gallery_id=gallery_id))
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         else: # Title pic was dropped
             file = request.files['file']
             # If the user does not select a file, the browser submits an
@@ -378,7 +380,9 @@ def gallery_mobile():
     mylinks = f'''
     <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
       <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
+      <a href="{url_for('edit_title')}">Edit Title</a> &nbsp;   
       <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
+      <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
     </div>
     '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
