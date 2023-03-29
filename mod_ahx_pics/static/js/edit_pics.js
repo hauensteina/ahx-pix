@@ -12,7 +12,9 @@ function setupForm() {
     const container = E('.ahx-container')
     var draggables = A('.ahx-draggable')
     var selected = A('.ahx-selected')
+    if (!(selected.length > 0)) return 
     
+    // Move selected pics down
     if (ev.submitter.id == 'btn_down') {
       selected.reverse().forEach( e => {
         const dragged = e.parentElement.parentElement
@@ -21,8 +23,14 @@ function setupForm() {
           container.insertBefore( nnext, dragged)
           editHappened('pic_moved')
         }
-      })
-    } else { // up
+      }) // forEach   
+      // Sroll to the last selected pic
+      var last = selected[ selected.length - 1 ]
+      const top = last.offsetTop
+      window.scrollTo( { top:top - 120, behavior:'smooth' } )
+      
+    // Move selected pics up
+    } else { 
       selected.forEach( e => {
         const dragged = e.parentElement.parentElement
         const previous = dragged.previousElementSibling
@@ -30,7 +38,11 @@ function setupForm() {
           container.insertBefore( dragged, previous)
           editHappened('pic_moved')
         }
-      })      
+      }) // forEach      
+      // Sroll to the first selected pic
+      var first = selected[ 0 ]
+      const top = first.offsetTop
+      window.scrollTo( { top:top - 120, behavior:'smooth' } )
     } // up
   }) // addEventListener()
 } // setupForm()
