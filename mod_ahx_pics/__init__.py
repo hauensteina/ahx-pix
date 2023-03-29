@@ -148,7 +148,13 @@ mail = Mail(app)
 
 # REDIS background worker queue 
 #-----------------------------------
-redis_url = os.getenv('REDIS_URL')
+#redis_url = os.getenv('REDIS_URL')
+if os.getenv('PRODUCTION_FLAG'):
+    redis_url = os.getenv('REDIS_TLS_URL')
+else:
+    redis_url = os.getenv('PIX_REDIS_URL')  # remote
+    #redis_url = os.getenv('REDIS_URL')  # local
+
 log('>>>>>>>>> REDIS_URL:' + redis_url)
 
 '''
@@ -156,14 +162,15 @@ To start redis and the worker locally:
 $ redis-server &
 $ python worker.py  
 '''
-REDIS_CONN = redis.from_url( os.getenv('REDIS_URL'))
+
 url = urlparse(redis_url)
 ssl=True
 if url.hostname == 'localhost': ssl=False
 REDIS_CONN = redis.Redis( host=url.hostname, port=url.port, 
                           username=url.username, password=url.password, 
                           ssl=ssl, ssl_cert_reqs=None)
-Q = Queue( 'myq', connection=REDIS_CONN, default_timeout=JOB_TIMEOUT)
+
+Q = Queue( 'high',connection=REDIS_CONN, default_timeout=JOB_TIMEOUT)
 
 # Postgres
 #-------------
