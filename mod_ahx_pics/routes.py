@@ -157,11 +157,11 @@ def download_file():
     """
     parms = get_parms()
     fname = parms['fname']
-    orig_fname = parms['orig_fname']
+    #orig_fname = parms['orig_fname']
     local_fname = helpers.s3_download_file(fname)
     ext = os.path.splitext(local_fname)[1]
     fh = open( local_fname, 'br')
-    resp = send_file( fh, as_attachment=True, download_name=f'{os.path.split(orig_fname)[1]}')
+    resp = send_file( fh, as_attachment=True, download_name=f'{os.path.split(fname)[1]}')
     try:
         os.remove( local_fname)
     except:
