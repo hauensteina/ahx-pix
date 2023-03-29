@@ -239,11 +239,12 @@ def edit_pics():
 
     parms = get_parms()
     gallery_id = parms.get( 'gallery_id', session['gallery_id'])
+    gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
 
     if request.method == 'POST': # form submitted
         # Back to the gallery
         if 'btn_gallery' in parms:
-            return redirect( url_for( 'gallery', gallery_id=gallery_id))
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         # Revert changes
         elif 'btn_revert' in parms:
             flash( f'''Changes reverted.''')
@@ -377,6 +378,7 @@ def gallery_mobile():
     mylinks = f'''
     <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
       <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
+      <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
     </div>
     '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)

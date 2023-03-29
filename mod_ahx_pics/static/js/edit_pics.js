@@ -2,6 +2,39 @@
 
 const ROWLEN = 3
 
+// Catch 'btn_up','btn_down' and handle in js without submitting the form
+//---------------------------------------------------------------------------
+function setupForm() {
+  const form = E('#frm_pics')
+  form.addEventListener("submit", function(ev) {
+    if (! ['btn_up','btn_down'].includes(ev.submitter.id)) return
+    ev.preventDefault()
+    const container = E('.ahx-container')
+    var draggables = A('.ahx-draggable')
+    var selected = A('.ahx-selected')
+    
+    if (ev.submitter.id == 'btn_down') {
+      selected.reverse().forEach( e => {
+        const dragged = e.parentElement.parentElement
+        const nnext = dragged.nextElementSibling
+        if (nnext != null) {
+          container.insertBefore( nnext, dragged)
+          editHappened('pic_moved')
+        }
+      })
+    } else { // up
+      selected.forEach( e => {
+        const dragged = e.parentElement.parentElement
+        const previous = dragged.previousElementSibling
+        if (previous != null) {
+          container.insertBefore( dragged, previous)
+          editHappened('pic_moved')
+        }
+      })      
+    } // up
+  }) // addEventListener()
+} // setupForm()
+
 //-------------------------
 function clearFlash() {
   var flash = E('#flash_msg')
@@ -17,14 +50,26 @@ function editHappened(edit_type) {
     if (A('.ahx-selected').length > 0) {
       E('#btn_del').disabled = false
       E('#btn_save').disabled = true
+      if (E('#btn_up') != null) {
+        E('#btn_up').disabled = false
+        E('#btn_down').disabled = false
+      }
     } else {
       E('#btn_del').disabled = true
       E('#btn_save').disabled = !editHappened.flag
+      if (E('#btn_up') != null) {
+        E('#btn_up').disabled = true
+        E('#btn_down').disabled = true
+      }
     }
   } // select_pic
   else if (edit_type == 'edit_caption' || edit_type == 'pic_moved' ) {
     editHappened.flag = true
     E('#btn_del').disabled = true
+    if (E('#btn_up') != null) {
+      E('#btn_up').disabled = true
+      E('#btn_down').disabled = true
+    }
     var selected = A('.ahx-selected')
     selected.forEach( x => { x.classList.remove( 'ahx-selected') })
     if (E('#btn_del').disabled) {
@@ -95,7 +140,7 @@ function setupDragging() {
       // Scroll down
       if (elementRect.bottom > bottomThreshold && viewportBottom < document.body.scrollHeight) { 
         window.scrollBy(0, scrollSize) // Scroll the page by scrollSize pixels
-      // Scroll up
+        // Scroll up
       } else if (elementRect.top < topThreshold && viewportTop > 0) { 
         window.scrollBy(0, -scrollSize) // Scroll the page by scrollSize pixels
       } 
@@ -137,7 +182,18 @@ function setupDragging() {
   })
 
   var draggables = A('.ahx-draggable')
+  const D = setupDragging
   draggables.forEach( d => {
+    if (isMobile()) {
+      setupMobile(d)
+    } else {
+      setupDesktop(d)
+    } // dragging on mobile device
+  })
+  
+  //----------------------------
+  function setupDesktop(d) {
+    // Dragging on desktop
     d.addEventListener('dragstart', (e) => {
       rowcol('compute')
       d.classList.add('ahx-dragging')
@@ -161,18 +217,22 @@ function setupDragging() {
       { 
         if (target_row < source_row) return
         container.insertBefore( d, dragged)
-        //console.log('>>>>>>>> right')
         editHappened( 'pic_moved')
         rowcol('compute')
       } else { // Main case
-        //if (target_idx == source_idx+1 && target_idx < draggables.length - 1) return
         if (target_row > source_row && target_col == 0) return
         container.insertBefore( dragged, d)
-        //console.log('>>>>>>>> left')
         editHappened( 'pic_moved')
         rowcol('compute')
       }
     }) // dragover
-  }) // draggables.forEach()
+  } // setupDesktop(d) 
+
+  // Dragging on mobile device
+  //------------------------------
+  function setupMobile(d) {
+    // Just couldn't get this to work. Too bad.
+    return
+  } // setupMobile
+
 } // setupDragging()
-setupDragging.scrollTimer = null

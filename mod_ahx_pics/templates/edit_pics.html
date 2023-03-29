@@ -5,7 +5,39 @@
 {% endblock js %}
 
 {% block content %}
+
+{% if is_mobile() %}
+
 <header style='background:white; border-bottom:5px solid #3280ec;'>
+  <form id=frm_pics method=post>
+    <input type=hidden name=gallery_id value={{gallery_id}} >
+    <input id=marked_pic_ids type=hidden name=marked_pic_ids>
+    <div style='display:grid;justify-items:center;align-items:center;'>
+      <span>
+        <input id=btn_gallery type=submit name=btn_gallery value='Back'>
+        <input id=btn_save type=submit name=btn_save value='Save' disabled >
+        <input id=btn_revert type=submit name=btn_revert value='Revert' disabled >
+      </span>
+    </div>
+    <div style='display:grid;justify-items:center;align-items:center;'>
+      <span>
+        <input id=btn_down type=submit name=btn_gallery value='Move Down' disabled>
+        <input id=btn_up type=submit name=btn_save value='Move Up' disabled >
+        <input id=btn_del type=submit name=btn_del value='Delete' disabled >
+      </span>
+    </div>
+  </form>
+</header>
+<main>
+  <div class='ahx-container' style='display:grid; grid-template-columns:100%; width:100vw;
+              margin-top:100px;margin-left:0;margin-right:0;'>
+    {{ picdivs|safe }}
+  </div>
+</main>
+
+{% else %}
+
+<header style='background:white; border-bottom:5px solid #3280ec; max-width:1020px'>
   <form id=frm_pics method=post>
     <input type=hidden name=gallery_id value={{gallery_id}} >
     <input id=marked_pic_ids type=hidden name=marked_pic_ids>
@@ -18,22 +50,14 @@
       </span>
     </div>
   </form>
-  <!-- Flashed messages -->
-  <div style='height:20px;'>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div id=flash_msg class="{{ category }}">{{ message }}</div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-  </div>
 </header>
 <main>
   <div class='ahx-container' style='display:grid; grid-template-columns:33.3% 33.3% 33.3%; min-width:600px; max-width:1000px;margin-top:100px;'>
     {{ picdivs|safe }}
   </div>
 </main>
+
+{% endif %}
 
 {% endblock content %}
 
@@ -82,7 +106,7 @@
    width: 100%;
    z-index: 1;
    overflow: hidden;
-   height: 80px;  
+   /* height: 80px;   */
  }
 
  /* Style for the main content */
@@ -103,7 +127,9 @@
  setupCaptionHandlers()
  setupSelect()
  setupDragging()
+ setupForm()
  setTimeout( clearFlash, 3000)
+ 
 </script>
 {% endblock js_end %}
 
