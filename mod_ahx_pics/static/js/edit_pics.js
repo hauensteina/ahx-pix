@@ -49,7 +49,6 @@ function editHappened(edit_type) {
   if (edit_type == 'select_pic') {
     if (A('.ahx-selected').length > 0) {
       E('#btn_del').disabled = false
-      E('#btn_save').disabled = true
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = false
         E('#btn_down').disabled = false
@@ -64,19 +63,25 @@ function editHappened(edit_type) {
     }
   } // select_pic
   else if (edit_type == 'edit_caption' || edit_type == 'pic_moved' ) {
-    editHappened.flag = true
-    E('#btn_del').disabled = true
-    if (E('#btn_up') != null) {
-      E('#btn_up').disabled = true
-      E('#btn_down').disabled = true
-    }
-    var selected = A('.ahx-selected')
-    selected.forEach( x => { x.classList.remove( 'ahx-selected') })
-    if (E('#btn_del').disabled) {
+    if (isMobile()) {
+      editHappened.flag = true
       E('#btn_save').disabled = false
-    } else {
-      E('#btn_save').disabled = true
-    }
+    } else { 
+      // desktop
+      editHappened.flag = true
+      E('#btn_del').disabled = true
+      if (E('#btn_up') != null) {
+        E('#btn_up').disabled = true
+        E('#btn_down').disabled = true
+      }
+      var selected = A('.ahx-selected')
+      selected.forEach( x => { x.classList.remove( 'ahx-selected') })
+      if (E('#btn_del').disabled) {
+        E('#btn_save').disabled = false
+      } else {
+        E('#btn_save').disabled = true
+      }
+    } // desktop
   } // edit_caption
 
   E('#btn_revert').disabled = true
