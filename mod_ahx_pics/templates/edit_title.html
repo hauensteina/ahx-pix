@@ -35,6 +35,16 @@
     </span>
   </div>
   <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
+
+  <div style='margin-top:10px;'>
+    {% if private_flag %}
+    <input form=textform type=checkbox name=private_flag id=cb_private checked>
+    {% else %}
+    <input form=textform type=checkbox name=private_flag id=cb_private>
+    {% endif %}
+    <label for=cb_private >Private</label>
+  </div>
+
   <div style='display:grid;justify-items:center;'>
     <span>
       <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'>
@@ -71,7 +81,17 @@
     </span>
   </div>
   <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
-  <div style='display:grid;justify-items:center;'>
+
+  <div style='margin-top:10px;'>
+    {% if private_flag %}
+    <input form=textform type=checkbox name=private_flag id=cb_private checked>
+    {% else %}
+    <input form=textform type=checkbox name=private_flag id=cb_private>
+    {% endif %}
+    <label for=cb_private >Private</label>
+  </div>
+
+  <div style='display:grid;justify-items:center;margin-top:10px;'>
     <span>
       <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'>
       <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>

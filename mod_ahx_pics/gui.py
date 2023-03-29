@@ -149,7 +149,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
         img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), '')
         title_pic_h = ''
         if img_link:        
-            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:max(30vh,30vw);')
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;')
             title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
@@ -363,14 +363,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         ext = os.path.splitext( pic['filename'])[1].lower()
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
-        try:
-            if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
-                fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
-                #orig_fname = os.path.split(pic['orig_fname'])[1]
-                visit_url = f''' '{url_for( "download_file", fname=fname)}' '''
-        except Exception as e:
-            BP()
-            tt=42
+        if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
+            fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
+            visit_url = f''' '{url_for( "download_file", fname=fname)}' '''
 
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')

@@ -298,6 +298,13 @@ def edit_title():
         sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
         pg.run( sql, (caption.strip(),gallery_id))
 
+        if 'private_flag' in parms:
+            sql = f'''update gallery set private_flag=true where id=%s'''
+            pg.run( sql, (gallery_id,))
+        else:
+            sql = f'''update gallery set private_flag=false where id=%s'''
+            pg.run( sql, (gallery_id,))
+            
     error = None
     data = {}
     data['gallery_title'] = session['gallery_title']
@@ -306,6 +313,7 @@ def edit_title():
     gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
 
     data['blurb'] = gallery.get('blurb','')
+    data['private_flag'] = gallery.get('private_flag',True)
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
     data['caption'] = ''
