@@ -1,6 +1,6 @@
-ahx-pics
-=========
+# ahx-pix
 
-A replacement for my old BGC picture collection website.
+A web app to organize your photos and videos into galleries, in a mobile-friendly way.
+
 
 
