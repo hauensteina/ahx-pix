@@ -586,7 +586,7 @@ def set_mobile():
 #-----------------------------------------------------
 def upload_pics():
 
-    def upload_files(dropped=False):
+    def upload_files():
         if 'file' not in request.files:
             flash( 'No file part.')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
@@ -606,8 +606,7 @@ def upload_pics():
             # This will work with one dyno. To scale, the file would have to move to S3.
             file.save(fname)
             Q.enqueue( wf.add_new_images, fname, gallery_id)
-        if not dropped:
-            flash( 'Uploading. Keep refreshing until the pics show up.')
+
         return redirect( url_for( gallery_page, gallery_id=gallery_id))
         
     error = None
@@ -618,13 +617,11 @@ def upload_pics():
     parms = get_parms()
     gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
     if request.method == 'POST': # File dropped or upload button clicked
-        #BP()
-        if 'btn_upload_desktop' in parms:
-            return upload_files()
-        elif 'btn_upload_mobile' in parms:
-            return upload_files()
+        if 'btn_upload' in parms:
+            flash( 'Uploading. Keep refreshing until the pics show up.')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         else: # Files from dropzone drop
-            upload_files(dropped=True)
+            upload_files()
             return 'ok'
 
     else: # Initial hit

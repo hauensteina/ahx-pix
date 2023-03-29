@@ -19,24 +19,33 @@
     Upload photos and videos for<br>
     '{{gallery_title}}'
   </div>
-  <form action='upload_pics' method=post enctype=multipart/form-data style='margin-top:20px;' >
-    <div style='text-align:center;'>
-      <label class="ahx-file-upload"> 
-        <input id=file-upload type="file" name=file multiple style='display:none;'>
-        Choose files or photos 
-      </label>
-      <div id=file-count>0 file(s) selected.</div>
-    </div>
-    <div style='text-align:center;'>
-      <input type=submit name=btn_upload_mobile value=Done style='margin-top:20px;'> 
-    </div>
-  </form>
-</div>
+  <div style='display:grid;justify-items:center;margin-top:20px;'>
+    <form id=dropform action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:80%;'>
+      <div class=dz-message data-dz-message>Click to select photos</div>
+    </form>
+  </div>
+  <div style='text-align:center;margin-top:10px;'>
+    <input type=submit form=dropform name=btn_upload value=Done style='margin-top:20px;'> 
+  </div>
+  <!-- 
+       <form action='upload_pics' method=post enctype=multipart/form-data style='margin-top:20px;' >
+       <div style='text-align:center;'>
+       <label class="ahx-file-upload"> 
+       <input id=file-upload type="file" name=file multiple style='display:none;'>
+       Choose files or photos 
+       </label>
+       <div id=file-count>0 file(s) selected.</div>
+       </div>
+       <div style='text-align:center;'>
+       <input type=submit name=btn_upload_mobile value=Done style='margin-top:20px;'> 
+       </div>
+       </form>
+  -->
 </div>
 
 {% else %}
 
-<div class=ahx-outer style='margin-left:0;'> 
+<div class=ahx-outer style='margin-left:0;max-width:600px;'> 
   <div style='min-height:30px;color:red;'>
     {% if error %}
     <strong>Error:</strong> {{ error }}
@@ -46,23 +55,14 @@
     <div class=heading>
       Upload photos and videos for gallery '{{gallery_title}}'
     </div>
-    <div style='margin-bottom:50px;'>
+    <div style='margin-bottom:50px;max-width:500px;'>
       You can upload individual images or videos, or zip files containing collections of images or videos.
     </div>
     <form id=dropform action='upload_pics' method=post enctype=multipart/form-data class='dropzone' style='width:80%;'>
+      <div class=dz-message data-dz-message>Click, or drop files here</div>
     </form>
-    <div style='text-align:center;margin-top:10px;'>
-      or 
-      <div style='margin-top:10px;'> 
-        <label class="ahx-file-upload"> 
-          <input id=file-upload type="file" name=file multiple form=dropform style='display:none;'>
-          Choose files or photos 
-        </label>
-        <div id=file-count>0 file(s) selected.</div>
-      </div>
-    </div>
-    <div style='text-align:center;margin-top:40px;'>
-      <input type=submit form=dropform name=btn_upload_desktop value=Done 
+    <div style='text-align:center;margin-top:20px;'>
+      <input type=submit form=dropform name=btn_upload value=Done 
              style='margin-top:20px;font-size:1.0em;'> 
       <!-- style='margin-top:20px;font-size:1.0em;border-radius:0.5rem;color:#7c795d;border-color:#7c795d;'>  -->
     </div>
