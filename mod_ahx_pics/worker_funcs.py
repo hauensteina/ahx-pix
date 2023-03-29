@@ -14,6 +14,7 @@ from zipfile import ZipFile
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell, list_files
 from mod_ahx_pics import log,pg,Q
+import mod_ahx_pics.helpers as helpers
 
 from mod_ahx_pics import (
     LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE, 
@@ -77,7 +78,7 @@ def _resize_video( fname, gallery_id, size):
     finally:
         try:
             #os.remove(local_fname)
-            os.remove(local_thumb)
+            if local_thumb != fname: os.remove(local_thumb)
         except:
             pass
     
@@ -131,7 +132,6 @@ def gen_thumbnails():
     s3_client = s3_get_client()
 
     def convert(key, size='small'):
-        #BP()
         basename = key.split( '/lg_')[1] # 'pics/large/1/lg_1_1_1' -> 1_1_1
         local_fname = s3_download_file(key)
         ext = os.path.splitext( local_fname)[1]
@@ -230,16 +230,20 @@ def add_new_images( fname, gallery_id):
         _set_gallery_status( gallery_id, f'''Adding image {fname} ({idx+1}/{len(fnames)})''')
         pic_id = shortuuid.uuid()
         ext = os.path.splitext(fname)[1].lower()
-        path = os.path.split(fname)[0]
-        s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
-        shutil.copyfile( fname, s3name)
+        #path = os.path.split(fname)[0]
+        #s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
+        s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
+        localfname = helpers.s3_download_file( fname)
+        shutil.copyfile( localfname, s3name)
         if ext in MEDIA_EXTENSIONS:
             f02_gen_thumbs( s3name, gallery_id)
         else:
             target_name = f'''pics_complete/{pic_id}_{gallery_id}{ext}'''
             s3_upload_files( [s3name], [target_name])
+
         f03_insert_db( s3name, fname, gallery_id, pic_id)
-    shutil.rmtree(subfolder)   
+        os.remove( localfname)
+        os.remove( s3name)
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')
 
@@ -256,15 +260,16 @@ def add_title_image( fname, gallery_id):
         shutil.rmtree(subfolder)   
         return
         
-    path = os.path.split(fname)[0]
-    s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
-    shutil.copyfile( fname, s3name)
+    s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
+    localfname = helpers.s3_download_file( fname)
+    shutil.copyfile( localfname, s3name)
     f02_gen_thumbs( s3name, gallery_id)
     f03_insert_db( s3name, fname, gallery_id, pic_id)
     sql = f''' update picture set title_flag = false where gallery_id=%s'''
     pg.run( sql, [gallery_id])
     sql = f''' update picture set title_flag = true where id=%s '''
     pg.run( sql, [pic_id])
-    shutil.rmtree(subfolder)   
+    os.remove( localfname)
+    os.remove( s3name)
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_title_image() done''')

@@ -9,6 +9,7 @@ from pdb import set_trace as BP
 import os, sys, re, json, random
 from datetime import datetime, date
 import shortuuid
+import shutil
 
 import flask
 from flask import request, render_template, flash, redirect, url_for, session, send_file
@@ -339,9 +340,11 @@ def edit_title():
                 os.mkdir( tempfolder)            
                 fname = secure_filename(file.filename)
                 fname = f'''{tempfolder}/{fname}'''
-                # This will work with one dyno. To scale, the file would have to move to S3.
+
                 file.save(fname)
+                helpers.s3_upload_files( [fname])
                 Q.enqueue( wf.add_title_image, fname, gallery_id)
+                shutil.rmtree(tempfolder) 
                 return 'ok'
     else: # Initial hit
         return render_template( 'edit_title.html', error=error, **data, no_links=True )
@@ -611,9 +614,11 @@ def upload_pics():
             os.mkdir( tempfolder)            
             fname = secure_filename(file.filename)
             fname = f'''{tempfolder}/{fname}'''
-            # This will work with one dyno. To scale, the file would have to move to S3.
+
             file.save(fname)
+            helpers.s3_upload_files( [fname] )
             Q.enqueue( wf.add_new_images, fname, gallery_id)
+            shutil.rmtree(tempfolder) 
 
         return redirect( url_for( gallery_page, gallery_id=gallery_id))
         

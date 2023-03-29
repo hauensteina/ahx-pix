@@ -152,8 +152,8 @@ mail = Mail(app)
 if os.getenv('PRODUCTION_FLAG'):
     redis_url = os.getenv('REDIS_TLS_URL')
 else:
-    redis_url = os.getenv('PIX_REDIS_URL')  # remote
-    #redis_url = os.getenv('REDIS_URL')  # local
+    #redis_url = os.getenv('PIX_REDIS_URL')  # remote
+    redis_url = os.getenv('REDIS_URL')  # local
 
 log('>>>>>>>>> REDIS_URL:' + redis_url)
 
@@ -175,8 +175,8 @@ Q = Queue( 'high',connection=REDIS_CONN, default_timeout=JOB_TIMEOUT)
 # Postgres
 #-------------
 if 'AHX_PIX_LOCAL_DB_URL' in os.environ:
-    # pg = Postgres( os.environ['AHX_PIX_LOCAL_DB_URL']) # local
-    pg = Postgres( os.environ['PIX_DB_URL']) # remote
+    pg = Postgres( os.environ['AHX_PIX_LOCAL_DB_URL']) # local
+    # pg = Postgres( os.environ['PIX_DB_URL']) # remote
 else:
     pg = Postgres( os.environ['DATABASE_URL'])
 
