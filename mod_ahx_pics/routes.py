@@ -405,8 +405,8 @@ def gallery_mobile():
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
-    if session.get('is_mobile',''): return redirect( url_for('index_mobile'))
     parms = get_parms()
+    if session.get('is_mobile',''): return redirect( url_for('index_mobile', **parms))
     title = parms.get('title','')
     owner = parms.get('owner','')
     all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
