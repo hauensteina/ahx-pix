@@ -67,55 +67,26 @@ class AHXCarousel {
     this._showArrows()
     this._setImgNum()
     this._preloadImages( this.slides(), this.activeSlide() )
-    //this._preventZoomOnDoubleTap()
     captionTimer()
     var scroll = window.setInterval(function() { 
       //window.scrollTo(0,100) ; 
     }, 2000) 
   } // constructor
 
-  //--------------------------------
-  _preventZoomOnDoubleTap() {
-    // Prevent zoom on double tap
-    $('*').on('touchend',(e)=> {
-      if (e.target.className.includes('ahx-carousel-button')) { return }
-      if (e.target.className.includes('ahx-captoggle')) { return }
-      if (e.target.className.includes('ahx-clickable')) { return }
-      e.preventDefault()
-    })
-  } // preventZoomOnDoubleTap()
-
-  //-----------------------
-  _positionCaption() {
-    if (!E('.ahx-captoggle.ahx-active')) {
-      return
-    } 
-    var img = this.activeSlide()
-    var frame = getContainedFrame(img) 
-    img.style.top = `0px`
-    if (isNaN(frame.width)) return;
-    var caption = this.activeCaption()
-    if (!caption) return
-    var realWidth = caption.clientWidth
-    var realHeight = caption.clientHeight
-    caption.style.left = `${frame.left + (frame.width - realWidth)/2.0}px`
-    caption.style.top = `${frame.top + frame.height - realHeight - 20 }px`
-
-    caption.style.opacity = 1
-  } // _positionCaption()
-
-  //--------------------
-  slides() {
-    return A( '.ahx-slide')
+  //------------------
+  activeCaption() {
+    var activeIdx = [...this.slides()].indexOf(this.activeSlide())
+    return E(`#cap_${activeIdx}`) 
   }
 
   //--------------------
   activeSlide() {
     return E( '.ahx-slide.ahx-active')
   }
-  activeCaption() {
-    var activeIdx = [...this.slides()].indexOf(this.activeSlide())
-    return E(`#cap_${activeIdx}`) 
+
+  //--------------------
+  slides() {
+    return A( '.ahx-slide')
   }
 
   //------------------------------------------------------
@@ -149,12 +120,70 @@ class AHXCarousel {
 
   //------------------------------------------------------
   _downloadImage( slide) {
-    var src = slide.src
-    if (slide.tagName == 'VIDEO') { src = E(`#${slide.id} source`).getAttribute('src') }    
-    var url = '/download_img?q=' + Math.random() + 
-        '&slide_src=' + encodeURIComponent(src)
+    var url = ''
+    if (slide.src.includes('static/images/')) { // not pic or video
+      let osrc = slide.getAttribute('data-fname')
+      url = '/download_img?q=' + Math.random() + 
+        '&slide_src=' + encodeURIComponent(osrc) +
+        '&other_type=true'
+    } 
+    else if (slide.tagName == 'VIDEO') { // video
+      let vsrc = E(`#${slide.id} source`).getAttribute('src')     
+      url = '/download_img?q=' + Math.random() + 
+        '&slide_src=' + encodeURIComponent(vsrc)
+    } 
+    else { // photo
+      let isrc = slide.src
+      url = '/download_img?q=' + Math.random() + 
+        '&slide_src=' + encodeURIComponent(isrc)
+    }
     window.location.href = url
   } // _downloadImage()
+
+  // Key actions. Left/Right arrow navigate thru images.
+  // Space pauses a movie.
+  //-------------------------------------------------------
+  _enableKeyNav(e) {
+    const self = this
+    function checkKey(e) {
+      e = e || window.event;
+      if (e.keyCode == '37') { // left arrow
+        self._changeImage('prev')
+      }
+      else if (e.keyCode == '39') { // right arrow
+        self._changeImage('next')
+      }
+      else if (e.keyCode == '32') { // space
+        if (self.activeSlide().tagName == 'VIDEO') {
+          e.preventDefault()
+          let video = self.activeSlide()
+          if (!video.paused && !video.ended) {
+            video.pause()
+          } else {
+            video.play()
+          }
+        } // if
+      } // if space
+    } // check_key()
+    document.onkeydown = checkKey
+  } // check_key()
+
+  //-------------------------------
+  _enableSwiping() {
+    this.slides().forEach( imgOrVideo => {
+      imgOrVideo.onpointerdown = ev => {
+        ev.preventDefault()
+         this.downX = ev.clientX
+      }
+      imgOrVideo.onpointerup = ev => {
+        ev.preventDefault()
+        this.upX = ev.clientX
+        if (Math.abs(this.upX -  this.downX) < 10) return
+        if (this.upX >  this.downX) { this._changeImage('prev') }
+        else { this._changeImage('next') }
+      }
+    }) // slides.foreach
+  } // _enableSwiping()
 
   // Load active image on demand, and some more to the left and right.
   // Unload other stuff by setting display:none (remove ahx-loaded).
@@ -194,6 +223,52 @@ class AHXCarousel {
     } // load()
   } // _preloadImages()
 
+  //-----------------------
+  _positionCaption() {
+    if (!E('.ahx-captoggle.ahx-active')) {
+      return
+    } 
+    var img = this.activeSlide()
+    var frame = getContainedFrame(img) 
+    img.style.top = `0px`
+    if (isNaN(frame.width)) return;
+    var caption = this.activeCaption()
+    if (!caption) return
+    var realWidth = caption.clientWidth
+    var realHeight = caption.clientHeight
+    caption.style.left = `${frame.left + (frame.width - realWidth)/2.0}px`
+    caption.style.top = `${frame.top + frame.height - realHeight - 20 }px`
+
+    caption.style.opacity = 1
+  } // _positionCaption()
+
+  // Prevent click action on previous slide.
+  // Otherwise swiping will restart a video.
+  //------------------------------------------
+  _preventClickOnPrevious() {
+    this.slides().forEach( imgOrVideo => {
+      imgOrVideo.addEventListener( 'click', (ev) => {
+        if (this.prevSlide === ev.target) {
+          ev.preventDefault()
+        }
+      }) 
+    })
+  } // _preventClickOnPrevious()
+
+  // Hide arrows after a timeout; show on mouse move
+  //---------------------------------------------------
+  _resetArrowTimer() {
+    const TIMEOUT = 2000
+    function timerFired() { //return;
+                            E('.ahx-carousel-button.ahx-next').hidden = true
+                            E('.ahx-carousel-button.ahx-prev').hidden = true
+                            E('.ahx-x').hidden = true
+                            E('#ahx-topcont').hidden = true
+                          }
+    clearTimeout(this.arrowTimer )
+    this.arrowTimer = setTimeout( timerFired, TIMEOUT)
+  } // _resetArrowTimer()
+
   //------------------
   _setImgNum() {
     var slides = this.slides()
@@ -201,51 +276,6 @@ class AHXCarousel {
     var activeIdx = [...slides].indexOf(activeSlide)
     E( '.ahx-imgnum').innerHTML = `${activeIdx+1}/${slides.length}`
   } // _setImgNum
-
-  //-------------------------------
-  _enableSwiping() {
-    this.slides().forEach( imgOrVideo => {
-      imgOrVideo.onpointerdown = ev => {
-        ev.preventDefault()
-         this.downX = ev.clientX
-      }
-      imgOrVideo.onpointerup = ev => {
-        ev.preventDefault()
-        this.upX = ev.clientX
-        if (Math.abs(this.upX -  this.downX) < 10) return
-        if (this.upX >  this.downX) { this._changeImage('prev') }
-        else { this._changeImage('next') }
-      }
-    }) // slides.foreach
-  } // _enableSwiping()
-
-  // Key actions. Left/Right arrow navigate thru images.
-  // Space pauses a movie.
-  //-------------------------------------------------------
-  _enableKeyNav(e) {
-    const self = this
-    function checkKey(e) {
-      e = e || window.event;
-      if (e.keyCode == '37') { // left arrow
-        self._changeImage('prev')
-      }
-      else if (e.keyCode == '39') { // right arrow
-        self._changeImage('next')
-      }
-      else if (e.keyCode == '32') { // space
-        if (self.activeSlide().tagName == 'VIDEO') {
-          e.preventDefault()
-          let video = self.activeSlide()
-          if (!video.paused && !video.ended) {
-            video.pause()
-          } else {
-            video.play()
-          }
-        } // if
-      } // if space
-    } // check_key()
-    document.onkeydown = checkKey
-  } // check_key()
 
   // Show arrows on mouse move
   //------------------------------
@@ -265,31 +295,5 @@ class AHXCarousel {
     this._resetArrowTimer()
   } // showArrows()
 
-  // Hide arrows after a timeout; show on mouse move
-  //---------------------------------------------------
-  _resetArrowTimer() {
-    const TIMEOUT = 2000
-    function timerFired() { //return;
-                            E('.ahx-carousel-button.ahx-next').hidden = true
-                            E('.ahx-carousel-button.ahx-prev').hidden = true
-                            E('.ahx-x').hidden = true
-                            E('#ahx-topcont').hidden = true
-                          }
-    clearTimeout(this.arrowTimer )
-    this.arrowTimer = setTimeout( timerFired, TIMEOUT)
-  } // _resetArrowTimer()
-
-  // Prevent click action on previous slide.
-  // Otherwise swiping will restart a video.
-  //------------------------------------------
-  _preventClickOnPrevious() {
-    this.slides().forEach( imgOrVideo => {
-      imgOrVideo.addEventListener( 'click', (ev) => {
-        if (this.prevSlide === ev.target) {
-          ev.preventDefault()
-        }
-      }) 
-    })
-  } // _preventClickOnPrevious()
 } // class AHXCarousel
 

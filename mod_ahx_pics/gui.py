@@ -59,9 +59,15 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 </li>
                 '''
                 images.append(link)
-            else:
-                #log(f'ERROR: unknown media extension {ext}. Ignoring {pic}')
-                continue
+            else: # Not image or video
+                fname = f'''pics_complete/{helpers.basename( pic['filename'])}{ext}'''
+                link = f'''
+                <li>
+                  <img id='img_{i}' loading='lazy' data-fname="{fname}" data-src='static/images/img_not_found.png' {classes}> 
+                  {caption}
+                </li>
+                '''
+                images.append(link)
         if not found_active:
             images[0] = images[0].replace('ahx-slide', 'ahx-slide ahx-active')
         html = '\n'.join(images)
