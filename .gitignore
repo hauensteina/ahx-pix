@@ -50,3 +50,5 @@ Thumbs.db
 
 /venv
 
+dump.rdb
+tt.py
