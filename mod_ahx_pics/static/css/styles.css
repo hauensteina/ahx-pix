@@ -149,7 +149,7 @@ a:active {
     width: 100vw;
     height: 100vh;
     position:relative;
-    touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
+    /*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
 }
 
 .ahx-carousel > ul {
@@ -166,7 +166,7 @@ a:active {
 	width: 100vw;
 	height: 94vh;
 	position:relative;
-	touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
+	/*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
     }
 }
 
@@ -177,7 +177,7 @@ a:active {
 	width: 100vw;
 	height: 92vh;
 	position:relative;
-	touch-action:none; /* otherwise onpointerup does not fire on mobile devices */
+	/*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
     }
 }
 
