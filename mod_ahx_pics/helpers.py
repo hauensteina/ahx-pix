@@ -8,12 +8,9 @@ from pdb import set_trace as BP
 import sys,os,subprocess
 import inspect
 import uuid
-import requests
-import magic
 from itsdangerous import TimestampSigner
 from flask_mail import Message
 from flask import url_for
-from bs4 import BeautifulSoup
 
 # AWS S3 api
 import boto3
