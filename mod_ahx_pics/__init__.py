@@ -9,13 +9,14 @@
 
 from pdb import set_trace as BP
 
-import sys,os
+import os
 from urllib.parse import urlparse
 import redis
+import random
 from rq import Queue
 from flask import Flask, session
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, user_logged_out, user_logged_in, current_user
+from flask_login import LoginManager, current_user
 from flask.json import JSONEncoder
 from flask_mail import Mail
 
@@ -37,8 +38,9 @@ LINK_EXPIRE_HOURS = 24
 SMALL_THUMB_SIZE = 200
 MEDIUM_THUMB_SIZE = 1000
 
-# Local download folder
+# Local download folder (stuff from S3, during thumb generation)
 DOWNLOAD_FOLDER='downloads'
+# Local upload folder (user uploads)
 UPLOAD_FOLDER='uploads'
 
 # Limit background job time

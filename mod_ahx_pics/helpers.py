@@ -8,9 +8,12 @@ from pdb import set_trace as BP
 import sys,os,subprocess
 import inspect
 import uuid
+import requests
+import magic
 from itsdangerous import TimestampSigner
 from flask_mail import Message
 from flask import url_for
+from bs4 import BeautifulSoup
 
 # AWS S3 api
 import boto3
@@ -41,7 +44,7 @@ If you did not request a password change, you can safely ignore this email.
     msg.body = tstr
     mail.send(msg)
 
-def media_type( fname):
+def media_type(fname):
     ext = os.path.splitext(fname)[1].lower()
     if ext in IMG_EXTENSIONS:
         return 'image'

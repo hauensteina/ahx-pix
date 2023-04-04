@@ -8,7 +8,7 @@
 {% block content %}
 
 {% if is_mobile() %}
-
+<!-- Mobile version -->
 <div class=ahx-outer style='margin-left:0;'> 
   <div style='min-height:30px;color:red;'>
     {% if error %}
@@ -30,7 +30,7 @@
 </div>
 
 {% else %}
-
+<!-- Desktop version -->
 <div class=ahx-outer style='margin-left:0;max-width:800px;' > 
   <div style='min-height:30px;color:red;'>
     {% if error %}
@@ -49,6 +49,8 @@
       <div class=dz-message data-dz-message>Click, or drop files here</div>
     </form>
     </div>
+    <div id="progress">
+    </div>
     <div style='text-align:center;margin-top:20px;'>
       <input type=submit form=dropform name=btn_upload value=Done 
              style='margin-top:20px;font-size:1.0em;'> 
@@ -62,8 +64,39 @@
 {% endblock content %}
 
 {% block js_end %}
-{% endblock js_end %}
 
+<script>
+Dropzone.autoDiscover = false
+const chunkSize = 1 * 1024 * 1024; // 1 MB chunks
+//const chunkSize = 100 * 1000
+
+var dz = new Dropzone("#dropform", {
+  url: "upload_pics",
+  paramName: "file",
+  maxFilesize: 5000, // Maximum file size in MB
+  chunking: true,
+  chunkSize: chunkSize,
+  parallelChunkUploads: false, // Upload chunks in parallel
+  retryChunks: true,
+  retryChunksLimit: 3, // Retry failed chunks up to 3 times
+  init: function () {
+    this.on("success", function (file) {
+      console.log("Upload complete:", file)
+    })
+    this.on("error", function (file, errorMessage) {
+      console.log("Error while uploading:", file, errorMessage)
+    })
+  }
+})
+
+dz.on("uploadprogress", function(file, progress) {
+    const total = file.upload.totalChunkCount
+    const uploaded = Math.trunc(total * progress / 100)
+    E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
+})
+</script>
+
+{% endblock js_end %}
 
 {% block css %}
 <style>

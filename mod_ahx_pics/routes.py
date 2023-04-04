@@ -10,6 +10,7 @@ import os, sys, re, json, random
 from datetime import datetime, date
 import shortuuid
 import shutil
+import urllib
 
 import flask
 from flask import request, render_template, flash, redirect, url_for, session, send_file
@@ -607,48 +608,58 @@ def set_mobile():
 #-----------------------------------------------------
 def upload_pics():
 
-    def upload_files():
-        if 'file' not in request.files:
-            flash( 'No file part.')
-            return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        if len(request.files.getlist('file')) == 0:
-            flash( 'Zero files.')
-            return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        if request.files.getlist('file')[0].filename == '':
-            flash( 'Uploading. Keep refreshing until the pics appear.')
-            return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        files = request.files.getlist('file')
+    def chunkfname(dropname, chunk):
+        return f'{UPLOAD_FOLDER}/{dropname}.part{chunk}'
+    
+    def upload_chunk():
+        # Get the file chunk
+        file = request.files['file']
+        chunk = request.form['dzchunkindex']
+        dropname = request.form['dzuuid']
+        file.save(chunkfname(dropname, chunk))
 
-        for file in files:
-            tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
-            os.mkdir( tempfolder)            
+        # Check if all chunks have been uploaded
+        all_chunks_uploaded = all(
+            os.path.exists(chunkfname(dropname, i))
+            for i in range(int(request.form['dztotalchunkcount']))
+        )
+        # If all chunks are uploaded, combine them into a single file
+        tempfolder = f'''{UPLOAD_FOLDER}/{dropname}'''
+        # Parallel uploads will create the same tempfolder, so only create it if it doesn't exist
+        if all_chunks_uploaded and not os.path.exists(tempfolder):
+            os.mkdir(tempfolder)
             fname = secure_filename(file.filename)
             fname = f'''{tempfolder}/{fname}'''
-
-            file.save(fname)
-            helpers.s3_upload_files( [fname] )
-            Q.enqueue( wf.add_new_images, fname, gallery_id)
+            with open(fname, 'wb') as f:
+                for i in range(int(request.form['dztotalchunkcount'])):
+                    chunk_filename = chunkfname(dropname, i)
+                    with open(chunk_filename, 'rb') as chunk_file:
+                        f.write(chunk_file.read())
+                    os.remove(chunk_filename)
+            helpers.s3_upload_files([fname])
+            Q.enqueue(wf.add_new_images, fname, gallery_id)
             shutil.rmtree(tempfolder) 
+            return 'OK'
+        else:
+            return f'{chunk}/{request.form["dztotalchunkcount"]}'
 
-        return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        
     error = None
     data = {}
     data['gallery_title'] = session['gallery_title']
     gallery_id = session['gallery_id']
     data['gallery_id'] = gallery_id
-    parms = get_parms()
-    gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
-    if request.method == 'POST': # File dropped or upload button clicked
+    gallery_page = 'gallery_mobile' if session.get(
+        'is_mobile', '') else 'gallery'
+    if request.method == 'POST':  # File dropped or upload button clicked
+        parms = get_parms()
         if 'btn_upload' in parms:
-            flash( 'Uploading. Keep refreshing until the pics show up.')
-            return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        else: # Files from dropzone drop
-            upload_files()
-            return 'ok'
+            flash('Uploading. Keep refreshing until the pics show up.')
+            return redirect(url_for(gallery_page, gallery_id=gallery_id))
+        else:  # Files from dropzone drop
+            return upload_chunk()
 
-    else: # Initial hit
-        return render_template( 'upload_pics.html', error=error, **data, no_links=True )
+    else:  # Initial hit
+        return render_template('upload_pics.html', error=error, **data, no_links=True)
 
 # Utility funcs
 ##################
