@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import json
 from flask_login import current_user
 from mod_ahx_pics import pg, log
-from mod_ahx_pics import SMALL_FOLDER, MEDIUM_FOLDER, LINK_EXPIRE_HOURS
+from mod_ahx_pics import SMALL_FOLDER, MEDIUM_FOLDER, LARGE_FOLDER, LINK_EXPIRE_HOURS
 import mod_ahx_pics.helpers as helpers
 
 def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc'):
@@ -115,13 +115,17 @@ def get_gallery_links( gallery_id):
             if not medium_key in links:
                 log( medium_key + ' not found in link cache')
                 return True
+            if not large_key in links:
+                log( large_key + ' not found in link cache')
+                return True
         return False
 
     def regen_links( gallery_id, pics, folder=''):
         if not folder:
             slinks, timeout = regen_links( gallery_id, pics, SMALL_FOLDER)
             mlinks, timeout = regen_links( gallery_id, pics, MEDIUM_FOLDER)
-            links = slinks | mlinks
+            llinks, timeout = regen_links( gallery_id, pics, LARGE_FOLDER)
+            links = slinks | mlinks | llinks
             return links, timeout
         img_prefix = folder + gallery_id + '/'
         s3_client = helpers.s3_get_client()
