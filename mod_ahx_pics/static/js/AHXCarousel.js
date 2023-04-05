@@ -109,11 +109,6 @@ class AHXCarousel {
     var nextSlide = slides[newIdx]
     activeSlide.classList.remove( 'ahx-active')
     nextSlide.classList.add( 'ahx-active')
-    //debugger
-    // nextSlide.style.transform = 'scale(1)'
-    // nextSlide.parentElement.transform = 'scale(1)'
-    // nextSlide.parentElement.parentElement.transform = 'scale(1)'
-    // nextSlide.parentElement.parentElement.parentElement.transform = 'scale(1)'
     if (activeSlide.tagName == 'VIDEO') {
       activeSlide.pause()
     }
@@ -176,35 +171,17 @@ class AHXCarousel {
   //-------------------------------
   _enableSwiping() {
     this.slides().forEach(imgOrVideo => {
-      // imgOrVideo.onpointerdown = ev => {
-      //   console.log('down')
-      //   ev.preventDefault()
-      //   this.downX = ev.clientX
-      // }
       imgOrVideo.ontouchstart = ev => {
         console.log('down')
-        //console.log(ev.touches.length)
-        //ev.preventDefault()
-        //console.log(ev.clientX)  
         this.downX = ev.touches[0].clientX
+        console.log(this.downX)  
         this.nTouches = ev.touches.length  
       }
-      /*
-      imgOrVideo.onpointerup = ev => {
-        console.log('up')
-        ev.preventDefault()
-        this.upX = ev.clientX
-        if (Math.abs(this.upX - this.downX) < 10) return
-        if (this.upX > this.downX) { this._changeImage('prev') }
-        else { this._changeImage('next') }
-      }*/
       imgOrVideo.ontouchend = ev => {
-        //console.log('tend')
-        //console.log(ev.touches.length)
-        //if (this.nTouches > 1) return  
-        //ev.preventDefault()
+        console.log('up')
         if (this.nTouches > 1) return  
-        this.upX = ev.touches[0].clientX
+        this.upX = ev.changedTouches[0].clientX
+        console.log(this.upX)  
         if (Math.abs(this.upX - this.downX) < 50) return
         if (this.upX > this.downX) { this._changeImage('prev') }
         else { this._changeImage('next') }
