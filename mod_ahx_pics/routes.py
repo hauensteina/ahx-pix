@@ -254,13 +254,10 @@ def edit_pics():
     gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
 
     if request.method == 'POST': # form submitted
-        # Back to the gallery
-        if 'btn_gallery' in parms:
+        # Cancel
+        if 'btn_cancel' in parms:
+            flash( f'''Editing cancelled.''')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
-        # Revert changes
-        elif 'btn_revert' in parms:
-            flash( f'''Changes reverted.''')
-            return reload( gallery_id)      
         # Delete pics after confirmation
         elif 'btn_del' in parms: # Delete clicked; ask for confirmation
             delete_pic_ids = json.loads( parms['marked_pic_ids'])
@@ -285,7 +282,7 @@ def edit_pics():
             update_captions( caption_dict)
             update_order( gallery_id, caption_dict.keys())
             flash( f'''Changes saved.''')
-            return reload( gallery_id)
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         else: # just show the edit page
             return initial_page( gallery_id)
     else: # initial hit

@@ -6,24 +6,23 @@
 
 {% block content %}
 
+<!-- mobile version -->
 {% if is_mobile() %}
-
 <header style='background:white; border-bottom:5px solid #3280ec;'>
   <form id=frm_pics method=post>
     <input type=hidden name=gallery_id value={{gallery_id}} >
     <input id=marked_pic_ids type=hidden name=marked_pic_ids>
     <div style='display:grid;justify-items:center;align-items:center;'>
       <span>
-        <input id=btn_gallery type=submit name=btn_gallery value='Back'>
-        <input id=btn_save type=submit name=btn_save value='Save' disabled >
-        <input id=btn_revert type=submit name=btn_revert value='Revert' disabled >
+        <input id=btn_down type=submit name=btn_gallery value='Move Down' disabled>
+        <input id=btn_up type=submit name=btn_save value='Move Up' disabled >
+        <input id=btn_del type=submit name=btn_del value='Delete' disabled >
       </span>
     </div>
     <div style='display:grid;justify-items:center;align-items:center;margin-top:10px;'>
       <span>
-        <input id=btn_down type=submit name=btn_gallery value='Move Down' disabled>
-        <input id=btn_up type=submit name=btn_save value='Move Up' disabled >
-        <input id=btn_del type=submit name=btn_del value='Delete' disabled >
+        <input id=btn_save type=submit name=btn_save value='Save' disabled >
+        <input id=btn_cancel type=submit name=btn_cancel value='Cancel'>
       </span>
     </div>
   </form>
@@ -35,18 +34,17 @@
   </div>
 </main>
 
+<!-- desktop version -->
 {% else %}
-
 <header style='background:white; border-bottom:5px solid #3280ec; max-width:1020px'>
   <form id=frm_pics method=post>
     <input type=hidden name=gallery_id value={{gallery_id}} >
     <input id=marked_pic_ids type=hidden name=marked_pic_ids>
     <div style='display:grid;justify-items:center;align-items:center;'>
       <span>
-        <input id=btn_gallery type=submit name=btn_gallery value='Back'>
-        <input id=btn_save type=submit name=btn_save value='Save Changes' disabled >
         <input id=btn_del type=submit name=btn_del value='Delete selected' disabled >
-        <input id=btn_revert type=submit name=btn_revert value='Revert' disabled >
+        <input id=btn_save type=submit name=btn_save value='Save' disabled >
+        <input id=btn_cancel type=submit name=btn_cancel value='Cancel'>
       </span>
     </div>
   </form>
