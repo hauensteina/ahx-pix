@@ -361,7 +361,7 @@ def gen_gallery_search_mobile( title='', owner=''):
 def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     """ Arrange image thumbs as a grid """
     
-    MAX_CAP_LEN = 100
+    MAX_CAP_LEN = 40
     colw = f'{100.0/n_cols}% '
     html = []
     for pic in pics:
