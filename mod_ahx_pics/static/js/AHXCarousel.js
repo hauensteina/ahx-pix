@@ -182,10 +182,11 @@ class AHXCarousel {
       //   this.downX = ev.clientX
       // }
       imgOrVideo.ontouchstart = ev => {
-        //console.log('down')
+        console.log('down')
         //console.log(ev.touches.length)
         //ev.preventDefault()
-        this.downX = ev.clientX
+        //console.log(ev.clientX)  
+        this.downX = ev.touches[0].clientX
         this.nTouches = ev.touches.length  
       }
       /*
@@ -203,7 +204,7 @@ class AHXCarousel {
         //if (this.nTouches > 1) return  
         //ev.preventDefault()
         if (this.nTouches > 1) return  
-        this.upX = ev.clientX
+        this.upX = ev.touches[0].clientX
         if (Math.abs(this.upX - this.downX) < 50) return
         if (this.upX > this.downX) { this._changeImage('prev') }
         else { this._changeImage('next') }
