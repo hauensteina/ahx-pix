@@ -204,7 +204,7 @@ class AHXCarousel {
         //ev.preventDefault()
         if (this.nTouches > 1) return  
         this.upX = ev.clientX
-        if (Math.abs(this.upX - this.downX) < 10) return
+        if (Math.abs(this.upX - this.downX) < 50) return
         if (this.upX > this.downX) { this._changeImage('prev') }
         else { this._changeImage('next') }
       }
