@@ -75,6 +75,7 @@ class AHXCarousel {
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
+        E('#ahx-carousel').style.touchAction = 'auto'
         E('.ahx-x').style.display = 'inline'
         E('#ahx-topcont').style.display = 'inline'
         self._resetArrowTimer()
