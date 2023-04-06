@@ -64,6 +64,7 @@ class AHXCarousel {
 
     // We want touchAction:auto in portrait to allow zooming.
     // But in landscape, that causes issues.
+    const self = this  
     window.addEventListener('orientationchange', function () {
       if (window.orientation === 90 || window.orientation === -90) {
         // Landscape orientation
@@ -74,12 +75,12 @@ class AHXCarousel {
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
-        E('.ahx-carousel').style.touchAction = 'auto'
-        E('#ahx-topcont').style.display = 'block'
-        E('.ahx-caption-mobile').style.display = 'block'
+        E('.ahx-x').style.display = 'inline'
+        E('#ahx-topcont').style.display = 'inline'
+        self._resetArrowTimer()
       }
     })
-    // Make sure pic is on screen  
+    // Make sure pic is on screen
     E('#ahx-carousel').style.overflowY = 'hidden'
 
     this._preventClickOnPrevious()
@@ -191,23 +192,39 @@ class AHXCarousel {
 
   //-------------------------------
   _enableSwiping() {
-    this.slides().forEach(imgOrVideo => {
-      imgOrVideo.ontouchstart = ev => {
-        console.log('down')
-        this.downX = ev.touches[0].clientX
-        console.log(this.downX)  
-        this.nTouches = ev.touches.length  
-      }
-      imgOrVideo.ontouchend = ev => {
-        console.log('up')
-        if (this.nTouches > 1) return  
-        this.upX = ev.changedTouches[0].clientX
-        console.log(this.upX)  
-        if (Math.abs(this.upX - this.downX) < 30) return
-        if (this.upX > this.downX) { this._changeImage('prev') }
-        else { this._changeImage('next') }
-      }
-    }) // slides.foreach
+    if (isMobile()) { // mobile
+      this.slides().forEach(imgOrVideo => {
+        imgOrVideo.ontouchstart = ev => {
+          console.log('down')
+          this.downX = ev.touches[0].clientX
+          console.log(this.downX)
+          this.nTouches = ev.touches.length
+        }
+        imgOrVideo.ontouchend = ev => {
+          console.log('up')
+          if (this.nTouches > 1) return
+          this.upX = ev.changedTouches[0].clientX
+          console.log(this.upX)
+          if (Math.abs(this.upX - this.downX) < 30) return
+          if (this.upX > this.downX) { this._changeImage('prev') }
+          else { this._changeImage('next') }
+        }
+      }) // slides.foreach
+    } else { // desktop
+      this.slides().forEach(imgOrVideo => {
+        imgOrVideo.onpointerdown = ev => {
+          ev.preventDefault()
+          this.downX = ev.clientX
+        }
+        imgOrVideo.onpointerup = ev => {
+          ev.preventDefault()
+          this.upX = ev.clientX
+          if (Math.abs(this.upX - this.downX) < 10) return
+          if (this.upX > this.downX) { this._changeImage('prev') }
+          else { this._changeImage('next') }
+        }
+      }) // slides.foreach
+    }
   } // _enableSwiping()
 
   // Load active image on demand, and some more to the left and right.
@@ -250,7 +267,7 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
-    if (isLandscape()) return
+    if (isMobile() && isLandscape()) return
     if (!E('.ahx-captoggle.ahx-active')) return
     var img = this.activeSlide()
     var frame = getContainedFrame(img)
@@ -284,13 +301,13 @@ class AHXCarousel {
   _resetArrowTimer() {
     const TIMEOUT = 2000
     function timerFired() { //return;
-                            E('.ahx-carousel-button.ahx-next').style.display = 'none'
-                            E('.ahx-carousel-button.ahx-prev').style.display = 'none'
-                            E('.ahx-x').style.display = 'none'
-                            E('#ahx-topcont').style.display = 'none'
-                          }
-    clearTimeout(this.arrowTimer )
-    this.arrowTimer = setTimeout( timerFired, TIMEOUT)
+      E('.ahx-carousel-button.ahx-next').style.display = 'none'
+      E('.ahx-carousel-button.ahx-prev').style.display = 'none'
+      E('.ahx-x').style.display = 'none'
+      E('#ahx-topcont').style.display = 'none'
+    }
+    clearTimeout(this.arrowTimer)
+    this.arrowTimer = setTimeout(timerFired, TIMEOUT)
   } // _resetArrowTimer()
 
   //------------------
@@ -306,6 +323,7 @@ class AHXCarousel {
   _showArrows() {
     var self = this
     function showControls() {
+      if (isMobile() && isLandscape()) return
       if (!isMobile()) {
         E('.ahx-carousel-button.ahx-next').style.display = 'inline'
         E('.ahx-carousel-button.ahx-prev').style.display = 'inline'
