@@ -33,7 +33,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
             if ext in VIDEO_EXTENSIONS:
                 furl = pic_links.get(
                   'lg_' + helpers.basename(pic['filename']), 'static/images/img_not_found.png')
-                log( f'gen_carousel_images: furl:{furl} pic:{pic}')
+                #log( f'gen_carousel_images: furl:{furl} pic:{pic}')
 
             caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
             
