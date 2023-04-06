@@ -47,4 +47,6 @@ function getContainedFrame(img) {
   return { 'width':width, 'height':height, 'top':top, 'left':left } 
 } // getContainedFrame()
 
-
+function isLandscape() {
+  return window.innerWidth > window.innerHeight
+} // isLandscape()

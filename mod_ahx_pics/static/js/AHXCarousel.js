@@ -69,14 +69,18 @@ class AHXCarousel {
         // Landscape orientation
         console.log('Changed to landscape mode')
         E('#ahx-carousel').style.touchAction = 'none'
-        // Make sure pic is on screen  
-        E('#ahx-carousel').style.overflowY = 'hidden'
+        E('#ahx-topcont').style.display = 'none'
+        E('.ahx-caption-mobile').style.display = 'none'
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
         E('.ahx-carousel').style.touchAction = 'auto'
+        E('#ahx-topcont').style.display = 'block'
+        E('.ahx-caption-mobile').style.display = 'block'
       }
     })
+    // Make sure pic is on screen  
+    E('#ahx-carousel').style.overflowY = 'hidden'
 
     this._preventClickOnPrevious()
     this._enableSwiping()
@@ -246,19 +250,18 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
-    if (!E('.ahx-captoggle.ahx-active')) {
-      return
-    } 
+    if (isLandscape()) return
+    if (!E('.ahx-captoggle.ahx-active')) return
     var img = this.activeSlide()
-    var frame = getContainedFrame(img) 
+    var frame = getContainedFrame(img)
     img.style.top = `0px`
     if (isNaN(frame.width)) return;
     var caption = this.activeCaption()
     if (!caption) return
     var realWidth = caption.clientWidth
     var realHeight = caption.clientHeight
-    caption.style.left = `${frame.left + (frame.width - realWidth)/2.0}px`
-    caption.style.top = `${frame.top + frame.height - realHeight - 20 }px`
+    caption.style.left = `${frame.left + (frame.width - realWidth) / 2.0}px`
+    caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
 
     caption.style.opacity = 1
   } // _positionCaption()
