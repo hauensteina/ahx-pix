@@ -284,10 +284,10 @@ class AHXCarousel {
   _resetArrowTimer() {
     const TIMEOUT = 2000
     function timerFired() { //return;
-                            E('.ahx-carousel-button.ahx-next').hidden = true
-                            E('.ahx-carousel-button.ahx-prev').hidden = true
-                            E('.ahx-x').hidden = true
-                            E('#ahx-topcont').hidden = true
+                            E('.ahx-carousel-button.ahx-next').style.display = 'none'
+                            E('.ahx-carousel-button.ahx-prev').style.display = 'none'
+                            E('.ahx-x').style.display = 'none'
+                            E('#ahx-topcont').style.display = 'none'
                           }
     clearTimeout(this.arrowTimer )
     this.arrowTimer = setTimeout( timerFired, TIMEOUT)
@@ -307,11 +307,11 @@ class AHXCarousel {
     var self = this
     function showControls() {
       if (!isMobile()) {
-        E('.ahx-carousel-button.ahx-next').hidden = false
-        E('.ahx-carousel-button.ahx-prev').hidden = false
+        E('.ahx-carousel-button.ahx-next').style.display = 'inline'
+        E('.ahx-carousel-button.ahx-prev').style.display = 'inline'
       }
-      E('.ahx-x').hidden = false
-      E('#ahx-topcont').hidden = false
+      E('.ahx-x').style.display = 'inline'
+      E('#ahx-topcont').style.display = 'inline'
       self._resetArrowTimer()
     }
     self.container.addEventListener( 'pointermove', showControls)
