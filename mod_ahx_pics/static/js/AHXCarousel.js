@@ -68,7 +68,9 @@ class AHXCarousel {
       if (window.orientation === 90 || window.orientation === -90) {
         // Landscape orientation
         console.log('Changed to landscape mode')
-        E('.ahx-carousel').style.touchAction = 'none'
+        E('#ahx-carousel').style.touchAction = 'none'
+        // Make sure pic is on screen  
+        E('#ahx-carousel').style.overflowY = 'hidden'
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
@@ -83,9 +85,9 @@ class AHXCarousel {
     this._setImgNum()
     this._preloadImages( this.slides(), this.activeSlide() )
     captionTimer()
-    var scroll = window.setInterval(function() { 
+    //var scroll = window.setInterval(function() { 
       //window.scrollTo(0,100) ; 
-    }, 2000) 
+    //}, 2000) 
   } // constructor
 
   //------------------
