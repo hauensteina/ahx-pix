@@ -66,7 +66,7 @@ def copy_table( table, db_source, db_target):
     print( 'Clearing target ...')
     db_target.run( f'delete from {table}')
     print('Inserting into target ...')
-    db_target.insert_bulk( table, rows) 
+    db_target.insert( table, rows) 
     print( 'Done.')
 
 if __name__ == '__main__':
