@@ -107,7 +107,10 @@ class AHXCarousel {
     E('#ahx-carousel').style.overflowY = 'hidden'
 
     // Populate ta_caption with caption of active slide
-    E('#ta_caption').value = this.activeCaption().innerHTML
+    E('#ta_caption').value = ''
+    if (this.activeCaption()) {
+      E('#ta_caption').value = this.activeCaption().innerHTML 
+    }
     E('#pic_id').value = this.activeSlide().getAttribute('data-pic-id')
 
     this._preventClickOnPrevious()
@@ -159,8 +162,8 @@ class AHXCarousel {
       activeSlide.pause()
     }
     const picIdx = nextSlide.id.split('_')[1]
-    const capText = E('#cap_' + picIdx).innerHTML
-    E('#ta_caption').value = capText
+    E('#ta_caption').value = ''
+    if (E('#cap_' + picIdx)) { E('#ta_caption').value = E('#cap_' + picIdx).innerHTML }
     // Pass the pic id in a hidden form param on submit
     E('#pic_id').value = nextSlide.getAttribute('data-pic-id')
 
