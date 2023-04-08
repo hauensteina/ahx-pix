@@ -94,6 +94,9 @@ def copy_local():
             for obj in page['Contents']:
                 if n_copied % 100 == 0 or n_copied < 10: print(f'Copied {n_copied} ...')
                 key = obj['Key']
+                # Skip empty folders to avoid exception
+                if key.endswith('/'): continue
+
                 path, _ = os.path.split(key)
                 local_path = os.path.join(BACKUP_FOLDER, path)
                 local_filename = os.path.join(BACKUP_FOLDER, key)
