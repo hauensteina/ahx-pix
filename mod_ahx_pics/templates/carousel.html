@@ -2,52 +2,96 @@
 
 
 <html lang='en'>
-  <head>
-    <!-- Required meta tags -->
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name='description' content='ahx-pics'>
-    <meta name='keywords' content='Photo Viewer'>
-    <meta name='author' content='Andreas Hauenstein'>
 
-    <title>AHX Pics</title>
-    <link rel='icon' href='static/images/world_100.png' type='image/ico' />
-    <link rel='shortcut icon' href='static/images/world_100.png' type='image/ico' />
+<head>
+  <!-- Required meta tags -->
+  <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name='description' content='ahx-pics'>
+  <meta name='keywords' content='Photo Viewer'>
+  <meta name='author' content='Andreas Hauenstein'>
 
-    <!-- Standard frameworks -->
-    <script src='https://code.jquery.com/jquery-3.4.0.min.js'> </script>
+  <title>AHX Pics</title>
+  <link rel='icon' href='static/images/world_100.png' type='image/ico' />
+  <link rel='shortcut icon' href='static/images/world_100.png' type='image/ico' />
 
-    <!-- Our CSS -->
-    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
-    <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/styles.css") }}'>
-  </head>
+  <!-- Standard frameworks -->
+  <script src='https://code.jquery.com/jquery-3.4.0.min.js'> </script>
 
-  <body style='background-color:black;'>
-    <section>
-      <div id='ahx-carousel' class='ahx-carousel' style='user-select:none;'>
-        <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
-        <button class='ahx-carousel-button ahx-next'>&#x21e8;</button>
-        <div id='ahx-topcont'
-             style='position:fixed; white-space:nowrap; user-select:none; 
+  <!-- Our CSS -->
+  <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/base.css") }}'>
+  <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/styles.css") }}'>
+</head>
+
+<body style='background-color:black;'>
+  <section>
+    <div id='ahx-carousel' class='ahx-carousel' style='user-select:none;'>
+      <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
+      <button class='ahx-carousel-button ahx-next'>&#x21e8;</button>
+      <div id='ahx-topcont' style='position:fixed; white-space:nowrap; user-select:none; 
                  left:50%; top:3vh; transform:translateX(-50%); z-index:20;'>
-          <div class='ahx-x' style="user-select:none;">&#x2715;</div>
-          <div class='ahx-imgnum' style="user-select:none;"> 1/3 </div>
-          <div class='ahx-captoggle ahx-active' style="user-select:none;">T</div>
-          <div class='ahx-download' style="user-select:none;">&#x2193;</div>
-        </div>
-        <ul id="'ahx-carousel-ul">
-          {{ images|safe }}
-        </ul>
+        <div class='ahx-x' style='user-select:none;'>&#x2715;</div>
+        <div class='ahx-imgnum' style='user-select:none;'> 1/3 </div>
+        <div class='ahx-captoggle ahx-active' style='user-select:none;'>T</div>
+        <div class='ahx-download' style='user-select:none;'>&#x2193;</div>
+        <div class='ahx-edit' style='user-select:none;'>&#x270e;</div>
       </div>
-    </section>
+      <div id='ahx-edit-caption' class='ahx-edit-caption' style="text-align:center;display:none;">
+        <form id=frm_edit method=post>
+          {% if is_mobile() %}
+          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here'
+            style=' width:100%; height:100%; line-height: 1.2em; resize:none;padding-left:5px;'></textarea>
+          {% else %}
+          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here'
+            style=' width:30em; height:100%; line-height: 1.2em; resize:none;padding-left:5px;'></textarea>
+          {% endif %}
+          <div style="text-align:center;" class=''>
+            <input id=pic_id type=hidden name='pic_id' value=''>
+            <input id=btn_cancel type=submit name=btn_cancel value='Cancel'>
+            <input id=btn_save type=submit name=btn_save value='Save'>
+          </div>
+        </form>
+      </div>
+      <ul id='ahx-carousel-ul'>
+        {{ images|safe }}
+      </ul>
+    </div>
+  </section>
 
-    <script src='static/js/AHXHelpers.js')> </script>
-    <script src='static/js/AHXCarousel.js')> </script>
-    <script>
-     _ = new AHXCarousel('#ahx-carousel', '{{gallery_id}}', '{{picture_id}}')
-    </script>
-  </body>
+  <script src='static/js/AHXHelpers.js' )> </script>
+  <script src='static/js/AHXCarousel.js' )> </script>
+  <script>
+    _ = new AHXCarousel('#ahx-carousel', '{{gallery_id}}', '{{picture_id}}')
+  </script>
+</body>
+<style>
+  .ahx-edit-caption {
+    position: fixed;
+    user-select: none;
+    left: 0;
+    top: 10vh;
+    z-index: 20;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .ahx-edit {
+    display:inline;
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: .45rem 1.0rem;
+    margin: 0 .5rem;
+    background-color: rgba(0, 0, 0, .5);
+    user-select:none;	     
+}
+.ahx-edit:hover {
+    color:white;
+    background-color: rgba(0, 0, 0, .2)
+}
+</style>
+
 </html>
-
-
-

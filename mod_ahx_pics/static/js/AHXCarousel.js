@@ -7,10 +7,10 @@ const CAPTION_ON = 'rgba(255,255,255, .7)'
 // Occasionally, try to position the caption 
 function captionTimer() {
   g_carousel._positionCaption()
-  clearTimeout( captionTimer.timer)
-  captionTimer.timer = setTimeout( captionTimer, 200)
+  clearTimeout(captionTimer.timer)
+  captionTimer.timer = setTimeout(captionTimer, 200)
 }
-captionTimer.timer = null 
+captionTimer.timer = null
 
 var g_carousel = ''
 
@@ -18,7 +18,7 @@ var g_carousel = ''
 // Called from carousel.html
 // Example: AHXCarousel('#ahx-carousel')
 class AHXCarousel {
-  constructor( containerId, galleryId, pictureId) {
+  constructor(containerId, galleryId, pictureId) {
     g_carousel = this
     this.container = E(containerId)
     // Properties
@@ -27,36 +27,58 @@ class AHXCarousel {
     this.prevSlide = null
     this.arrowTimer = null
 
-    E('.ahx-carousel-button.ahx-next').addEventListener( 
-      'click', ev => { 
-        this._changeImage('next') 
-        document.body.style.zoom=1.0
+    E('.ahx-carousel-button.ahx-next').addEventListener(
+      'click', ev => {
+        this._changeImage('next')
+        document.body.style.zoom = 1.0
       })
-    E('.ahx-carousel-button.ahx-prev').addEventListener( 
+    E('.ahx-carousel-button.ahx-prev').addEventListener(
       'click', ev => { this._changeImage('prev') })
     if (isMobile()) {
-      E('.ahx-x').addEventListener( 
-        'click', ev => { document.location.href = `/gallery_mobile?gallery_id=${galleryId}` } )
+      E('.ahx-x').addEventListener(
+        'click', ev => { document.location.href = `/gallery_mobile?gallery_id=${galleryId}` })
     } else {
-      E('.ahx-x').addEventListener( 
-        'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` } )
+      E('.ahx-x').addEventListener(
+        'click', ev => { document.location.href = `/gallery?gallery_id=${galleryId}` })
     }
     E('.ahx-download').addEventListener(
-      'click', ev => { this._downloadImage( this.activeSlide()) })
+      'click', ev => { this._downloadImage(this.activeSlide()) })
 
     E('.ahx-captoggle').addEventListener(
-      'click', ev => { 
+      'click', ev => {
         if (E('.ahx-captoggle.ahx-active')) {
           let e = E('.ahx-captoggle.ahx-active')
-          e.style.color = CAPTION_OFF 
-          e.classList.remove( 'ahx-active')
+          e.style.color = CAPTION_OFF
+          e.classList.remove('ahx-active')
           if (this.activeCaption()) this.activeCaption().style.opacity = 0
         } else {
           let e = E('.ahx-captoggle')
-          e.style.color = CAPTION_ON 
-          e.classList.add( 'ahx-active')
+          e.style.color = CAPTION_ON
+          e.classList.add('ahx-active')
         }
       })
+
+    E('.ahx-edit').addEventListener(
+      'click', ev => {
+        if (E('.ahx-edit.ahx-active')) {
+          let e = E('.ahx-edit.ahx-active')
+          e.classList.remove('ahx-active')
+          E('#ahx-edit-caption').style.display = 'none'
+        } else {
+          let e = E('.ahx-edit')
+          e.classList.add('ahx-active')
+          E('#ahx-edit-caption').style.display = 'block'
+        }
+      })
+
+      E('#btn_cancel').addEventListener(
+        'click', ev => {
+            ev.preventDefault()
+            let e = E('#btn_cancel')
+            E('.ahx-edit').classList.remove('ahx-active')
+            E('#ahx-edit-caption').style.display = 'none'
+        })
+  
     if (isMobile()) {
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
@@ -64,7 +86,7 @@ class AHXCarousel {
 
     // We want touchAction:auto in portrait to allow zooming.
     // But in landscape, that causes issues.
-    const self = this  
+    const self = this
     window.addEventListener('orientationchange', function () {
       if (window.orientation === 90 || window.orientation === -90) {
         // Landscape orientation
@@ -84,36 +106,37 @@ class AHXCarousel {
     // Make sure pic is on screen
     E('#ahx-carousel').style.overflowY = 'hidden'
 
+    // Populate ta_caption with caption of active slide
+    E('#ta_caption').value = this.activeCaption().innerHTML
+    E('#pic_id').value = this.activeSlide().getAttribute('data-pic-id')
+
     this._preventClickOnPrevious()
     this._enableSwiping()
     this._enableKeyNav()
     this._showArrows()
     this._setImgNum()
-    this._preloadImages( this.slides(), this.activeSlide() )
+    this._preloadImages(this.slides(), this.activeSlide())
     captionTimer()
-    //var scroll = window.setInterval(function() { 
-      //window.scrollTo(0,100) ; 
-    //}, 2000) 
   } // constructor
 
   //------------------
   activeCaption() {
     var activeIdx = [...this.slides()].indexOf(this.activeSlide())
-    return E(`#cap_${activeIdx}`) 
+    return E(`#cap_${activeIdx}`)
   }
 
   //--------------------
   activeSlide() {
-    return E( '.ahx-slide.ahx-active')
+    return E('.ahx-slide.ahx-active')
   }
 
   //--------------------
   slides() {
-    return A( '.ahx-slide')
+    return A('.ahx-slide')
   }
 
   //------------------------------------------------------
-  _changeImage( direction) {
+  _changeImage(direction) {
     var offset = 1
     if (direction == 'prev') offset = -1
     var activeSlide = this.activeSlide()
@@ -122,7 +145,7 @@ class AHXCarousel {
 
     var activeIdx = [...slides].indexOf(activeSlide)
     console.log(`>>>>>> change ${activeIdx}`)
-    var newIdx = activeIdx + offset    
+    var newIdx = activeIdx + offset
 
     var oldCaption = E(`#cap_${activeIdx}`)
     if (oldCaption) oldCaption.style.opacity = 0
@@ -130,11 +153,16 @@ class AHXCarousel {
     if (newIdx < 0) { newIdx = slides.length - 1 }
     if (newIdx >= slides.length) { newIdx = 0 }
     var nextSlide = slides[newIdx]
-    activeSlide.classList.remove( 'ahx-active')
-    nextSlide.classList.add( 'ahx-active')
+    activeSlide.classList.remove('ahx-active')
+    nextSlide.classList.add('ahx-active')
     if (activeSlide.tagName == 'VIDEO') {
       activeSlide.pause()
     }
+    const picIdx = nextSlide.id.split('_')[1]
+    const capText = E('#cap_' + picIdx).innerHTML
+    E('#ta_caption').value = capText
+    // Pass the pic id in a hidden form param on submit
+    E('#pic_id').value = nextSlide.getAttribute('data-pic-id')
 
     this._setImgNum()
     this._resetArrowTimer()
@@ -142,22 +170,22 @@ class AHXCarousel {
   } // _changeImage()
 
   //------------------------------------------------------
-  _downloadImage( slide) {
+  _downloadImage(slide) {
     var url = ''
     if (slide.src.includes('static/images/')) { // not pic or video
       let osrc = slide.getAttribute('data-fname')
-      url = '/download_img?q=' + Math.random() + 
+      url = '/download_img?q=' + Math.random() +
         '&slide_src=' + encodeURIComponent(osrc) +
         '&other_type=true'
-    } 
+    }
     else if (slide.tagName == 'VIDEO') { // video
-      let vsrc = E(`#${slide.id} source`).getAttribute('src')     
-      url = '/download_img?q=' + Math.random() + 
+      let vsrc = E(`#${slide.id} source`).getAttribute('src')
+      url = '/download_img?q=' + Math.random() +
         '&slide_src=' + encodeURIComponent(vsrc)
-    } 
+    }
     else { // photo
       let isrc = slide.src
-      url = '/download_img?q=' + Math.random() + 
+      url = '/download_img?q=' + Math.random() +
         '&slide_src=' + encodeURIComponent(isrc)
     }
     window.location.href = url
@@ -232,32 +260,32 @@ class AHXCarousel {
   // Unload other stuff by setting display:none (remove ahx-loaded).
   // Otherwise, mobile browsers crash.
   //---------------------------------------------------------------------
-  _preloadImages( slides, nextSlide) {
+  _preloadImages(slides, nextSlide) {
     var nextIdx = [...slides].indexOf(nextSlide)
     // Load current img
-    if (!slides[nextIdx].classList.contains('ahx-loaded')) { load( slides[nextIdx], nextIdx) }
+    if (!slides[nextIdx].classList.contains('ahx-loaded')) { load(slides[nextIdx], nextIdx) }
     // Load or unload the others
     //for (var idx=0; idx < slides.length; idx++) {
-    for (var idx=slides.length-1; idx >= 0; idx--) {
+    for (var idx = slides.length - 1; idx >= 0; idx--) {
       const slide = slides[idx]
       if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
         if (!slide.classList.contains('ahx-loaded')) {
-          console.log( `preloading idx ${idx}`)
-          load( slide, idx)
+          console.log(`preloading idx ${idx}`)
+          load(slide, idx)
         }
       }
       else if (idx != nextIdx) {
-        slide.classList.remove( 'ahx-loaded')
+        slide.classList.remove('ahx-loaded')
       }
     } // for
 
     function load(elt, idx) {
-      elt.classList.add( 'ahx-loaded')
+      elt.classList.add('ahx-loaded')
       if (elt.tagName == 'IMG') {
-        elt.setAttribute( 'src', elt.getAttribute( 'data-src'))
+        elt.setAttribute('src', elt.getAttribute('data-src'))
       }
-      else if  (elt.tagName == 'VIDEO') {
-        var source = E( `#vsrc_${idx}`)
+      else if (elt.tagName == 'VIDEO') {
+        var source = E(`#vsrc_${idx}`)
         if (!source.src) {
           source.src = source.getAttribute('data-src')
           elt.load()
@@ -288,12 +316,12 @@ class AHXCarousel {
   // Otherwise swiping will restart a video.
   //------------------------------------------
   _preventClickOnPrevious() {
-    this.slides().forEach( imgOrVideo => {
-      imgOrVideo.addEventListener( 'click', (ev) => {
+    this.slides().forEach(imgOrVideo => {
+      imgOrVideo.addEventListener('click', (ev) => {
         if (this.prevSlide === ev.target) {
           ev.preventDefault()
         }
-      }) 
+      })
     })
   } // _preventClickOnPrevious()
 
@@ -316,7 +344,7 @@ class AHXCarousel {
     var slides = this.slides()
     var activeSlide = this.activeSlide()
     var activeIdx = [...slides].indexOf(activeSlide)
-    E( '.ahx-imgnum').innerHTML = `${activeIdx+1}/${slides.length}`
+    E('.ahx-imgnum').innerHTML = `${activeIdx + 1}/${slides.length}`
   } // _setImgNum
 
   // Show arrows on mouse move
@@ -333,8 +361,8 @@ class AHXCarousel {
       E('#ahx-topcont').style.display = 'inline'
       self._resetArrowTimer()
     }
-    self.container.addEventListener( 'pointermove', showControls)
-    self.container.addEventListener( 'pointerup', showControls)
+    self.container.addEventListener('pointermove', showControls)
+    self.container.addEventListener('pointerup', showControls)
     this._resetArrowTimer()
   } // showArrows()
 

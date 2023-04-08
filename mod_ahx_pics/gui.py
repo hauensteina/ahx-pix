@@ -27,6 +27,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
         pic_links = pe.get_gallery_links( gallery_id) # image files in S3
         capclass = 'ahx-caption'
         if session.get('is_mobile',''): capclass = 'ahx-caption-mobile' 
+        found_active = False
         for i,pic in enumerate(pics):
             ext = os.path.splitext(pic['filename'])[1].lower()
             furl = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.png')
@@ -49,7 +50,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
             if ext in VIDEO_EXTENSIONS:
                 link = f'''
                 <li> 
-                <video id='img_{i}' preload='none' controls {classes}>  
+                <video id='img_{i}' preload='none' controls  data-pic-id='{pic["id"]}' {classes}>  
                   <source id=vsrc_{i} data-src='{furl}#t=0.5'>
                 </video> 
                 {caption}
@@ -59,7 +60,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
             elif ext in IMG_EXTENSIONS:
                 link = f'''
                 <li>
-                  <img id='img_{i}' loading='lazy' data-src='{furl}' {classes}> 
+                  <img id='img_{i}' loading='lazy' data-src='{furl}'  data-pic-id='{pic["id"]}' {classes}> 
                   {caption}
                 </li>
                 '''
@@ -68,7 +69,8 @@ def gen_carousel_images( gallery_id, active_pic_id):
                 fname = f'''pics_complete/{helpers.basename( pic['filename'])}{ext}'''
                 link = f'''
                 <li>
-                  <img id='img_{i}' loading='lazy' data-fname="{fname}" data-src='static/images/img_not_found.png' {classes}> 
+                  <img id='img_{i}' loading='lazy' data-fname="{fname}" 
+                    data-src='static/images/img_not_found.png'  data-pic-id='{pic["id"]}' {classes}> 
                   {caption}
                 </li>
                 '''
