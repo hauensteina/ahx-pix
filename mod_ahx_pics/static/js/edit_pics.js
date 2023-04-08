@@ -96,8 +96,6 @@ function editHappened(edit_type) {
     } // desktop
   } // edit_caption
 
-  E('#btn_revert').disabled = true
-  if (editHappened.flag || A('.ahx-selected').length > 0) { E('#btn_revert').disabled = false }
 } // editHappened()
 editHappened.flag = false
 
