@@ -58,7 +58,7 @@ class AHXCarousel {
         }
       })
 
-    E('.ahx-edit').addEventListener(
+    E('.ahx-edit')?.addEventListener(
       'click', ev => {
         if (E('.ahx-edit.ahx-active')) {
           let e = E('.ahx-edit.ahx-active')

@@ -92,20 +92,29 @@ def add_user():
 def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
-    if request.method == 'POST': # form submitted
-        if 'btn_save' in parms:
-            gallery_id = session['gallery_id']
-            active_pic_id = parms['pic_id'] # hidden form parm
-            caption = parms['ta_caption']
-            sql = f''' update picture set blurb = %s where id = %s '''
-            pg.run( sql, (caption.strip(), active_pic_id))
-            images = gui.gen_carousel_images( gallery_id, active_pic_id)
-            return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
-    else: # Initial hit
+    gallery_id = parms.get('gallery_id', session['gallery_id'])
+    gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]    
+    edit_icon = ''
+    if logged_in() and gallery['username'] == current_user.data['username']:
+        edit_icon = f''' <div class='ahx-edit' style='user-select:none;'>&#x270e;</div> '''
+
+    if request.method == 'POST':  # form submitted
+        gallery_id = session['gallery_id']
+        active_pic_id = parms['pic_id']  # hidden form parm
+        caption = parms['ta_caption']
+        sql = f''' update picture set blurb = %s where id = %s '''
+        pg.run(sql, (caption.strip(), active_pic_id))
+        images = gui.gen_carousel_images(gallery_id, active_pic_id)
+        return render_template('carousel.html',
+                               images=images, gallery_id=gallery_id, picture_id=active_pic_id,
+                               edit_icon=edit_icon)
+    else:  # Initial hit
         gallery_id = parms['gallery_id']
         active_pic_id = parms['picture_id']
-        images = gui.gen_carousel_images( gallery_id, active_pic_id)
-        return render_template( 'carousel.html', images=images, gallery_id=gallery_id, picture_id=active_pic_id )
+        images = gui.gen_carousel_images(gallery_id, active_pic_id)
+        return render_template('carousel.html',
+                               images=images, gallery_id=gallery_id, picture_id=active_pic_id,
+                               edit_icon=edit_icon)
 
 @app.route('/delete_gallery', methods=['GET', 'POST'])
 @login_required
