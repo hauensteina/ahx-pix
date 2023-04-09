@@ -40,16 +40,16 @@
       <div id='ahx-edit-caption' class='ahx-edit-caption' style="text-align:center;display:none;">
         <form id=frm_edit method=post>
           {% if is_mobile() %}
-          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here'
-            style=' width:100%; height:100%; line-height: 1.2em; resize:none;padding-left:5px;'></textarea>
+          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here' class='ahx-textarea'
+            style=' width:90%; height:100%;font-size: 18px;'></textarea>
           {% else %}
-          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here'
-            style=' width:30em; height:100%; line-height: 1.2em; resize:none;padding-left:5px;'></textarea>
+          <textarea id='ta_caption' name='ta_caption' rows=10 placeholder='Type caption here' class='ahx-textarea'
+            style='width:30em; height:100%;'></textarea>
           {% endif %}
           <div style="text-align:center;" class=''>
             <input id=pic_id type=hidden name='pic_id' value=''>
-            <input id=btn_cancel type=submit name=btn_cancel value='Cancel'>
-            <input id=btn_save type=submit name=btn_save value='Save'>
+            <input id=btn_save type=submit name=btn_save value='Save' class='ahx-submit-button'>
+            <input id=btn_cancel type=submit name=btn_cancel value='Cancel' class='ahx-submit-button'>
           </div>
         </form>
       </div>

@@ -76,6 +76,79 @@ a:active {
     margin-right:auto;
 }
 
+/* Base button style */
+.ahx-submit-button {
+    -webkit-appearance: none;
+    appearance: none; 
+    background-color: #0077B6; /* Ocean blue */
+    border: none;
+    color: #ffffff; /* White text */
+    text-align: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    /* padding: 12px 24px;
+    margin: 12px 12px; */
+    padding: 0.8rem 1.6rem;
+    margin: 1.0rem 1.0rem;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Hover effect */
+  .ahx-submit-button:hover {
+    background-color: #005e99; /* Darker ocean blue */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    transform: translateY(-2px);
+  }
+  
+  /* Active effect */
+  .ahx-submit-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Media query for mobile devices */
+   @media screen and (max-width: 480px) {
+    .ahx-submit-button {
+        font-size: 20px;
+        /* background-color: #ff0000; */
+    }
+  } 
+
+  /* Base textarea style */
+.ahx-textarea {
+    -webkit-appearance: none;
+    appearance: none; 
+    background-color: #ffffff; /* White background */
+    color: #333333; /* Dark text */
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    resize: none;
+    transition: all 0.3s ease;
+  }
+  
+  /* Focus effect */
+  .ahx-textarea:focus {
+    border-color: #0077B6; /* Ocean blue */
+    box-shadow: 0 0 5px rgba(0, 119, 182, 0.3);
+    outline: none;
+  }
+  
+  /* Media query for mobile devices */
+  @media screen and (max-width: 480px) {
+    .ahx-textarea {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+  
 /* 
    Three columns. The middle one will be centered. 
    Normally, the outer ones are empty. 
