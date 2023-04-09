@@ -93,7 +93,6 @@ class AHXCarousel {
         console.log('Changed to landscape mode')
         E('#ahx-carousel').style.touchAction = 'none'
         E('#ahx-topcont').style.display = 'none'
-        E('.ahx-caption-mobile').style.display = 'none'
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
@@ -300,13 +299,17 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
-    if (isMobile() && isLandscape()) return
+    if (isMobile() && isLandscape()) {
+      let caption = this.activeCaption()
+      caption.style.opacity = 0
+      return
+    }
     if (!E('.ahx-captoggle.ahx-active')) return
     var img = this.activeSlide()
     var frame = getContainedFrame(img)
     img.style.top = `0px`
     if (isNaN(frame.width)) return;
-    var caption = this.activeCaption()
+    let caption = this.activeCaption()
     if (!caption) return
     var realWidth = caption.clientWidth
     var realHeight = caption.clientHeight
