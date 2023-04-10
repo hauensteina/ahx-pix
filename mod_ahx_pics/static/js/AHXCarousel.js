@@ -373,7 +373,7 @@ class AHXCarousel {
       self._resetArrowTimer()
     } // showControls()
 
-    //self.container.addEventListener('pointermove', showControls)
+    self.container.addEventListener('pointermove', showControls)
     self.container.addEventListener('pointerup', showControls)
     this._resetArrowTimer()
   } // showArrows()
