@@ -81,18 +81,20 @@ a:active {
     -webkit-appearance: none;
     appearance: none; 
     background-color: #0077B6;  /* Ocean blue */
+    /* background-color: #ff0000;   */
     border: none;
     color: #ffffff; /* White text */
     text-align: center;
-    font-size: 16px;
+    font-size: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
-    /* padding: 12px 24px;
-    margin: 12px 12px; */
-    padding: 0.8rem 1.6rem;
+    padding: 0.6rem 1.4rem;
     margin: 1.0rem 1.0rem;
     text-decoration: none;
-    display: inline-block;
+    /* display: inline-block; */
+    display: inline-flex; /* Use inline-flex to make the button size adapt to its content */
+    align-items: center; /* Center the content vertically */
+    justify-content: center; /* Center the content horizontally */
     border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
@@ -101,7 +103,7 @@ a:active {
   .ahx-submit-button:hover {
     background-color: #005e99; /* Darker ocean blue */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-    transform: translateY(-2px);
+    /* transform: translateY(-2px); */
   }
   
   /* Active effect */
@@ -113,11 +115,54 @@ a:active {
   /* Media query for mobile devices */
    @media screen and (max-width: 480px) {
     .ahx-submit-button {
-        font-size: 20px;
+        font-size: 1rem;
         /* background-color: #ff0000; */
     }
   } 
   
+  /* Small button style */
+.ahx-small-submit-button {
+    -webkit-appearance: none;
+    appearance: none; 
+    background-color: #0077B6;  /* Ocean blue */
+    /* background-color: #000077;  */
+    border: none;
+    color: #ffffff; /* White text */
+    text-align: center;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0.2rem 0.8rem;
+    margin: 0.2rem 0.2rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center; 
+    border-radius: 0.5rem;
+    min-height:2rem;
+  }
+  
+  /* Hover effect */
+  .ahx-small-submit-button:hover {
+    background-color: #005e99; /* Darker ocean blue */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    /* transform: translateY(-2px); */
+  }
+
+  .ahx-small-submit-button:disabled {
+      background-color: #aaaaaa;
+  }
+  
+  /* Media query for mobile devices */
+   @media screen and (max-width: 480px) {
+    .ahx-small-submit-button {
+        font-size: 1rem;
+        min-height:2rem;
+        padding:0.2rem 0.8rem;
+        margin:0.2rem;
+        /* background-color: #ff0000; */
+    }
+  } 
+
   /* Base textarea style */
 .ahx-textarea {
     -webkit-appearance: none;

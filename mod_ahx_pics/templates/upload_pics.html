@@ -27,7 +27,7 @@
   <div id="progress" style='display:grid;justify-items:center;margin-top:20px;'>
   </div>
   <div style='text-align:center;margin-top:10px;'>
-    <input type=submit form=dropform name=btn_upload value=Done style='margin-top:20px;'> 
+    <input type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' >
   </div>
 </div>
 
@@ -54,8 +54,7 @@
     <div id="progress">
     </div>
     <div style='text-align:center;margin-top:20px;'>
-      <input type=submit form=dropform name=btn_upload value=Done 
-             style='margin-top:20px;font-size:1.0em;'> 
+      <input type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' >
       <!-- style='margin-top:20px;font-size:1.0em;border-radius:0.5rem;color:#7c795d;border-color:#7c795d;'>  -->
     </div>
   </div>
@@ -94,7 +93,7 @@ var dz = new Dropzone("#dropform", {
 dz.on("uploadprogress", function(file, progress) {
     const total = file.upload.totalChunkCount
     const uploaded = Math.trunc(total * progress / 100)
-    E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
+    //E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
 })
 </script>
 

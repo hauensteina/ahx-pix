@@ -9,9 +9,7 @@ Functions to generate html for the GUI
 from pdb import set_trace as BP
 import os
 from flask import url_for, session
-from mod_ahx_pics import AppError, log, SMALL_FOLDER
 from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
-from mod_ahx_pics.helpers import pexc
 import mod_ahx_pics.helpers as helpers
 from  mod_ahx_pics.helpers import html_tag as H
 from  mod_ahx_pics.helpers import html_img as I
@@ -287,15 +285,16 @@ def gen_gallery_search( title='', owner=''):
             <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
               Owner:
             </div>
+
             <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-              <input type=text name=title size=20 value='{title}'>
+              <input type=text name=title size=20 value='{title}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
             <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-              <input type=text name=owner size=20 value='{owner}'>
+              <input type=text name=owner size=20 value='{owner}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
 
             <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
-              <input type=submit name=btn_search value=Search >
+              <input type=submit name=btn_search value=Search class='ahx-small-submit-button'>
             </div>
           </div>
         </form>
@@ -309,10 +308,10 @@ def gen_gallery_search( title='', owner=''):
               Title:
             </div>
             <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-              <input type=text name=title size=20 value='{title}'>
+              <input type=text name=title size=20 value='{title}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
             <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-              <input type=submit name=btn_search value=Search >
+              <input type=submit name=btn_search value=Search class='ahx-small-submit-button' >
             </div>
           </div>
         </form>
@@ -334,32 +333,34 @@ def gen_gallery_search_mobile( title='', owner=''):
             </div>
 
             <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-              <input type=text name=title size=15 value='{title}'>
+              <input type=text name=title size=15 value='{title}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
             <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-              <input type=text name=owner size=15 value='{owner}'>
+              <input type=text name=owner size=15 value='{owner}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
 
             <div style='display:grid;grid-column-start:3; grid-column-end:4;'>
-              <input type=submit name=btn_search value=Search >
+              <input type=submit name=btn_search value=Search class='ahx-small-submit-button' >
             </div>
           </div>
         </form>
         '''
-    else:
+    else: 
         html = f'''
         <form id='gallery_search' method=post class=search-form-mobile>
           <input type=hidden name=_action value="search_gallery">
-          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);'>
-            <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
+          <div style='display:grid; grid-template-columns: fit-content(0) fit-content(0) fit-content(0);' >
+            <div style='display:grid;grid-column-start:1; grid-column-end:4;'>
               Title:
             </div>
+
             <div style='display:grid;grid-column-start:1; grid-column-end:2;'>
-              <input type=text name=title size=15 value='{title}'>
+              <input type=text name=title size=15 value='{title}' style='margin-top:auto;margin-bottom:auto;'>
             </div>
-            <div style='display:grid;grid-column-start:2; grid-column-end:3;'>
-              <input type=submit name=btn_search value=Search >
+            <div style='display:grid;grid-column-start:2; grid-column-end:4;' >
+              <input type=submit name=btn_search value=Search class='ahx-small-submit-button'>
             </div>
+
           </div>
         </form>
         '''
@@ -412,11 +413,4 @@ def _bad_caption( blurb):
     if not blurb: return True
     if not blurb.strip(): return True
     return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )
-
-def _gen_gallery_link( gallery, action, title):   
-    """ Generate an html link to a gallery """
-    url = url_for( 'gallery', 
-                   _id=gallery['id'], _action=action)
-    link = H(f'a href={url}', title)
-    return link
 

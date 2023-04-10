@@ -72,17 +72,17 @@ def add_user():
         elif len(password) < 8:
             error = 'Password must have 8 or more characters'
         if error:
-            return render_template( 'add_user.html', error=error, **data)
+            return render_template( 'add_user.html', error=error, no_links=True, **data)
         # All is well, create user
         try:
             user.create_user(data, password)
         except Exception as e:
-            return render_template( 'add_user.html', error=str(e), **data)
+            return render_template( 'add_user.html', error=str(e), no_links=True, **data)
             
         flash( f'''User {data['username']} created.''')
         return redirect( url_for('index'))
     else: # Initial hit
-        return render_template( 'add_user.html', error=error, **data)
+        return render_template( 'add_user.html', error=error, no_links=True, **data)
 
 @app.route('/carousel', methods=['GET', 'POST'])
 #@login_required
@@ -638,16 +638,20 @@ def upload_pics():
         return f'{UPLOAD_FOLDER}/{dropname}.part{chunk}'
     
     def upload_chunk():
+        chunk = request.form.get('dzchunkindex',0)
+        dzuuid = request.form.get('dzuuid',shortuuid.uuid())
+        dztotalchunkcount = int(request.form.get('dztotalchunkcount',1))
+
         # Get the file chunk
         file = request.files['file']
-        chunk = request.form['dzchunkindex']
-        dropname = request.form['dzuuid']
+
+        dropname = dzuuid
         file.save(chunkfname(dropname, chunk))
 
         # Check if all chunks have been uploaded
         all_chunks_uploaded = all(
             os.path.exists(chunkfname(dropname, i))
-            for i in range(int(request.form['dztotalchunkcount']))
+            for i in range(dztotalchunkcount)
         )
         # If all chunks are uploaded, combine them into a single file
         tempfolder = f'''{UPLOAD_FOLDER}/{dropname}'''
@@ -657,7 +661,7 @@ def upload_pics():
             fname = secure_filename(file.filename)
             fname = f'''{tempfolder}/{fname}'''
             with open(fname, 'wb') as f:
-                for i in range(int(request.form['dztotalchunkcount'])):
+                for i in range(dztotalchunkcount):
                     chunk_filename = chunkfname(dropname, i)
                     with open(chunk_filename, 'rb') as chunk_file:
                         f.write(chunk_file.read())
@@ -667,7 +671,7 @@ def upload_pics():
             shutil.rmtree(tempfolder) 
             return 'OK'
         else:
-            return f'{chunk}/{request.form["dztotalchunkcount"]}'
+            return f'{chunk}/{dztotalchunkcount}'
 
     error = None
     data = {}
