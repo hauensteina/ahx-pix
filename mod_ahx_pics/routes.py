@@ -91,7 +91,11 @@ def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
     gallery_id = parms.get('gallery_id', session['gallery_id'])
-    gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]    
+    try:
+        gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]    
+    except:
+        flash('Gallery not found', 'error')
+        return redirect( url_for('index'))
     edit_icon = ''
     if logged_in() and gallery['username'] == current_user.data['username']:
         edit_icon = f''' <div class='ahx-edit' style='user-select:none;'>&#x270e;</div> '''
