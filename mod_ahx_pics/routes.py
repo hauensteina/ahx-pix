@@ -529,11 +529,12 @@ def logout():
 #-----------------------------------------------------
 def new_gallery():
     error = None
-    data = {}
+    data = {'access':'private'}
     if request.method == 'POST': # form submitted
         parms = get_parms()
         title = parms['title']
-
+        if len(title.strip()) == 0:
+            return render_template( 'new_gallery.html', error='Please specify a title', **data)
         today = date.today()
         iid = shortuuid.uuid()
         private_flag=False; public_flag=False
@@ -541,7 +542,6 @@ def new_gallery():
             private_flag=True
         if parms['access'] == 'public':
             public_flag=True
-            
         data = { 
             'id':iid
             ,'username':current_user.data['username']

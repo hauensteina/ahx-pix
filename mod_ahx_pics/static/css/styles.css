@@ -80,7 +80,7 @@ a:active {
 .ahx-submit-button {
     -webkit-appearance: none;
     appearance: none; 
-    background-color: #0077B6; /* Ocean blue */
+    background-color: #0077B6;  /* Ocean blue */
     border: none;
     color: #ffffff; /* White text */
     text-align: center;
@@ -117,7 +117,7 @@ a:active {
         /* background-color: #ff0000; */
     }
   } 
-
+  
   /* Base textarea style */
 .ahx-textarea {
     -webkit-appearance: none;

@@ -55,8 +55,8 @@
 
   <div style='display:grid;justify-items:center;'>
     <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'>
-      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>
+      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;' class='ahx-submit-button'>
+      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
     </span>
   </div>
 </div>
@@ -94,23 +94,23 @@
 
   <div style='margin-top:10px;'>
     <div>
-      <input type='radio' form=textform id='private' name='access' value='private' {% if access=='private' %}checked{% endif %}>
+      <input type='radio' form=textform id='private' name='access' value='private' class='ahx-radio' {% if access=='private' %}checked{% endif %}>
       <label for='private'>Private</label>
     </div>
     <div>
-      <input type='radio' form=textform id='public' name='access' value='public' {% if access=='public' %}checked{% endif %}>
+      <input type='radio' form=textform id='public' name='access' value='public' class='ahx-radio' {% if access=='public' %}checked{% endif %}>
       <label for='public'>Public</label>
     </div>
     <div>
-      <input type='radio' form=textform id='members' name='access' value='members' {% if access=='members' %}checked{% endif %}>
+      <input type='radio' form=textform id='members' name='access' value='members' class='ahx-radio' {% if access=='members' %}checked{% endif %}>
       <label for='members'>Members only</label>
     </div>
   </div>
 
   <div style='display:grid;justify-items:center;margin-top:10px;'>
     <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'>
-      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>
+      <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;' class='ahx-submit-button'>
+      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
     </span>
   </div>
 </div>
