@@ -398,7 +398,7 @@ def gallery():
     gallery_html = gui.gen_gallery( gallery, pics)
     mylinks = ''
     # I can edit my own galleries only
-    if current_user.data['username'] == gallery['username']:
+    if logged_in() and current_user.data['username'] == gallery['username']:
         mylinks = f'''
         <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
@@ -422,14 +422,17 @@ def gallery_mobile():
     session['gallery_id'] = gallery['id']
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
-    mylinks = f'''
-    <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
-      <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
-      <a href="{url_for('edit_title')}">Edit Title</a> &nbsp;   
-      <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
-      <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
-    </div>
-    '''
+    mylinks = ''
+    # I can edit my own galleries only
+    if logged_in() and current_user.data['username'] == gallery['username']:
+        mylinks = f'''
+        <div style='margin-left:5vw;margin-bottom:10px;width:100%;'>
+        <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
+        <a href="{url_for('edit_title')}">Edit Title</a> &nbsp;   
+        <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Edit Pics</a> &nbsp;   
+        <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
+        </div>
+        '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/', methods=['GET', 'POST'])
