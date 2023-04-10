@@ -337,6 +337,10 @@ class AHXCarousel {
   _resetArrowTimer() {
     const TIMEOUT = 2000
     function timerFired() { //return;
+      // Hiding conrols for some reason prevents save button click to go through
+      const div_edit = E('#ahx-edit-caption')   
+      if (div_edit.style.display != 'none') return
+
       E('.ahx-carousel-button.ahx-next').style.display = 'none'
       E('.ahx-carousel-button.ahx-prev').style.display = 'none'
       E('.ahx-x').style.display = 'none'
@@ -367,8 +371,9 @@ class AHXCarousel {
       E('.ahx-x').style.display = 'inline'
       E('#ahx-topcont').style.display = 'inline'
       self._resetArrowTimer()
-    }
-    self.container.addEventListener('pointermove', showControls)
+    } // showControls()
+
+    //self.container.addEventListener('pointermove', showControls)
     self.container.addEventListener('pointerup', showControls)
     this._resetArrowTimer()
   } // showArrows()
