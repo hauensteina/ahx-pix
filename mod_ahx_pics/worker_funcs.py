@@ -102,20 +102,20 @@ def _resize_image( fname, gallery_id, size='small'):
     try:
         local_fname = fname
         ext = os.path.splitext(fname)[1].lower()
-        local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
-        s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
         if ext != '.pdf' and size != 'large':
+            if ext == '.heic': ext = '.jpg'
+            local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
+            s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
             try:
                 cmd = f''' convert {local_fname} -auto-orient -resize {max_size}x{max_size}\> -quality {qual} +profile '*' {local_thumb} '''
                 out,err = run_shell( cmd)
             except Exception as e:
                 log(pexc(e))
-                log(f'WARNING: ImageMagick resize of {fname} failed. Using PIL.') 
-                image.thumbnail( (max_size,max_size))
-                image.save( local_thumb, quality=95)
-
+                log(f'ERROR: ImageMagick resize of {fname} failed.') 
             s3_upload_files( [local_thumb], [s3_thumb])
         else: # Just leave pdfs and large image version alone
+            local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
+            s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
             s3_upload_files( [local_fname], [s3_thumb])
     except Exception as e:
         if 'truncated' in str(e):
