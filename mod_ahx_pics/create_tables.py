@@ -80,7 +80,10 @@ def _create_gallery( pg):
       ,username text
       ,title text
       ,blurb text
-      ,private_flag boolean
+
+      -- Three types of gallery: private (just me tf), public (the world ft), and shared (all logins ff)
+      ,private_flag boolean default true
+      ,public_flag boolean default false
       ,n_hits int
       ,create_date date
       ,change_date date

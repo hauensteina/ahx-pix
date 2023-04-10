@@ -2,7 +2,7 @@
 
 {% block js %}
 <script src="static/js/dropzone.min.js"></script>
-<link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" /> 
+<link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" />
 {% endblock js %}
 
 {% block content %}
@@ -19,9 +19,9 @@
   </div>
   <div style='display:grid;justify-items:center;'>
     <form id=textform action=edit_title method=post>
-      <div style='margin-bottom:40px;margin-right:5px'>
-        <input type=text name=title value='{{gallery_title}}'size=40>
-      </div>       
+      <div style='margin-bottom:30px;margin-right:5px'>
+        <input type=text name=title value='{{gallery_title}}' size=40>
+      </div>
     </form>
   </div>
   <div style='display:grid;justify-items:center;'>
@@ -31,23 +31,31 @@
   </div>
   <div style='display:grid;justify-items:left;margin-top:10px;'>
     <span style='width:100%;margin:0;padding:0;'>
-      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption' value='{{caption}}'>
+      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption'
+        value='{{caption}}'>
     </span>
   </div>
-  <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
+  <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;'
+    placeholder='Gallery Description'>{{blurb}}</textarea>
 
   <div style='margin-top:10px;'>
-    {% if private_flag %}
-    <input form=textform type=checkbox name=private_flag id=cb_private checked>
-    {% else %}
-    <input form=textform type=checkbox name=private_flag id=cb_private>
-    {% endif %}
-    <label for=cb_private >Private</label>
+    <div>
+      <input type="radio" form=textform id="private" name="access" value="private" {% if access=="private" %}checked{% endif %}>
+      <label for="private">Private</label>
+    </div>
+    <div>
+      <input type="radio" form=textform id="public" name="access" value="public" {% if access=="public" %}checked{% endif %}>
+      <label for="public">Public</label>
+    </div>
+    <div>
+      <input type="radio" form=textform id="members" name="access" value="members" {% if access=="members" %}checked{% endif %}>
+      <label for="members">Members only</label>
+    </div>
   </div>
 
   <div style='display:grid;justify-items:center;'>
     <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'>
+      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'>
       <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'>
     </span>
   </div>
@@ -66,8 +74,8 @@
   <div style='display:grid;justify-items:center;'>
     <form id=textform action=edit_title method=post>
       <div style='margin-bottom:40px;margin-right:5px'>
-        <input type=text name=title value='{{gallery_title}}'size=40>
-      </div>       
+        <input type=text name=title value='{{gallery_title}}' size=40>
+      </div>
     </form>
   </div>
   <div style='display:grid;justify-items:center;'>
@@ -77,18 +85,26 @@
   </div>
   <div style='display:grid;justify-items:left;margin-top:10px;'>
     <span style='width:100%;margin:0;padding:0;'>
-      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption' value='{{caption}}'>
+      <input style='width:100%;margin:0;padding:0;' form=textform type=text name=caption placeholder='Image Caption'
+        value='{{caption}}'>
     </span>
   </div>
-  <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;' placeholder='Gallery Description'>{{blurb}}</textarea>
+  <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;'
+    placeholder='Gallery Description'>{{blurb}}</textarea>
 
   <div style='margin-top:10px;'>
-    {% if private_flag %}
-    <input form=textform type=checkbox name=private_flag id=cb_private checked>
-    {% else %}
-    <input form=textform type=checkbox name=private_flag id=cb_private>
-    {% endif %}
-    <label for=cb_private >Private</label>
+    <div>
+      <input type='radio' form=textform id='private' name='access' value='private' {% if access=='private' %}checked{% endif %}>
+      <label for='private'>Private</label>
+    </div>
+    <div>
+      <input type='radio' form=textform id='public' name='access' value='public' {% if access=='public' %}checked{% endif %}>
+      <label for='public'>Public</label>
+    </div>
+    <div>
+      <input type='radio' form=textform id='members' name='access' value='members' {% if access=='members' %}checked{% endif %}>
+      <label for='members'>Members only</label>
+    </div>
   </div>
 
   <div style='display:grid;justify-items:center;margin-top:10px;'>

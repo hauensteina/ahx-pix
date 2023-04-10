@@ -12,11 +12,28 @@
                 grid-template-columns: fit-content(50%) 1fr;'>
 
       <div style='margin-bottom:10px;'>Title:</div>
-      <div style='width:95%;'><input type=text name=title value='{{title}}' style='width:100%;'></div> 
+      <div style='width:95%;'><input type=text name=title value='{{title}}' style='width:100%;'></div>
 
-      <div style='margin-bottom:10px;'>Private:</div>
-      <div><input type=checkbox name=private_flag></div> 
-      <div style='margin-top:10px'><input type=submit value='Create'></div>
+      <div style='margin-top:10px;'>
+        <div>
+          <input type="radio" id="private" name="access" value="private" 
+          {% if access=="private" %}checked{% endif %}>
+          <label for="private">Private</label>
+        </div>
+        <div>
+          <input type="radio" id="public" name="access" value="public" 
+          {% if access=="public" %}checked{% endif %}>
+          <label for="public">Public</label>
+        </div>
+        <div>
+          <input type="radio" id="members" name="access" value="members" 
+          {% if access=="members" %}checked{% endif %}>
+          <label for="members">Members only</label>
+        </div>
+      </div>
+      <div style='margin-top:10px;grid-column-start: 1;grid-column-end: 3;text-align:center;'>
+        <input type=submit value='Create' class='ahx-submit-button'>
+      </div>
     </div>
   </form>
 </div>

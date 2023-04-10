@@ -326,12 +326,13 @@ def edit_title():
         sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
         pg.run( sql, (caption.strip(),gallery_id))
 
-        if 'private_flag' in parms:
-            sql = f'''update gallery set private_flag=true where id=%s'''
-            pg.run( sql, (gallery_id,))
+        if parms['access'] == 'public':
+                sql = f'''update gallery set private_flag = false, public_flag = true where id=%s'''
+        elif parms['access'] == 'private':
+                sql = f'''update gallery set private_flag = true, public_flag = false where id=%s'''
         else:
-            sql = f'''update gallery set private_flag=false where id=%s'''
-            pg.run( sql, (gallery_id,))
+                sql = f'''update gallery set private_flag = false, public_flag = false where id=%s'''
+        pg.run( sql, (gallery_id,))
             
     error = None
     data = {}
@@ -339,6 +340,10 @@ def edit_title():
     gallery_id = session['gallery_id']
     gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
     gallery_page = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+
+    data['access'] = 'members' 
+    if gallery['public_flag']: data['access'] = 'public' 
+    if gallery['private_flag']: data['access'] = 'private'
 
     data['blurb'] = gallery.get('blurb','')
     data['private_flag'] = gallery.get('private_flag',True)
@@ -526,16 +531,23 @@ def new_gallery():
     error = None
     data = {}
     if request.method == 'POST': # form submitted
-        title = request.form['title']
-        private_flag = request.form.get( 'private_flag', False)
+        parms = get_parms()
+        title = parms['title']
 
         today = date.today()
         iid = shortuuid.uuid()
+        private_flag=False; public_flag=False
+        if parms['access'] == 'private':
+            private_flag=True
+        if parms['access'] == 'public':
+            public_flag=True
+            
         data = { 
             'id':iid
             ,'username':current_user.data['username']
             ,'title':title
             ,'private_flag':private_flag
+            ,'public_flag':public_flag
             ,'create_date':today
             ,'change_date':today
         }           
