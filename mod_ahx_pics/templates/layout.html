@@ -101,9 +101,9 @@
       {% if is_admin() %}
       <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;          
       {% endif %}
-      {% if all_pics_flag %}
+      {% if all_pics_flag and logged_in() %}
       <a href="{{ url_for('index', all_pics_flag=False) }}">My Galleries Only</a> &nbsp;   
-      {% else %}
+      {% elif logged_in() %}
       <a href="{{ url_for('index', all_pics_flag=True) }}">Show All Galleries</a> &nbsp;   
       {% endif %}
       {% if logged_in() %}
@@ -157,9 +157,9 @@
       {% if is_admin() %}
       <a href="{{ url_for('add_user') }}">Add user</a> &nbsp;    
       {% endif %}
-      {% if all_pics_flag %}
+      {% if all_pics_flag and logged_in() %}
       <a href="{{ url_for('index', all_pics_flag=False) }}">My Galleries Only</a> &nbsp;   
-      {% else %}
+      {% elif logged_in() %}
       <a href="{{ url_for('index', all_pics_flag=True) }}">Show All Galleries</a> &nbsp;   
       {% endif %}
       <a href="{{ url_for('new_gallery') }}">New Gallery</a> &nbsp;   

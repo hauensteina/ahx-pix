@@ -10,23 +10,27 @@ from pdb import set_trace as BP
 from datetime import datetime, timedelta
 import json
 from flask_login import current_user
-from mod_ahx_pics import pg, log
+from mod_ahx_pics import pg, log, logged_in
 from mod_ahx_pics import SMALL_FOLDER, MEDIUM_FOLDER, LARGE_FOLDER, LINK_EXPIRE_HOURS
 import mod_ahx_pics.helpers as helpers
 
 def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc'):
     """
     Get galleries as a list of dicts. Filter by title and owner.
-    TODO: If logged in, show private pages of user. 
     """
-    username = current_user.data['username']
-    where = f''' where deleted_flag = false and (username='{username}' or private_flag = false)  '''
+    username = current_user.data['username'] if logged_in() else ''
+    if not username:
+        where = f''' where deleted_flag = false and public_flag = true '''
+    else:   
+        where = f''' where deleted_flag = false and (username='{username}' or private_flag = false)  '''
+
     if owner: where += f''' and lower(username) like '%%{owner.lower()}%%' '''
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     if gallery_id: where += f''' and id = '{gallery_id}' '''
     sql = f'''
     select * from gallery {where} order by {order_by} limit 200
     '''
+
     rows = pg.select(sql)
     for r in rows: 
         if r['blurb'] is None: r['blurb'] = ''
@@ -36,8 +40,12 @@ def get_my_galleries( title='', order_by='create_date desc'):
     """
     Get my galleries as a list of dicts. Filter by title.
     """
-    username = current_user.data['username']
-    where = f''' where deleted_flag = false and username = '{username}' '''
+    username = current_user.data['username'] if logged_in() else ''
+    if not username:
+        where = f''' where deleted_flag = false and public_flag = true '''
+    else:   
+        where = f''' where deleted_flag = false and username = '{username}' '''
+
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     sql = f'''
     select * from gallery {where} order by {order_by} 

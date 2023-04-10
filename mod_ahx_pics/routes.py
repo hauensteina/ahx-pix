@@ -6,11 +6,10 @@
 
 from pdb import set_trace as BP
 
-import os, sys, re, json, random
-from datetime import datetime, date
+import os, sys, json
+from datetime import date
 import shortuuid
 import shutil
-import urllib
 
 import flask
 from flask import request, render_template, flash, redirect, url_for, session, send_file
@@ -19,11 +18,10 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 from itsdangerous import TimestampSigner, SignatureExpired
 
-from mod_ahx_pics import AppError, Q, pg
+from mod_ahx_pics import Q, pg
 from mod_ahx_pics import app, log, logged_in
-from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIUM_FOLDER, UPLOAD_FOLDER
+from mod_ahx_pics import UPLOAD_FOLDER
 
-from mod_ahx_pics.worker_funcs import gen_thumbnails 
 import mod_ahx_pics.helpers as helpers
 import mod_ahx_pics.persistence as pe
 import mod_ahx_pics.gui as gui
@@ -87,7 +85,7 @@ def add_user():
         return render_template( 'add_user.html', error=error, **data)
 
 @app.route('/carousel', methods=['GET', 'POST'])
-@login_required
+#@login_required
 #-------------------------------------------------
 def carousel():
     """ Full screen swipeable image carousel """
@@ -382,7 +380,7 @@ def edit_title():
         return render_template( 'edit_title.html', error=error, **data, no_links=True )
 
 @app.route('/gallery', methods=['GET', 'POST'])
-@login_required
+#@login_required
 #@show_error
 #-------------------------------------------------
 def gallery():
@@ -408,7 +406,7 @@ def gallery():
     return render_template( 'gallery.html', content=gallery_html, custom_links=mylinks, no_links=True)
 
 @app.route('/gallery_mobile', methods=['GET', 'POST'])
-@login_required
+#@login_required
 #@show_error
 #-------------------------------------------------------
 def gallery_mobile():
@@ -433,7 +431,7 @@ def gallery_mobile():
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
-@login_required
+#@login_required
 #-------------------------------------------------
 def index():
     """ Main entry point. Show heading and list of galleries """
@@ -466,7 +464,7 @@ def index():
     return res
 
 @app.route('/index_mobile', methods=['GET', 'POST'])
-@login_required
+#@login_required
 #@show_error
 #-------------------------------------------------
 def index_mobile():
