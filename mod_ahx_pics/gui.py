@@ -19,7 +19,7 @@ def gen_carousel_images( gallery_id, active_pic_id):
     """ Generate the page showing one full screen pic at a time. """
 
     def gen_images( pics):
-        pics = [ x for x in pics if not x['title_flag'] ]
+        #pics = [ x for x in pics if not x['title_flag'] ]
         # The images/videos
         images = []
         pic_links = pe.get_gallery_links( gallery_id) # image files in S3
@@ -90,7 +90,7 @@ def gen_edit_pics( gallery_id):
     pics = pe.get_gallery_pics( gallery_id)
     picdivs = ''
     for pic in pics:
-        if pic['title_flag']: continue
+        #if pic['title_flag']: continue
         blurb = pic['blurb']
         ext = os.path.splitext(pic['filename'])[1].lower()
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
@@ -125,9 +125,11 @@ def gen_gallery( gallery, pics, n_cols=5):
     if title_pic:
         title_pic = title_pic[0]
         img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), '')
+        visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=title_pic["id"])}' '''
+        onclick = f''' onclick="window.location.href={visit_url}" '''
         title_pic_h = ''
         if img_link:
-            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;', f' {onclick} ')
             title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
@@ -158,9 +160,11 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     if title_pic:
         title_pic = title_pic[0]
         img_link = pic_links.get( 'med_' + helpers.basename( title_pic['filename']), '')
+        visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=title_pic["id"])}' '''
+        onclick = f''' onclick="window.location.href={visit_url}" '''
         title_pic_h = ''
         if img_link:        
-            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;')
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;', f' {onclick} ')
             title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
@@ -373,7 +377,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     colw = f'{100.0/n_cols}% '
     html = []
     for pic in pics:
-        if pic['title_flag']: continue
+        #if pic['title_flag']: continue
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         ext = os.path.splitext( pic['filename'])[1].lower()
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
