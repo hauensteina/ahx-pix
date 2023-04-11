@@ -299,7 +299,7 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
-    if (isMobile() && isLandscape()) {
+    if (isMobile() && isLandscape() && this.activeCaption()) {
       let caption = this.activeCaption()
       caption.style.opacity = 0
       return
