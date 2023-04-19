@@ -231,8 +231,8 @@ a:active {
 /*----------------------*/
 /* .gallery-list-cell:hover { background-color: #ddd; } */
 .gallery-list-row { display:contents; } /* Wrapper to make table row selectable */
-.gallery-list-row:nth-child(odd) > div {background-color: #f0f0f0;}
-.gallery-list-row:hover > div  { background-color: #ddd; }
+.gallery-list-row:nth-child(odd) > div {background-color: #e0f0f0;}
+.gallery-list-row:hover > div  { background-color: #cdd; }
 .gallery-list-cell {
     display:grid;
     border: 1px solid #bbb;
