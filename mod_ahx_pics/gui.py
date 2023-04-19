@@ -416,5 +416,5 @@ def _bad_caption( blurb):
     """ Return False if the caption looks like just a filename """
     if not blurb: return True
     if not blurb.strip(): return True
-    return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 0 )
+    return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 1 )
 
