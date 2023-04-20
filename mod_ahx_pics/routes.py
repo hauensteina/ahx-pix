@@ -392,7 +392,10 @@ def gallery():
     parms = get_parms()
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
-    gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
+    galleries = pe.get_galleries( title='', owner='', gallery_id=gallery_id)
+    if not galleries:
+        return redirect( url_for('login'))
+    gallery = galleries[0]
     session['gallery_id'] = gallery['id']
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery( gallery, pics)
@@ -418,7 +421,10 @@ def gallery_mobile():
     parms = get_parms()
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
-    gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
+    galleries = pe.get_galleries( title='', owner='', gallery_id=gallery_id)
+    if not galleries:
+        return redirect( url_for('login'))
+    gallery = galleries[0]
     session['gallery_id'] = gallery['id']
     session['gallery_title'] = gallery['title']
     gallery_html = gui.gen_gallery_mobile( gallery, pics)
