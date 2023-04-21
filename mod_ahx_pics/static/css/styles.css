@@ -232,7 +232,7 @@ a:active {
 /* .gallery-list-cell:hover { background-color: #ddd; } */
 .gallery-list-row { display:contents; } /* Wrapper to make table row selectable */
 .gallery-list-row:nth-child(odd) > div {background-color: #e4e6e8;}
-.gallery-list-row:hover > div  { background-color: #cdd; }
+.gallery-list-row:hover > div  { background-color: #d4d6d8; }
 .gallery-list-cell {
     display:grid;
     border: 1px solid #bbb; 
