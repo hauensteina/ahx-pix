@@ -7,7 +7,7 @@ Functions to abstract all data persistence stuff, like postgres and S3 access.
 """
 
 from pdb import set_trace as BP
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import json
 from flask_login import current_user
 from mod_ahx_pics import pg, log, logged_in
@@ -83,6 +83,9 @@ def get_title_pic( gallery_id):
     pics = pg.select( f''' select * from picture where gallery_id = '{gallery_id}' and deleted_flag = false and title_flag = true ''')
     if pics: return pics[0]
     return None
+
+def gallery_changed(gallery_id):
+    pg.run( 'update gallery set change_date = %s where id = %s', (date.today(), gallery_id))
 
 def get_gallery_links( gallery_id):
     """

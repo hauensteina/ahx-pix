@@ -134,6 +134,7 @@ def delete_gallery():
         #gallery_id = session['gallery_id']        
         pg.run( f''' update gallery set deleted_flag = true where id = '{gallery_id}' ''')
         flash('Gallery deleted')
+        pe.gallery_changed( gallery_id)
         return redirect( url_for(home))
     else:
         #gallery_id = parms['gallery_id']
@@ -250,6 +251,8 @@ def edit_pics():
         idlist = ','.join(idlist)
         sql = f''' update picture set deleted_flag = true where id in ({idlist}) and title_flag = false '''
         ndeleted = pg.run( sql)
+        if ndeleted: pe.gallery_changed( gallery_id)
+
         sql = f''' select 1 from picture where id in ({idlist}) and title_flag = true '''
         nrows = pg.run( sql)
         if nrows > 0:
@@ -257,11 +260,13 @@ def edit_pics():
         return ndeleted    
 
     def update_captions( caption_dict):
+        pe.gallery_changed( gallery_id)
         for pic_id in caption_dict:
             sql = f''' update picture set blurb = %s where id = %s '''
             pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
 
     def update_order( gallery_id, pic_ids):
+        pe.gallery_changed( gallery_id)
         piclist = json.dumps( [ x for x in pic_ids] )
         sql = f''' update gallery set piclist = %s where id = %s '''
         pg.run( sql, (piclist, gallery_id))
@@ -339,6 +344,7 @@ def edit_title():
         else:
                 sql = f'''update gallery set private_flag = false, public_flag = false where id=%s'''
         pg.run( sql, (gallery_id,))
+        pe.gallery_changed( gallery_id)
             
     error = None
     data = {}
