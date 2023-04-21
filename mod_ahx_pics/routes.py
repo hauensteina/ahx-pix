@@ -390,6 +390,7 @@ def edit_title():
 def gallery():
     """ View a gallery on a computer """
     parms = get_parms()
+    if session.get('is_mobile',''): return redirect( url_for('gallery_mobile', **parms))
     gallery_id = parms['gallery_id']
     pics = pe.get_gallery_pics( gallery_id)
     galleries = pe.get_galleries( title='', owner='', gallery_id=gallery_id)
