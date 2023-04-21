@@ -90,6 +90,7 @@ def _create_gallery( pg):
       ,deleted_flag boolean not null default false
       ,piclist text not null default ''::text
       ,status text not null default ''::text
+      ,title_pic_caption text
     )
     '''
     pg.run(sql)

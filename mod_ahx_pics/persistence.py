@@ -32,8 +32,8 @@ def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc
     '''
 
     rows = pg.select(sql)
-    for r in rows: 
-        if r['blurb'] is None: r['blurb'] = ''
+    #for r in rows: 
+    #    if r['blurb'] is None: r['blurb'] = ''
     return rows
 
 def get_my_galleries( title='', order_by='create_date desc'):

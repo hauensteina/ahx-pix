@@ -130,7 +130,8 @@ def gen_gallery( gallery, pics, n_cols=5):
         title_pic_h = ''
         if img_link:
             title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;', f' {onclick} ')
-            title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
+            #title_pic_h +=  H( 'span', title_pic['blurb'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
+            title_pic_h +=  H( 'span', gallery['title_pic_caption'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
 
@@ -373,7 +374,7 @@ def gen_gallery_search_mobile( title='', owner=''):
 def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     """ Arrange image thumbs as a grid """
     
-    MAX_CAP_LEN = 80
+    MAX_CAP_LEN = 100
     colw = f'{100.0/n_cols}% '
     html = []
     for pic in pics:

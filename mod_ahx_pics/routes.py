@@ -248,8 +248,13 @@ def edit_pics():
     def delete_pics( pic_ids):
         idlist = [ f''' '{x}' ''' for x in pic_ids ]
         idlist = ','.join(idlist)
-        sql = f''' update picture set deleted_flag = true where id in ({idlist}) '''
-        pg.run( sql)
+        sql = f''' update picture set deleted_flag = true where id in ({idlist}) and title_flag = false '''
+        ndeleted = pg.run( sql)
+        sql = f''' select 1 from picture where id in ({idlist}) and title_flag = true '''
+        nrows = pg.run( sql)
+        if nrows > 0:
+            flash('Title pic not deleted.')
+        return ndeleted    
 
     def update_captions( caption_dict):
         for pic_id in caption_dict:
@@ -277,7 +282,7 @@ def edit_pics():
     if request.method == 'POST': # form submitted
         # Cancel
         if 'btn_cancel' in parms:
-            flash( f'''Editing cancelled.''')
+            #flash( f'''Editing cancelled.''')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
         # Delete pics after confirmation
         elif 'btn_del' in parms: # Delete clicked; ask for confirmation
@@ -291,13 +296,12 @@ def edit_pics():
                                    no_links=True)
         elif 'btn_one' in parms:
             flash( 'Delete cancelled.')
-            return reload( gallery_id)
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         elif 'btn_two' in parms:
             delete_pic_ids = session['delete_pic_ids']
-            delete_pics( delete_pic_ids)
-            n = len(delete_pic_ids)
-            flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
-            return reload( gallery_id)
+            n = delete_pics( delete_pic_ids)
+            if n: flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
         elif 'btn_save' in parms:
             caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
             update_captions( caption_dict)
@@ -325,7 +329,7 @@ def edit_title():
         sql = f'''update gallery set blurb=%s where id=%s'''
         pg.run( sql, (blurb.strip(),gallery_id))
 
-        sql = f'''update picture set blurb=%s where gallery_id=%s and title_flag = true'''
+        sql = f'''update gallery set title_pic_caption=%s where id=%s'''
         pg.run( sql, (caption.strip(),gallery_id))
 
         if parms['access'] == 'public':
