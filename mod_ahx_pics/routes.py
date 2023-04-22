@@ -368,7 +368,7 @@ def edit_title():
             parms = get_parms()
             if 'save' in parms:
                 save_changes( get_parms(), gallery_id)
-                flash('Title changes saved. Refresh until the picture shows.')
+                flash('Title changes saved. Refresh until changes show.')
             else:
                 flash('Title changes discarded.')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))

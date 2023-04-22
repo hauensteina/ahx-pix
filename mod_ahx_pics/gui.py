@@ -143,7 +143,7 @@ def gen_gallery( gallery, pics, n_cols=5):
     images_h = _gen_image_grid( gallery, pics, pic_links)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
-             'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px; margin-right:50px; ')
+             'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px; margin-right:50px; width:50em;')
     return html
 
 def gen_gallery_mobile( gallery, pics, n_cols=5):
@@ -407,7 +407,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
                  f''' display:grid; grid-template-columns:{colw * n_cols}; max-width:1000px; min-width:90vw; ''')
     else:
         html = H('div', html,
-                 f''' display:grid; grid-template-columns:{colw * n_cols}; width:50em;''')        
+                 f''' display:grid; grid-template-columns:{colw * n_cols};''')        
     return html
 
 ### Helpers ###
