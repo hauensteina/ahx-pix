@@ -202,10 +202,10 @@ class AHXCarousel {
     function checkKey(e) {
       e = e || window.event;
       if (e.keyCode == '37') { // left arrow
-        //self._changeImage('prev')
+        self._changeImage('prev')
       }
       else if (e.keyCode == '39') { // right arrow
-        //self._changeImage('next')
+        self._changeImage('next')
       }
       else if (e.keyCode == '32') { // space
         if (self.activeSlide().tagName == 'VIDEO') {
