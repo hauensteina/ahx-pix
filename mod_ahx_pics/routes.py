@@ -344,6 +344,12 @@ def edit_title():
         else:
                 sql = f'''update gallery set private_flag = false, public_flag = false where id=%s'''
         pg.run( sql, (gallery_id,))
+
+        sql = f'''update gallery set layout = 'multi_column' where id=%s'''
+        if parms['layout'] == 'single_column':
+            sql = f'''update gallery set layout = 'single_column' where id=%s'''
+        pg.run( sql, (gallery_id,))
+
         pe.gallery_changed( gallery_id)
             
     error = None
@@ -358,6 +364,7 @@ def edit_title():
     if gallery['private_flag']: data['access'] = 'private'
 
     data['blurb'] = gallery.get('blurb','')
+    data['layout'] = gallery.get('layout','multi_column') or 'multi_column'
     data['private_flag'] = gallery.get('private_flag',True)
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
@@ -398,7 +405,7 @@ def edit_title():
 #@show_error
 #-------------------------------------------------
 def gallery():
-    """ View a gallery on a computer """
+    """ View a gallery on a desktop computer """
     parms = get_parms()
     if session.get('is_mobile',''): return redirect( url_for('gallery_mobile', **parms))
     gallery_id = parms['gallery_id']

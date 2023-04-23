@@ -140,7 +140,9 @@ def gen_gallery( gallery, pics, n_cols=5):
                          'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
-    images_h = _gen_image_grid( gallery, pics, pic_links)
+    n_cols = 5
+    if gallery['layout'] == 'single_column': n_cols = 1
+    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
              'display:grid; grid-template-columns:fit-content(1200px); margin-left:50px; margin-right:50px; width:50em;')
@@ -175,7 +177,9 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
                          'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
-    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=3)
+    n_cols = 3
+    if gallery['layout'] == 'single_column': n_cols = 1
+    images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
              'display:grid; grid-template-columns:fit-content(1200px); margin-left:5vw; margin-right:5vw;')
@@ -378,9 +382,11 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     colw = f'{100.0/n_cols}% '
     html = []
     for pic in pics:
-        #if pic['title_flag']: continue
-        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         ext = os.path.splitext( pic['filename'])[1].lower()
+        img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        if n_cols == 1 and ext not in VIDEO_EXTENSIONS:
+          img_link = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+            
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
         if ext not in IMG_EXTENSIONS and ext not in VIDEO_EXTENSIONS:
             fname = f'''pics_complete/{os.path.split(pic['filename'])[1]}'''
@@ -389,7 +395,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']
-        if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h:
+        if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h and n_cols > 1:
             caption_h = caption_h[:MAX_CAP_LEN] + '...'
         # Some captions are just filenames. Hide them. 
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
@@ -397,6 +403,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
         style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+        if n_cols == 1:
+          style = f'padding:10px 0; margin:10px 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+            
         if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
         pic_h = H( 'div', pic_h + caption_h, style)
         html.append(pic_h)

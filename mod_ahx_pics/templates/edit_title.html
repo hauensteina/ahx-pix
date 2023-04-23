@@ -39,23 +39,45 @@
     placeholder='Elaborate essay about the purpose of this gallery. This will be displayed at the top of the page.'>{{blurb}}</textarea>
 
   <div style='margin-top:10px;'>
-    <div>
-      <input type="radio" form=textform id="private" name="access" value="private" {% if access=="private" %}checked{% endif %}>
-      <label for="private">Private</label>
-    </div>
-    <div>
-      <input type="radio" form=textform id="public" name="access" value="public" {% if access=="public" %}checked{% endif %}>
-      <label for="public">Public</label>
-    </div>
-    <div>
-      <input type="radio" form=textform id="members" name="access" value="members" {% if access=="members" %}checked{% endif %}>
-      <label for="members">Members only</label>
+    <div style='display:grid; grid-template-columns:1fr 1fr; margin:0 5vw;'>
+      <div>
+
+        <div>
+          <input type="radio" form=textform id="private" name="access" value="private" {% if access=="private" %}checked{%
+            endif %}>
+          <label for="private">Private</label>
+        </div>
+        <div>
+          <input type="radio" form=textform id="public" name="access" value="public" {% if access=="public" %}checked{%
+            endif %}>
+          <label for="public">Public</label>
+        </div>
+        <div>
+          <input type="radio" form=textform id="members" name="access" value="members" {% if access=="members" %}checked{%
+            endif %}>
+          <label for="members">Members only</label>
+        </div>
+      </div>
+
+      <div style='margin-left:10px'>
+        <div>
+          <input type="radio" form=textform id="private" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
+            endif %}>
+          <label for="private">Multi Column</label>
+        </div>
+        <div>
+          <input type="radio" form=textform id="public" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
+            endif %}>
+          <label for="public">Single Column</label>
+        </div>
+      </div>
     </div>
   </div>
 
   <div style='display:grid;justify-items:center;'>
     <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;' class='ahx-submit-button'>
+      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'
+        class='ahx-submit-button'>
       <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
     </span>
   </div>
@@ -90,30 +112,53 @@
     </span>
   </div>
   <textarea name=blurb form=textform rows=5 style='margin-top:40px;width:100%;resize:none;'
-  placeholder='Elaborate essay about the purpose of this gallery. This will be displayed at the top of the page.'>{{blurb}}</textarea>
+    placeholder='Elaborate essay about the purpose of this gallery. This will be displayed at the top of the page.'>{{blurb}}</textarea>
 
   <div style='margin-top:10px;'>
-    <div>
-      <input type='radio' form=textform id='private' name='access' value='private' class='ahx-radio' {% if access=='private' %}checked{% endif %}>
-      <label for='private'>Private</label>
-    </div>
-    <div>
-      <input type='radio' form=textform id='public' name='access' value='public' class='ahx-radio' {% if access=='public' %}checked{% endif %}>
-      <label for='public'>Public</label>
-    </div>
-    <div>
-      <input type='radio' form=textform id='members' name='access' value='members' class='ahx-radio' {% if access=='members' %}checked{% endif %}>
-      <label for='members'>Members only</label>
-    </div>
-  </div>
+    <div style='display:grid; grid-template-columns:1fr 1fr; width:80%; margin:0 auto;' >
 
-  <div style='display:grid;justify-items:center;margin-top:10px;'>
-    <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;' class='ahx-submit-button'>
-      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
-    </span>
+      <div>
+        <div>
+          <input type='radio' form=textform id='private' name='access' value='private' class='ahx-radio' {% if
+            access=='private' %}checked{% endif %}>
+          <label for='private'>Private</label>
+        </div>
+
+        <div>
+          <input type='radio' form=textform id='public' name='access' value='public' class='ahx-radio' {% if
+            access=='public' %}checked{% endif %}>
+          <label for='public'>Public</label>
+        </div>
+
+        <div>
+          <input type='radio' form=textform id='members' name='access' value='members' class='ahx-radio' {% if
+            access=='members' %}checked{% endif %}>
+          <label for='members'>Members only</label>
+        </div>
+      </div>
+
+      <div style='margin-left:10px'>
+        <div>
+          <input type="radio" form=textform id="private" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
+            endif %}>
+          <label for="private">Multi Column</label>
+        </div>
+        <div>
+          <input type="radio" form=textform id="public" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
+            endif %}>
+          <label for="public">Single Column</label>
+        </div>
+      </div>
+    </div>
+
+    <div style='display:grid;justify-items:center;margin-top:10px;'>
+      <span>
+        <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'
+          class='ahx-submit-button'>
+        <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
+      </span>
+    </div>
   </div>
-</div>
 
 {% endif %}
 

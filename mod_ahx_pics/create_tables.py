@@ -91,6 +91,7 @@ def _create_gallery( pg):
       ,piclist text not null default ''::text
       ,status text not null default ''::text
       ,title_pic_caption text
+      ,layout text -- multi_column or single_column
     )
     '''
     pg.run(sql)
