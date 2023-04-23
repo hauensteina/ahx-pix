@@ -389,7 +389,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
         caption_h = pic['blurb']
-        if len(caption_h) > MAX_CAP_LEN:
+        if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h:
             caption_h = caption_h[:MAX_CAP_LEN] + '...'
         # Some captions are just filenames. Hide them. 
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
