@@ -393,7 +393,9 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
             visit_url = f''' '{url_for( "download_file", fname=fname)}' '''
 
         onclick = f''' onclick="window.location.href={visit_url}" '''
-        pic_h = I( img_link, f'width:100%;object-fit:contain;', f' {onclick} ')
+        style = f'width:100%;object-fit:contain;'
+        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px; padding:1px;'
+        pic_h = I( img_link, style, f' {onclick} ')
         caption_h = pic['blurb']
         if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h and n_cols > 1:
             caption_h = caption_h[:MAX_CAP_LEN] + '...'
@@ -406,7 +408,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if n_cols == 1:
           style = f'padding:10px 0; margin:10px 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
             
-        if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
+        #if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
         pic_h = H( 'div', pic_h + caption_h, style)
         html.append(pic_h)
     
