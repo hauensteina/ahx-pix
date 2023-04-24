@@ -70,6 +70,11 @@
             endif %}>
           <label for="public">Single Column</label>
         </div>
+        <div>
+          <input type="radio" form=textform id="public" name="layout" value="double_column" {% if layout=="double_column" %}checked{%
+            endif %}>
+          <label for="public">Double Column</label>
+        </div>
       </div>
     </div>
   </div>
@@ -147,6 +152,11 @@
           <input type="radio" form=textform id="public" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
             endif %}>
           <label for="public">Single Column</label>
+        </div>
+        <div>
+          <input type="radio" form=textform id="public" name="layout" value="double_column" {% if layout=="double_column" %}checked{%
+            endif %}>
+          <label for="public">Double Column</label>
         </div>
       </div>
     </div>

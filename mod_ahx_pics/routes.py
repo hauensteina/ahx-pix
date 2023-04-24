@@ -348,6 +348,8 @@ def edit_title():
         sql = f'''update gallery set layout = 'multi_column' where id=%s'''
         if parms['layout'] == 'single_column':
             sql = f'''update gallery set layout = 'single_column' where id=%s'''
+        elif parms['layout'] == 'double_column':
+            sql = f'''update gallery set layout = 'double_column' where id=%s'''
         pg.run( sql, (gallery_id,))
 
         pe.gallery_changed( gallery_id)

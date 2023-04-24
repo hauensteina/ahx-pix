@@ -142,6 +142,7 @@ def gen_gallery( gallery, pics, n_cols=5):
     # Images
     n_cols = 5
     if gallery['layout'] == 'single_column': n_cols = 1
+    elif gallery['layout'] == 'double_column': n_cols = 2
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
@@ -179,6 +180,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     # Images
     n_cols = 3
     if gallery['layout'] == 'single_column': n_cols = 1
+    elif gallery['layout'] == 'double_column': n_cols = 2
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
@@ -397,7 +399,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px; padding:1px;'
         pic_h = I( img_link, style, f' {onclick} ')
         caption_h = pic['blurb']
-        if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h and n_cols > 1:
+        if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h and n_cols > 2:
             caption_h = caption_h[:MAX_CAP_LEN] + '...'
         # Some captions are just filenames. Hide them. 
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
