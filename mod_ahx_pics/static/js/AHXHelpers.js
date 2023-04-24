@@ -21,7 +21,7 @@ function AO( obj, selector) {
 /* Check whether we're on a phone or pad */
 function isMobile() { return typeof window.orientation !== 'undefined' }
 
-/* Get rendered size of image after abject-fit:contain; */
+/* Get rendered size of image after object-fit:contain; */
 function getContainedFrame(img) {
   if (img.tagName == 'IMG') {
     var ratio = img.naturalWidth / img.naturalHeight

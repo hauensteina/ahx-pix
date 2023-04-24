@@ -299,6 +299,7 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
+    // Zen mode if you hold the phone in landscape mode.
     if (isMobile() && isLandscape() && this.activeCaption()) {
       let caption = this.activeCaption()
       caption.style.opacity = 0
@@ -313,8 +314,12 @@ class AHXCarousel {
     if (!caption) return
     var realWidth = caption.clientWidth
     var realHeight = caption.clientHeight
-    caption.style.left = `${frame.left + (frame.width - realWidth) / 2.0}px`
+    caption.style.left = `${frame.left + (frame.width - realWidth) / 2.0}px` // center 
+    //caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
     caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
+    if ( isMobile() && (frame.width > frame.height) ) {
+      caption.style.top = `${frame.top + frame.height + 10}px`
+    }
 
     caption.style.opacity = 1
   } // _positionCaption()
