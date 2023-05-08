@@ -324,9 +324,9 @@ def edit_pics():
 def edit_title():
 
     def save_changes(parms, gallery_id):
-        title = parms.get('title','').strip()
-        caption = parms.get('caption','').strip()
-        blurb = parms.get('blurb','').strip()
+        title = parms.get('title','').strip() or ''
+        caption = parms.get('caption','').strip() or ''
+        blurb = parms.get('blurb','').strip() or ''
 
         sql = f'''update gallery set title=%s where id=%s'''
         pg.run( sql, (title.strip(),gallery_id))
@@ -365,13 +365,13 @@ def edit_title():
     if gallery['public_flag']: data['access'] = 'public' 
     if gallery['private_flag']: data['access'] = 'private'
 
-    data['blurb'] = gallery.get('blurb','')
+    data['blurb'] = gallery.get('blurb','') or ''
     data['layout'] = gallery.get('layout','multi_column') or 'multi_column'
     data['private_flag'] = gallery.get('private_flag',True)
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
     data['caption'] = ''
-    if title_pic: data['caption'] = title_pic.get('blurb','')
+    if title_pic: data['caption'] = title_pic.get('blurb','') or ''
     if request.method == 'POST': # Save button clicked
         if 'file' not in request.files: # Save button clicked
             parms = get_parms()

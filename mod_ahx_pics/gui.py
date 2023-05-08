@@ -135,7 +135,7 @@ def gen_gallery( gallery, pics, n_cols=5):
         title_pic_h = ''
 
     # Blurb
-    gallery_blurb_h = H( 'div', gallery['blurb'], 
+    gallery_blurb_h = H( 'div', gallery['blurb'] or '', 
                          'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
@@ -173,7 +173,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
         title_pic_h = ''
 
     # Blurb
-    gallery_blurb_h = H( 'div', gallery['blurb'], 
+    gallery_blurb_h = H( 'div', gallery['blurb'] or '', 
                          'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
 
     # Images
