@@ -8,7 +8,7 @@ from pdb import set_trace as BP
 
 import os, sys, json
 from datetime import date
-import shortuuid
+import uuid
 import shutil
 
 import flask
@@ -56,7 +56,7 @@ def add_user():
         admin_flag = request.form.get( 'admin_flag', False)
 
         today = date.today()
-        iid = shortuuid.uuid() 
+        iid = str(uuid.uuid4()) 
         data = { 
             'email':email
             ,'username':username
@@ -389,7 +389,7 @@ def edit_title():
                 flash('Please select a file', 'error')
                 return redirect(request.url)
             if file: 
-                tempfolder = f'''{UPLOAD_FOLDER}/{shortuuid.uuid()}'''
+                tempfolder = f'''{UPLOAD_FOLDER}/{str(uuid.uuid4())}'''
                 os.mkdir( tempfolder)            
                 fname = secure_filename(file.filename)
                 fname = f'''{tempfolder}/{fname}'''
@@ -567,7 +567,7 @@ def new_gallery():
         if len(title.strip()) == 0:
             return render_template( 'new_gallery.html', error='Please specify a title', **data)
         today = date.today()
-        iid = shortuuid.uuid()
+        iid = str(uuid.uuid4())
         private_flag=False; public_flag=False
         if parms['access'] == 'private':
             private_flag=True
@@ -672,7 +672,7 @@ def upload_pics():
     
     def upload_chunk():
         chunk = request.form.get('dzchunkindex',0)
-        dzuuid = request.form.get('dzuuid',shortuuid.uuid())
+        dzuuid = request.form.get('dzuuid',str(uuid.uuid4()))
         dztotalchunkcount = int(request.form.get('dztotalchunkcount',1))
 
         # Get the file chunk

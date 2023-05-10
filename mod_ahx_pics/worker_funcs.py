@@ -9,7 +9,7 @@ Functions for background execution via Redis Queue
 from pdb import set_trace as BP
 import os, shutil, json
 import datetime
-import shortuuid
+import uuid
 from zipfile import ZipFile
 from PIL import Image, ExifTags
 from mod_ahx_pics.helpers import pexc, media_type, run_shell, list_files
@@ -177,12 +177,13 @@ def gen_thumbnails():
     log('Done.')
 
 def f01_unzip(fname):
-    """ Unzip if its a zip file and kick off the pipeline """
     subfolder = f'''{os.path.split(fname)[0]}/unzipped'''
     with ZipFile( fname, 'r') as zf:
         zf.extractall( path=subfolder)
     files = list_files(subfolder)
     files = [ x for x in files if os.path.splitext(x)[1] ]
+    files = [ x for x in files if not '/.' in x ]
+    files = [ x for x in files if not '/_' in x ]
     return files
 
 def f02_gen_thumbs( s3name, gallery_id):
@@ -219,31 +220,48 @@ def _set_gallery_status( gallery_id, msg):
     data = { 'status': json.dumps({'msg':msg}) }
     pg.update_row( 'gallery', 'id', gallery_id, data)
 
+def add_new_image( fname, orig_fname, gallery_id, pic_id):
+    ext = os.path.splitext(fname)[1].lower()
+    if ext in MEDIA_EXTENSIONS:
+        f02_gen_thumbs( fname, gallery_id)
+    else:
+        target_name = f'''pics_complete/{pic_id}_{gallery_id}{ext}'''
+        s3_upload_files( [fname], [target_name])
+
+    f03_insert_db( fname, orig_fname, gallery_id, pic_id)
+
 def add_new_images( fname, gallery_id):
     """ Add new images to a gallery """
-    log( f'''WORKER:  add_new_images( {fname}, {gallery_id}) starting''')
-    subfolder = os.path.split(fname)[0]
-    fnames = [fname]
-    if os.path.splitext(fname)[1].lower() == '.zip':
-        fnames = f01_unzip( fname)
-    for idx,fname in enumerate(fnames):
-        _set_gallery_status( gallery_id, f'''Adding image {fname} ({idx+1}/{len(fnames)})''')
-        pic_id = shortuuid.uuid()
-        ext = os.path.splitext(fname)[1].lower()
-        #path = os.path.split(fname)[0]
-        #s3name = f'''{path}/{pic_id}_{gallery_id}{ext}'''
-        s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
-        localfname = helpers.s3_download_file( fname)
-        shutil.copyfile( localfname, s3name)
-        if ext in MEDIA_EXTENSIONS:
-            f02_gen_thumbs( s3name, gallery_id)
-        else:
-            target_name = f'''pics_complete/{pic_id}_{gallery_id}{ext}'''
-            s3_upload_files( [s3name], [target_name])
 
-        f03_insert_db( s3name, fname, gallery_id, pic_id)
+    log( f'''WORKER:  add_new_images( {fname}, {gallery_id}) starting''')
+    ext = os.path.splitext(fname)[1].lower()
+
+    # Not a zip file, just add it
+    if ext != '.zip':
+        localfname = helpers.s3_download_file( fname)
+        pic_id = str(uuid.uuid4())
+        s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
+        shutil.copyfile( localfname, s3name)
+        _set_gallery_status( gallery_id, f'''Adding image {s3name} ''')
+        add_new_image( s3name, fname, gallery_id, pic_id)
+        _set_gallery_status( gallery_id, f'ok')
+        log( f'''WORKER:  add_new_images() done''')
         os.remove( localfname)
         os.remove( s3name)
+        return
+    
+    # Handle zip files
+    zipfname = helpers.s3_download_file( fname)
+    fnames = f01_unzip( zipfname)
+    for idx,fnam in enumerate(fnames):
+        ext = os.path.splitext(fnam)[1].lower()
+        _set_gallery_status( gallery_id, f'''Adding image {fnam} ({idx+1}/{len(fnames)})''')
+        pic_id = str(uuid.uuid4())
+        s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
+        shutil.copyfile( fnam, s3name)
+        add_new_image( s3name, fnam, gallery_id, pic_id)
+        os.remove( fnam)
+    os.remove( zipfname)
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')
 
@@ -253,7 +271,7 @@ def add_title_image( fname, gallery_id):
     _set_gallery_status( gallery_id, f'''Adding title image {fname}''')
 
     subfolder = os.path.split(fname)[0]
-    pic_id = shortuuid.uuid()
+    pic_id = str(uuid.uuid4())
     ext = os.path.splitext(fname)[1].lower()
     if not ext in MEDIA_EXTENSIONS:
         log( f'''WORKER:  add_title_image(): Unknown extension {ext}. Ignoring.''')

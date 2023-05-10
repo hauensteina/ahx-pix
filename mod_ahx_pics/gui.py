@@ -142,6 +142,7 @@ def gen_gallery( gallery, pics, n_cols=5):
     n_cols = 5
     if gallery['layout'] == 'single_column': n_cols = 1
     elif gallery['layout'] == 'double_column': n_cols = 2
+    n_cols = min( n_cols, len( pics))
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
@@ -180,6 +181,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     n_cols = 3
     if gallery['layout'] == 'single_column': n_cols = 1
     elif gallery['layout'] == 'double_column': n_cols = 2
+    n_cols = min( n_cols, len( pics))
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
