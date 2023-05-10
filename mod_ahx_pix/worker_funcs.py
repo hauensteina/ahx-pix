@@ -12,6 +12,7 @@ import datetime
 import uuid
 from zipfile import ZipFile
 from PIL import Image, ExifTags
+from werkzeug.utils import secure_filename
 from mod_ahx_pix.helpers import pexc, media_type, run_shell, list_files
 from mod_ahx_pix import log,pg,Q
 import mod_ahx_pix.helpers as helpers
@@ -177,7 +178,7 @@ def gen_thumbnails():
     log('Done.')
 
 def f01_unzip(fname):
-    subfolder = f'''{os.path.split(fname)[0]}/unzipped'''
+    subfolder = f'''{os.path.splitext(fname)[0]}/unzipped'''
     with ZipFile( fname, 'r') as zf:
         zf.extractall( path=subfolder)
     files = list_files(subfolder)
@@ -208,7 +209,7 @@ def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
         ,'gallery_id':gallery_id
         ,'blurb':blurb
         ,'filename':s3name
-        ,'orig_fname': os.path.split(orig_fname)[1]
+        ,'orig_fname': secure_filename(os.path.split(orig_fname)[1])
         ,'title_flag':False
         ,'create_date':today
         ,'change_date':today
@@ -260,8 +261,9 @@ def add_new_images( fname, gallery_id):
         s3name = f'''{DOWNLOAD_FOLDER}/{pic_id}_{gallery_id}{ext}'''
         shutil.copyfile( fnam, s3name)
         add_new_image( s3name, fnam, gallery_id, pic_id)
-        os.remove( fnam)
+        os.remove( s3name)
     os.remove( zipfname)
+    shutil.rmtree( os.path.splitext(zipfname)[0])
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_new_images() done''')
 

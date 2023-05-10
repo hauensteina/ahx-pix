@@ -246,6 +246,15 @@ def edit_info():
 def edit_pics():
     """ Move pics around and edit the captions. """
 
+    def autosort(gallery_id):
+        """ Sort the pictures in a gallery by filename length and then alphabetically. """
+        sql = f''' select id,orig_fname from picture where gallery_id = %s and deleted_flag = false  '''
+        pics = pg.select( sql, (gallery_id,) )
+        # Short names first; alphabetical within same length
+        pics = sorted( pics, key = lambda x:  f'{len(x["orig_fname"]):04d}|{x["orig_fname"]}' )
+        pic_ids = [ x['id'] for x in pics ]
+        update_order( gallery_id, pic_ids)
+
     def delete_pics( pic_ids):
         idlist = [ f''' '{x}' ''' for x in pic_ids ]
         idlist = ','.join(idlist)
@@ -267,7 +276,7 @@ def edit_pics():
 
     def update_order( gallery_id, pic_ids):
         pe.gallery_changed( gallery_id)
-        piclist = json.dumps( [ x for x in pic_ids] )
+        piclist = json.dumps( [ x for x in pic_ids ] )
         sql = f''' update gallery set piclist = %s where id = %s '''
         pg.run( sql, (piclist, gallery_id))
 
@@ -306,6 +315,10 @@ def edit_pics():
             delete_pic_ids = session['delete_pic_ids']
             n = delete_pics( delete_pic_ids)
             if n: flash( f'''Deleted {n} pic{'s' if n > 1 else ''}.''')
+            return redirect( url_for( gallery_page, gallery_id=gallery_id))
+        elif 'btn_sort' in parms:
+            autosort( gallery_id)
+            flash( f'''Auto sort done.''')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
         elif 'btn_save' in parms:
             caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
