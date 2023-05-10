@@ -10,7 +10,7 @@ from pdb import set_trace as BP
 import os
 import redis
 from rq import Worker, Queue, Connection
-from mod_ahx_pics import REDIS_CONN
+from mod_ahx_pix import REDIS_CONN
 
 listen = ['high', 'default', 'low']
 

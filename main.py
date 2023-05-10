@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # /********************************************************************
-# Filename: ahx-pics/main.py
+# Filename: ahx-pix/main.py
 # Author: AHN
 # Creation Date: Jan 2023
 # **********************************************************************/
@@ -10,7 +10,7 @@
 # See https://www.youtube.com/watch?v=9HcxHDS2w1s (Web Dev Simplified)
 
 from pdb import set_trace as BP
-from mod_ahx_pics import app
+from mod_ahx_pix import app
 
 #----------------------------
 if __name__ == '__main__':

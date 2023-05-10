@@ -12,9 +12,9 @@ from pdb import set_trace as BP
 from os.path import dirname
 sys.path.append( f'{dirname(__file__)}/..')
 
-from mod_ahx_pics.postgres import Postgres
-import mod_ahx_pics.helpers as helpers
-from mod_ahx_pics import log
+from mod_ahx_pix.postgres import Postgres
+import mod_ahx_pix.helpers as helpers
+from mod_ahx_pix import log
 
 pg = Postgres( os.environ['AHX_PICS_LOCAL_DB_URL'])
 

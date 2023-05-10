@@ -13,7 +13,7 @@ import mysql.connector
 from os.path import dirname
 sys.path.append( f'{dirname(__file__)}/..')
 
-from mod_ahx_pics.postgres import Postgres 
+from mod_ahx_pix.postgres import Postgres 
 
 pg = Postgres( os.environ['AHX_PICS_LOCAL_DB_URL'])
 

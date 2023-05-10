@@ -13,7 +13,7 @@ import mysql.connector
 from os.path import dirname
 sys.path.append( f'{dirname(__file__)}/..')
 
-from mod_ahx_pics.postgres import Postgres 
+from mod_ahx_pix.postgres import Postgres 
 
 def usage(printmsg=False):
     name = os.path.basename( __file__)

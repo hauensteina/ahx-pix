@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_ahx_pics/helpers.py
+# Filename: mod_ahx_pix/helpers.py
 # Author: AHN
 # Creation Date: Jan, 2023
 # **********************************************************************/
@@ -15,9 +15,9 @@ from flask import url_for
 # AWS S3 api
 import boto3
 
-from mod_ahx_pics import S3_BUCKET, DOWNLOAD_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, log
-from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
-from mod_ahx_pics import app,mail
+from mod_ahx_pix import S3_BUCKET, DOWNLOAD_FOLDER, LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, log
+from mod_ahx_pix import IMG_EXTENSIONS, VIDEO_EXTENSIONS
+from mod_ahx_pix import app,mail
 
 # Misc
 #--------------

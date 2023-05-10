@@ -12,19 +12,19 @@ import datetime
 import uuid
 from zipfile import ZipFile
 from PIL import Image, ExifTags
-from mod_ahx_pics.helpers import pexc, media_type, run_shell, list_files
-from mod_ahx_pics import log,pg,Q
-import mod_ahx_pics.helpers as helpers
+from mod_ahx_pix.helpers import pexc, media_type, run_shell, list_files
+from mod_ahx_pix import log,pg,Q
+import mod_ahx_pix.helpers as helpers
 
-from mod_ahx_pics import (
+from mod_ahx_pix import (
     LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE, 
     IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_EXTENSIONS
 )
 
-from mod_ahx_pics import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
-from mod_ahx_pics import DOWNLOAD_FOLDER
+from mod_ahx_pix import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
+from mod_ahx_pix import DOWNLOAD_FOLDER
 
-from mod_ahx_pics.helpers import (
+from mod_ahx_pix.helpers import (
     basename, s3_get_keys, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
 )
     

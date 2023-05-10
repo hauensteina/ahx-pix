@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_ahx_pics/__init__.py
+# Filename: mod_ahx_pix/__init__.py
 # Author: AHN
 # Creation Date: Jan, 2023
 # **********************************************************************/
@@ -20,7 +20,7 @@ from flask_login import LoginManager, current_user
 from flask.json import JSONEncoder
 from flask_mail import Mail
 
-from mod_ahx_pics.postgres import Postgres
+from mod_ahx_pix.postgres import Postgres
 
 app = Flask( __name__)
 
@@ -184,13 +184,13 @@ else:
 
 # Create DB if it does not exist
 #----------------------------------
-from mod_ahx_pics.create_tables import create_tables
+from mod_ahx_pix.create_tables import create_tables
 create_tables( pg) 
 
 # Endpoints for GUI
 #---------------------
-from mod_ahx_pics import routes
+from mod_ahx_pix import routes
 
-from mod_ahx_pics.worker_funcs import gen_thumbnails
+from mod_ahx_pix.worker_funcs import gen_thumbnails
 #Q.enqueue( gen_thumbnails)
 Q.empty()

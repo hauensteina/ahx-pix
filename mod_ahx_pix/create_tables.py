@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_ahx_pics/create_tables.py
+# Filename: mod_ahx_pix/create_tables.py
 # Author: AHN
 # Creation Date: Jan, 2023
 # **********************************************************************/
@@ -9,8 +9,8 @@
 
 from pdb import set_trace as BP
 from datetime import datetime, date
-from mod_ahx_pics import pg # postgres connection
-from mod_ahx_pics import auth
+from mod_ahx_pix import pg # postgres connection
+from mod_ahx_pix import auth
 
 def create_tables( pg):
     _create_login( pg)

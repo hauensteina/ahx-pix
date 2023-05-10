@@ -10,9 +10,9 @@ from pdb import set_trace as BP
 from datetime import datetime, timedelta, date
 import json
 from flask_login import current_user
-from mod_ahx_pics import pg, log, logged_in
-from mod_ahx_pics import SMALL_FOLDER, MEDIUM_FOLDER, LARGE_FOLDER, LINK_EXPIRE_HOURS
-import mod_ahx_pics.helpers as helpers
+from mod_ahx_pix import pg, log, logged_in
+from mod_ahx_pix import SMALL_FOLDER, MEDIUM_FOLDER, LARGE_FOLDER, LINK_EXPIRE_HOURS
+import mod_ahx_pix.helpers as helpers
 
 def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc'):
     """

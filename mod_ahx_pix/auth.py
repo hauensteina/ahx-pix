@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_ahx_pics/auth.py
+# Filename: mod_ahx_pix/auth.py
 # Author: AHN
 # Creation Date: Feb, 2023
 # **********************************************************************/
@@ -11,8 +11,8 @@ from pdb import set_trace as BP
 import json
 from datetime import datetime,date
 from flask_login import UserMixin, current_user
-from mod_ahx_pics import pg as db
-from mod_ahx_pics import login_manager, bcrypt, AppError, log
+from mod_ahx_pix import pg as db
+from mod_ahx_pix import login_manager, bcrypt, AppError, log
 
 class User(UserMixin):
     def __init__( self, email_or_username):

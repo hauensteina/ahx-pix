@@ -12,7 +12,7 @@ sys.path.append( f'{dirname(__file__)}/..')
 import argparse
 from pdb import set_trace as BP
 
-from mod_ahx_pics import helpers 
+from mod_ahx_pix import helpers 
 
 def usage(printmsg=False):
     name = os.path.basename( __file__)

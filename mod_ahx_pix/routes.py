@@ -1,5 +1,5 @@
 # /********************************************************************
-# Filename: mod_ahx_pics/routes.py
+# Filename: mod_ahx_pix/routes.py
 # Author: AHN
 # Creation Date: Jan, 2023
 # **********************************************************************/
@@ -18,16 +18,16 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 from itsdangerous import TimestampSigner, SignatureExpired
 
-from mod_ahx_pics import Q, pg
-from mod_ahx_pics import app, log, logged_in
-from mod_ahx_pics import UPLOAD_FOLDER
+from mod_ahx_pix import Q, pg
+from mod_ahx_pix import app, log, logged_in
+from mod_ahx_pix import UPLOAD_FOLDER
 
-import mod_ahx_pics.helpers as helpers
-import mod_ahx_pics.persistence as pe
-import mod_ahx_pics.gui as gui
-import mod_ahx_pics.auth as auth
-from  mod_ahx_pics.helpers import html_tag as H
-from mod_ahx_pics import worker_funcs as wf
+import mod_ahx_pix.helpers as helpers
+import mod_ahx_pix.persistence as pe
+import mod_ahx_pix.gui as gui
+import mod_ahx_pix.auth as auth
+from  mod_ahx_pix.helpers import html_tag as H
+from mod_ahx_pix import worker_funcs as wf
 
 @app.route('/ttest')
 #-----------------------

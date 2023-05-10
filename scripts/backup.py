@@ -13,7 +13,7 @@ import boto3
 from os.path import dirname
 sys.path.append( f'{dirname(__file__)}/..')
 
-from mod_ahx_pics.postgres import Postgres 
+from mod_ahx_pix.postgres import Postgres 
 
 PROD_BUCKET = 'ahx-pics'
 BACKUP_BUCKET = 'ahx-pics-backup'

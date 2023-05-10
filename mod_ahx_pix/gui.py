@@ -9,11 +9,11 @@ Functions to generate html for the GUI
 from pdb import set_trace as BP
 import os
 from flask import url_for, session
-from mod_ahx_pics import IMG_EXTENSIONS, VIDEO_EXTENSIONS
-import mod_ahx_pics.helpers as helpers
-from  mod_ahx_pics.helpers import html_tag as H
-from  mod_ahx_pics.helpers import html_img as I
-import mod_ahx_pics.persistence as pe
+from mod_ahx_pix import IMG_EXTENSIONS, VIDEO_EXTENSIONS
+import mod_ahx_pix.helpers as helpers
+from  mod_ahx_pix.helpers import html_tag as H
+from  mod_ahx_pix.helpers import html_img as I
+import mod_ahx_pix.persistence as pe
 
 def gen_carousel_images( gallery_id, active_pic_id):
     """ Generate the page showing one full screen pic at a time. """
@@ -142,7 +142,7 @@ def gen_gallery( gallery, pics, n_cols=5):
     n_cols = 5
     if gallery['layout'] == 'single_column': n_cols = 1
     elif gallery['layout'] == 'double_column': n_cols = 2
-    n_cols = min( n_cols, len( pics))
+    n_cols = min( n_cols, max(1,len( pics)))
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
@@ -181,7 +181,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
     n_cols = 3
     if gallery['layout'] == 'single_column': n_cols = 1
     elif gallery['layout'] == 'double_column': n_cols = 2
-    n_cols = min( n_cols, len( pics))
+    n_cols = min( n_cols, max(1,len( pics)))
     images_h = _gen_image_grid( gallery, pics, pic_links, n_cols=n_cols)
 
     html = H('div', heading_h + title_pic_h + gallery_blurb_h + images_h,
