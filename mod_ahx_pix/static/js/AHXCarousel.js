@@ -108,7 +108,8 @@ class AHXCarousel {
     // Populate ta_caption with caption of active slide
     E('#ta_caption').value = ''
     if (this.activeCaption()) {
-      E('#ta_caption').value = this.activeCaption().innerHTML 
+      let tstr = this.activeCaption().innerHTML.replace(/<br>/g, '\n')
+      E('#ta_caption').value = tstr
     }
     E('#pic_id').value = this.activeSlide().getAttribute('data-pic-id')
 

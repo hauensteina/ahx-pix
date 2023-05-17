@@ -92,6 +92,7 @@ def gen_edit_pics( gallery_id):
     for pic in pics:
         #if pic['title_flag']: continue
         blurb = pic['blurb']
+        blurb = helpers.desanitize_caption( blurb)
         ext = os.path.splitext(pic['filename'])[1].lower()
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
             if _bad_caption(blurb): blurb = '' 

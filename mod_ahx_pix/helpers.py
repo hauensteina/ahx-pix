@@ -85,6 +85,17 @@ def list_files(path):
 # HTML stuff
 #-----------------------
 
+def sanitize_caption(text):
+    """ Replace line breaks with <br>"""
+    text = text.replace('\r\n','<br>') # dos
+    text = text.replace('\n','<br>') # unix
+    return text
+
+def desanitize_caption(text):
+    """ Replace <br> with line breaks """
+    text = text.replace('<br>','\n')
+    return text
+
 def html_tag( tag, content='', style=''):
     """
     Make a piece of HTML surrounded by tag,

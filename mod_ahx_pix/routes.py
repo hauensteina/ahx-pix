@@ -104,6 +104,7 @@ def carousel():
         gallery_id = session['gallery_id']
         active_pic_id = parms['pic_id']  # hidden form parm
         caption = parms['ta_caption']
+        caption = helpers.sanitize_caption( caption)
         sql = f''' update picture set blurb = %s where id = %s '''
         pg.run(sql, (caption.strip(), active_pic_id))
         images = gui.gen_carousel_images(gallery_id, active_pic_id)
@@ -271,8 +272,10 @@ def edit_pics():
     def update_captions( caption_dict):
         pe.gallery_changed( gallery_id)
         for pic_id in caption_dict:
+            caption = caption_dict[pic_id].strip()
+            caption = helpers.sanitize_caption( caption)
             sql = f''' update picture set blurb = %s where id = %s '''
-            pg.run( sql, (caption_dict[pic_id].strip(), pic_id))
+            pg.run( sql, (caption, pic_id))
 
     def update_order( gallery_id, pic_ids):
         pe.gallery_changed( gallery_id)
