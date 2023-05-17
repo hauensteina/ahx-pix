@@ -36,6 +36,7 @@
         <div class='ahx-download' style='user-select:none;'>&#x2193;</div>
         <!-- <div class='ahx-edit' style='user-select:none;'>&#x270e;</div> -->
         {{ edit_icon|safe }}
+        {{ delete_icon|safe }}
       </div>
       <div id='ahx-edit-caption' class='ahx-edit-caption' style="text-align:center;display:none;">
         <form id=frm_edit method=post>
@@ -91,6 +92,23 @@
     user-select:none;	     
 }
 .ahx-edit:hover {
+    color:white;
+    background-color: rgba(0, 0, 0, .2)
+}
+  .ahx-delete {
+    display:inline;
+    background:none; 
+    border:none;
+    font-size: 2rem;
+    color: rgba(255,255,255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: .45rem 1.0rem;
+    margin: 0 .5rem;
+    background-color: rgba(0, 0, 0, .5);
+    user-select:none;	     
+}
+.ahx-delete:hover {
     color:white;
     background-color: rgba(0, 0, 0, .2)
 }

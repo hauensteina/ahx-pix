@@ -71,13 +71,19 @@ class AHXCarousel {
         }
       })
 
-      E('#btn_cancel').addEventListener(
-        'click', ev => {
-            ev.preventDefault()
-            let e = E('#btn_cancel')
-            E('.ahx-edit').classList.remove('ahx-active')
-            E('#ahx-edit-caption').style.display = 'none'
-        })
+    E('.ahx-delete')?.addEventListener(
+      'click', ev => {
+        let picId = this.activePicId()
+        document.location.href = `/delete_pic?pic_id=${picId}`
+      })
+
+    E('#btn_cancel').addEventListener(
+      'click', ev => {
+        ev.preventDefault()
+        let e = E('#btn_cancel')
+        E('.ahx-edit').classList.remove('ahx-active')
+        E('#ahx-edit-caption').style.display = 'none'
+      })
   
     if (isMobile()) {
       E('.ahx-carousel-button.ahx-next').hidden = true
@@ -111,7 +117,7 @@ class AHXCarousel {
       let tstr = this.activeCaption().innerHTML.replace(/<br>/g, '\n')
       E('#ta_caption').value = tstr
     }
-    E('#pic_id').value = this.activeSlide().getAttribute('data-pic-id')
+    E('#pic_id').value = this.activePicId()
 
     this._preventClickOnPrevious()
     this._enableSwiping()
@@ -131,6 +137,11 @@ class AHXCarousel {
   //--------------------
   activeSlide() {
     return E('.ahx-slide.ahx-active')
+  }
+
+  //--------------------
+  activePicId() {
+    return this.activeSlide().getAttribute('data-pic-id')
   }
 
   //--------------------

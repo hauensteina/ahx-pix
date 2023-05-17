@@ -97,8 +97,10 @@ def carousel():
         flash('Gallery not found', 'error')
         return redirect( url_for('index'))
     edit_icon = ''
+    delete_icon = ''
     if logged_in() and gallery['username'] == current_user.data['username']:
         edit_icon = f''' <div class='ahx-edit' style='user-select:none;'>&#x270e;</div> '''
+        delete_icon = f''' <div class='ahx-delete' style='user-select:none;'>&#x26d4;</div> '''
 
     if request.method == 'POST':  # form submitted
         gallery_id = session['gallery_id']
@@ -110,14 +112,14 @@ def carousel():
         images = gui.gen_carousel_images(gallery_id, active_pic_id)
         return render_template('carousel.html',
                                images=images, gallery_id=gallery_id, picture_id=active_pic_id,
-                               edit_icon=edit_icon)
+                               edit_icon=edit_icon, delete_icon=delete_icon)
     else:  # Initial hit
         gallery_id = parms['gallery_id']
         active_pic_id = parms['picture_id']
         images = gui.gen_carousel_images(gallery_id, active_pic_id)
         return render_template('carousel.html',
                                images=images, gallery_id=gallery_id, picture_id=active_pic_id,
-                               edit_icon=edit_icon)
+                               edit_icon=edit_icon, delete_icon=delete_icon)
 
 @app.route('/delete_gallery', methods=['GET', 'POST'])
 @login_required
@@ -132,13 +134,11 @@ def delete_gallery():
         if 'btn_one' in parms:
             flash('Gallery not deleted')
             return redirect( url_for(gallery, gallery_id=gallery_id))
-        #gallery_id = session['gallery_id']        
         pg.run( f''' update gallery set deleted_flag = true where id = '{gallery_id}' ''')
         flash('Gallery deleted')
         pe.gallery_changed( gallery_id)
         return redirect( url_for(home))
     else:
-        #gallery_id = parms['gallery_id']
         gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]
         if gallery['username'] != current_user.data['username']:
             error = 'You do not own this gallery.'
@@ -149,13 +149,38 @@ def delete_gallery():
                                value1='Back to safety', value2='DELETE',
                                no_links=True)
 
+@app.route('/delete_pic', methods=['GET', 'POST'])
+@login_required
+#---------------------------------------------------------------
+def delete_pic():
+    """ Delete a pic (prompt for confirmation first) """
+    gallery_id = session['gallery_id']
+    parms = get_parms()
+    pic_id = parms.get('pic_id', '') or session['pic_id']
+
+    home = 'index_mobile' if session.get('is_mobile','') else 'index'
+    gallery = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+    if request.method == 'POST': # form submitted
+        if 'btn_one' in parms:
+            flash('Pic not deleted')
+            return redirect( url_for(gallery, gallery_id=gallery_id))
+        pg.run( f''' update picture set deleted_flag = true where id = '{pic_id}' ''')
+        flash('Pic deleted')
+        pe.gallery_changed( gallery_id)
+        return redirect( url_for(gallery, gallery_id=gallery_id))
+    else:
+        session['pic_id'] = pic_id
+        return render_template('question.html', 
+                               msg=f'''Do you really want to delete the pic?
+                                <div style='color:red;'>You cannot undo the delete!</div>''', 
+                               value1='Back to safety', value2='DELETE',
+                               no_links=True)
+
 @app.route('/download_img', methods=['GET'])
 @login_required
 #----------------------------------------------
 def download_img():
-    """
-    Return original full resolution image as attachment.
-    """
+    """ Return original full resolution image as attachment. """
     parms = get_parms()
 
     slide_src = parms['slide_src']
