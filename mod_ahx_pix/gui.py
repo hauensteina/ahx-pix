@@ -137,7 +137,7 @@ def gen_gallery( gallery, pics, n_cols=5):
 
     # Blurb
     gallery_blurb_h = H( 'div', gallery['blurb'] or '', 
-                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:30px;')
 
     # Images
     n_cols = 5
@@ -176,7 +176,7 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
 
     # Blurb
     gallery_blurb_h = H( 'div', gallery['blurb'] or '', 
-                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:10px;')
+                         'font-size: 1.2em; padding-left:10px; padding-top:20px; padding-bottom:30px;')
 
     # Images
     n_cols = 3
@@ -386,6 +386,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
     colw = f'{100.0/n_cols}% '
     html = []
     for pic in pics:
+        if pic.get('title_flag','') and not gallery.get('show_title_pic_flag',''): continue
         ext = os.path.splitext( pic['filename'])[1].lower()
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
         if n_cols <= 2 and ext not in VIDEO_EXTENSIONS:

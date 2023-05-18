@@ -368,12 +368,16 @@ def edit_title():
         title = parms.get('title','').strip() or ''
         caption = parms.get('caption','').strip() or ''
         blurb = parms.get('blurb','').strip() or ''
+        show_title_pic_flag =  True if 'cb_show_tpic' in parms else False
 
         sql = f'''update gallery set title=%s where id=%s'''
         pg.run( sql, (title.strip(),gallery_id))
 
         sql = f'''update gallery set blurb=%s where id=%s'''
         pg.run( sql, (blurb.strip(),gallery_id))
+
+        sql = f'''update gallery set show_title_pic_flag=%s where id=%s'''
+        pg.run( sql, (show_title_pic_flag, gallery_id))
 
         sql = f'''update gallery set title_pic_caption=%s where id=%s'''
         pg.run( sql, (caption.strip(),gallery_id))
@@ -409,6 +413,7 @@ def edit_title():
     data['blurb'] = gallery.get('blurb','') or ''
     data['layout'] = gallery.get('layout','multi_column') or 'multi_column'
     data['private_flag'] = gallery.get('private_flag',True)
+    data['show_tpic'] = gallery.get('show_title_pic_flag',True)
     data['gallery_id'] = gallery_id
     title_pic = pe.get_title_pic(gallery_id)
     data['caption'] = ''
