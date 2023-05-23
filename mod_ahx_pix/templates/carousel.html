@@ -23,7 +23,7 @@
   <link rel='stylesheet' type='text/css' href='{{ url_for("static", filename="css/styles.css") }}'>
 </head>
 
-<body style='background-color:black;'>
+<body style='background-color:black;height:100vh;'>
   <section>
     <div id='ahx-carousel' class='ahx-carousel' style='user-select:none;'>
       <button class='ahx-carousel-button ahx-prev'>&#x21e6;</button>
@@ -64,7 +64,12 @@
   <script src='static/js/AHXCarousel.js' )> </script>
   <script>
     _ = new AHXCarousel('#ahx-carousel', '{{gallery_id}}', '{{picture_id}}')
-    E('#ta_caption').onkeydown = function (e) { e.stopPropagation();  }
+    E('#ta_caption').onkeydown = function (e) { e.stopPropagation(); }
+    // Diasable bounce on mobile
+    window.addEventListener('touchmove', function (event) {
+      event.preventDefault();
+    }, { passive: false });
+
   </script>
 </body>
 <style>
