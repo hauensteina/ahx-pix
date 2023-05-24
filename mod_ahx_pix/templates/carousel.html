@@ -65,10 +65,16 @@
   <script>
     _ = new AHXCarousel('#ahx-carousel', '{{gallery_id}}', '{{picture_id}}')
     E('#ta_caption').onkeydown = function (e) { e.stopPropagation(); }
-    // Diasable bounce on mobile
+
     window.addEventListener('touchmove', function (event) {
-      event.preventDefault();
+      if (event.touches.length > 1) {
+        //multi-touch events, allow default
+      } else {
+        //single touch, prevent default
+        event.preventDefault();
+      }
     }, { passive: false });
+
 
   </script>
 </body>
