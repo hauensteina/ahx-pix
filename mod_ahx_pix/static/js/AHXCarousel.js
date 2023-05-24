@@ -97,7 +97,7 @@ class AHXCarousel {
       if (window.orientation === 90 || window.orientation === -90) {
         // Landscape orientation
         console.log('Changed to landscape mode')
-        E('#ahx-carousel').style.touchAction = 'none'
+        E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
         E('#ahx-topcont').style.display = 'none'
       } else {
         // Portrait orientation

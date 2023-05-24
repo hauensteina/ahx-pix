@@ -109,14 +109,14 @@ def carousel():
         caption = helpers.sanitize_caption( caption)
         sql = f''' update picture set blurb = %s where id = %s '''
         pg.run(sql, (caption.strip(), active_pic_id))
-        images = gui.gen_carousel_images(gallery_id, active_pic_id)
+        images = gui.gen_carousel_images(gallery, active_pic_id)
         return render_template('carousel.html',
                                images=images, gallery_id=gallery_id, picture_id=active_pic_id,
                                edit_icon=edit_icon, delete_icon=delete_icon)
     else:  # Initial hit
         gallery_id = parms['gallery_id']
         active_pic_id = parms['picture_id']
-        images = gui.gen_carousel_images(gallery_id, active_pic_id)
+        images = gui.gen_carousel_images(gallery, active_pic_id)
         return render_template('carousel.html',
                                images=images, gallery_id=gallery_id, picture_id=active_pic_id,
                                edit_icon=edit_icon, delete_icon=delete_icon)

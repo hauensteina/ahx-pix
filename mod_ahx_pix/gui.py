@@ -15,14 +15,14 @@ from  mod_ahx_pix.helpers import html_tag as H
 from  mod_ahx_pix.helpers import html_img as I
 import mod_ahx_pix.persistence as pe
 
-def gen_carousel_images( gallery_id, active_pic_id):
+def gen_carousel_images( gallery, active_pic_id):
     """ Generate the page showing one full screen pic at a time. """
 
     def gen_images( pics):
         #pics = [ x for x in pics if not x['title_flag'] ]
         # The images/videos
         images = []
-        pic_links = pe.get_gallery_links( gallery_id) # image files in S3
+        pic_links = pe.get_gallery_links( gallery['id']) # image files in S3
         capclass = 'ahx-caption'
         if session.get('is_mobile',''): capclass = 'ahx-caption-mobile' 
         found_active = False
@@ -80,7 +80,8 @@ def gen_carousel_images( gallery_id, active_pic_id):
         
     s3_client = ''
     found_active = False
-    pics = pe.get_gallery_pics( gallery_id) # pic filenames in DB 
+    pics = pe.get_gallery_pics( gallery['id']) # pic filenames in DB
+    pics = [ x for x in pics if not x['title_flag'] or gallery.get('show_title_pic_flag', '') ] 
     html = gen_images( pics)
     return html
 
