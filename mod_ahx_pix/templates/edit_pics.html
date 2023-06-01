@@ -79,7 +79,22 @@
    margin-left:20px;
  }
 
+ {% if is_mobile() %}
+
  .ahx-draggable {
+   padding:1rem;
+   margin:1rem;
+   background-color:white;
+   border: 1px solid black;
+   cursor:move;
+   margin:40px;
+   display:grid;
+   grid-template-rows: 1fr 100px;
+ }
+
+ {% else %}
+
+.ahx-draggable {
    padding:1rem;
    margin:1rem;
    background-color:white;
@@ -89,6 +104,8 @@
    display:grid;
    grid-template-rows: 1fr 100px;
  }
+
+{% endif %}
 
  .ahx-draggable.ahx-dragging {
    opacity:0.5;

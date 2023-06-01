@@ -308,9 +308,6 @@ def edit_pics():
         sql = f''' update gallery set piclist = %s where id = %s '''
         pg.run( sql, (piclist, gallery_id))
 
-    def reload( gallery_id):
-        return redirect( url_for( 'edit_pics', gallery_id=gallery_id))
-
     def initial_page( gallery_id):
         session['gallery_id'] = gallery_id
         picdivs = gui.gen_edit_pics(gallery_id)
