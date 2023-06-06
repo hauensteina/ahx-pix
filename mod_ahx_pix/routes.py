@@ -310,7 +310,8 @@ def edit_pics():
 
     def initial_page( gallery_id):
         session['gallery_id'] = gallery_id
-        picdivs = gui.gen_edit_pics(gallery_id)
+        gallery = pe.get_galleries( title='', owner='', gallery_id=gallery_id)[0]
+        picdivs = gui.gen_edit_pics(gallery)
         return render_template( 'edit_pics.html', picdivs=picdivs, gallery_id=gallery_id, 
                                 no_links=True, no_header=True, no_flash=True)
 

@@ -85,10 +85,12 @@ def gen_carousel_images( gallery, active_pic_id):
     html = gen_images( pics)
     return html
 
-def gen_edit_pics( gallery_id):
+def gen_edit_pics( gallery):
     """ Generate the page to drag and drop pic order and edit captions. """
+    gallery_id = gallery['id']
     pic_links = pe.get_gallery_links( gallery_id)
     pics = pe.get_gallery_pics( gallery_id)
+    pics = [ x for x in pics if not x['title_flag'] or gallery.get('show_title_pic_flag', '') ] 
     picdivs = ''
     for pic in pics:
         #if pic['title_flag']: continue
