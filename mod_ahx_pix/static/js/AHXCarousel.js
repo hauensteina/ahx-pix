@@ -330,7 +330,7 @@ class AHXCarousel {
     //caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
     caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
     // On mobile, move caption below image if image is landscape 
-    if ( isMobile() && (frame.width > frame.height) ) {
+    if ( isMobile() && (frame.width > frame.height * 1.2) ) {
       caption.style.top = `${frame.top + frame.height + 10}px`
     }
     caption.style.opacity = 1

@@ -50,30 +50,24 @@
   <div style='margin-top:10px;'>
     <div style='display:grid; grid-template-columns:1fr 1fr; margin:0 5vw;'>
       <div>
-
         <div>
           <input type="radio" form=textform id="rd_private" name="access" value="private" {% if access=="private" %}checked{%
             endif %}>
           <label for="rd_private">Private</label>
         </div>
         <div>
-          <input type="radio" form=textform id="rd_public" name="access" value="public" {% if access=="public" %}checked{%
-            endif %}>
-          <label for="rd_public">Public</label>
-        </div>
-        <div>
           <input type="radio" form=textform id="rd_members" name="access" value="members" {% if access=="members" %}checked{%
             endif %}>
           <label for="rd_members">Members only</label>
         </div>
+        <div>
+          <input type="radio" form=textform id="rd_public" name="access" value="public" {% if access=="public" %}checked{%
+            endif %}>
+          <label for="rd_public">Public</label>
+        </div>
       </div>
 
       <div style='margin-left:10px'>
-        <div>
-          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
-            endif %}>
-          <label for="rd_multi">Multi column</label>
-        </div>
         <div>
           <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
             endif %}>
@@ -84,6 +78,12 @@
             endif %}>
           <label for="rd_double">Double column</label>
         </div>
+        <div>
+          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
+            endif %}>
+          <label for="rd_multi">Multi column</label>
+        </div>
+
       </div>
     </div>
   </div>
@@ -138,48 +138,45 @@
     placeholder='Elaborate essay about the purpose of this gallery. This will be displayed at the top of the page.'>{{blurb}}</textarea>
 
   <div style='margin-top:10px;'>
-    <div style='display:grid; grid-template-columns:1fr 1fr; width:80%; margin:0 auto;' >
-
+    <div style='display:grid; grid-template-columns:1fr 1fr; width:80%; margin:0 auto;'>
+  
       <div>
         <div>
           <input type='radio' form=textform id='rd_private' name='access' value='private' class='ahx-radio' {% if
             access=='private' %}checked{% endif %}>
           <label for='rd_private'>Private</label>
         </div>
-
-        <div>
-          <input type='radio' form=textform id='rd_public' name='access' value='public' class='ahx-radio' {% if
-            access=='public' %}checked{% endif %}>
-          <label for='ed_public'>Public</label>
-        </div>
-
         <div>
           <input type='radio' form=textform id='rd_members' name='access' value='members' class='ahx-radio' {% if
             access=='members' %}checked{% endif %}>
           <label for='rd_members'>Members only</label>
         </div>
+        <div>
+          <input type='radio' form=textform id='rd_public' name='access' value='public' class='ahx-radio' {% if
+            access=='public' %}checked{% endif %}>
+          <label for='ed_public'>Public</label>
+        </div>
       </div>
-
+      
       <div style='margin-left:10px'>
         <div>
-          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
-            endif %}>
-          <label for="rd_multi">Multi column</label>
-        </div>
-        <div>
-          <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if
+            layout=="single_column" %}checked{% endif %}>
           <label for="rd_single">Single column</label>
         </div>
         <div>
-          <input type="radio" form=textform id="rd_double" name="layout" value="double_column" {% if layout=="double_column" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_double" name="layout" value="double_column" {% if
+            layout=="double_column" %}checked{% endif %}>
           <label for="rd_double">Double column</label>
         </div>
+        <div>
+          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column"
+            %}checked{% endif %}>
+          <label for="rd_multi">Multi column</label>
+        </div>
       </div>
-
     </div>
-
+  
     <div style='display:grid;justify-items:center;margin-top:10px;'>
       <span>
         <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'
