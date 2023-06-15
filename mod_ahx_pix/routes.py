@@ -469,7 +469,7 @@ def gallery():
         mylinks = f'''
         <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
-          <a href="{url_for('edit_title')}">Layout</a> &nbsp;   
+          <a href="{url_for('edit_title')}">Options</a> &nbsp;   
           <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
           <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
@@ -498,7 +498,7 @@ def gallery_mobile():
         mylinks = f'''
         <div style='margin-left:5vw;margin-bottom:10px;width:95vw;'>
         <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
-        <a href="{url_for('edit_title')}">Layout</a> &nbsp;   
+        <a href="{url_for('edit_title')}">Options</a> &nbsp;   
         <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
         <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
