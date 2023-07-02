@@ -323,7 +323,7 @@ class AHXCarousel {
 
     // Caption hides on zoom
     if (isMobile() && window.innerHeight != this.normalInnerHeight) {
-        this._toggleCaption()
+        //this._toggleCaption()
         return
     }
 
