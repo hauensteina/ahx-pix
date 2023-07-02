@@ -174,6 +174,15 @@ class AHXCarousel {
     E('#pic_id').value = nextSlide.getAttribute('data-pic-id')
     E('#ahx-edit-caption').style.display = 'none' // Hide caption editor
 
+    // Change URL to match pic
+    const picId = nextSlide.getAttribute('data-pic-id')
+    const params = new URLSearchParams(window.location.search)
+    params.set('picture_id', picId)
+    const galleryId = nextSlide.getAttribute('data-gallery-id')
+    const url = `/carousel?${params.toString()}`
+    //window.history.pushState({}, '', url)
+    window.history.replaceState({}, '', url)
+
     this._setImgNum()
     this._resetArrowTimer()
     this._preloadImages(slides, nextSlide)
