@@ -90,7 +90,7 @@ def add_user():
 def carousel():
     """ Full screen swipeable image carousel """
     parms = get_parms()
-    gallery_id = parms.get('gallery_id', session['gallery_id'])
+    gallery_id = parms.get('gallery_id','') or session['gallery_id']
     try:
         gallery = pe.get_galleries( title='', owner='', gallery_id = gallery_id)[0]    
     except:
