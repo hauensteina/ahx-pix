@@ -26,6 +26,12 @@ class AHXCarousel {
     this.pictureId = pictureId
     this.prevSlide = null
     this.arrowTimer = null
+    this.normalPixelRatio = window.devicePixelRatio
+    this.normalInnerHeight = window.innerHeight
+
+    $(window).resize(function() { 
+      // your code 
+      });
 
     E('.ahx-carousel-button.ahx-next').addEventListener(
       'click', ev => {
@@ -45,18 +51,7 @@ class AHXCarousel {
       'click', ev => { this._downloadImage(this.activeSlide()) })
 
     E('.ahx-captoggle').addEventListener(
-      'click', ev => {
-        if (E('.ahx-captoggle.ahx-active')) {
-          let e = E('.ahx-captoggle.ahx-active')
-          e.style.color = CAPTION_OFF
-          e.classList.remove('ahx-active')
-          if (this.activeCaption()) this.activeCaption().style.opacity = 0
-        } else {
-          let e = E('.ahx-captoggle')
-          e.style.color = CAPTION_ON
-          e.classList.add('ahx-active')
-        }
-      })
+      'click', ev => { this._toggleCaption() })
 
     E('.ahx-edit')?.addEventListener(
       'click', ev => {
@@ -311,24 +306,42 @@ class AHXCarousel {
 
   //-----------------------
   _positionCaption() {
+    var img = this.activeSlide()
     // Zen mode if you hold the phone in landscape mode.
     if (isMobile() && isLandscape() && this.activeCaption()) {
       let caption = this.activeCaption()
       caption.style.opacity = 0
+      img.style.height = `100%`
       return
     }
     if (!E('.ahx-captoggle.ahx-active')) return
-    var img = this.activeSlide()
     var frame = getContainedFrame(img)
     img.style.top = `0px`
     if (isNaN(frame.width)) return;
     let caption = this.activeCaption()
     if (!caption) return
-    var realWidth = caption.clientWidth
+
+    // Caption hides on zoom
+    if (window.innerHeight != this.normalInnerHeight) {
+        this._toggleCaption()
+        return
+    }
+
+    // Limit image height on mobile if you are looking at a 
+    // very tall image and holding the phone in portrait mode.
+    // Otherwise browser chrome overlaps the image.
+    var spaceAtBottom = 20
+    var maxHeight = window.innerHeight - spaceAtBottom
+    if (isMobile() && !isLandscape() && frame.height > maxHeight) {
+      img.style.height = `${maxHeight}px`
+    }   
+
+    // Position caption
     var realHeight = caption.clientHeight
-    caption.style.left = `${frame.left + (frame.width - realWidth) / 2.0}px` // center 
-    //caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
+    var capWidth = frame.width * 0.9
+    caption.style.left = `${frame.left + (frame.width - capWidth) / 2.0}px` // center
     caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
+    caption.style.width = `${capWidth}px`
     // On mobile, move caption below image if image is landscape 
     if ( isMobile() && (frame.width > frame.height * 1.2) ) {
       caption.style.top = `${frame.top + frame.height + 10}px`
@@ -394,6 +407,20 @@ class AHXCarousel {
     self.container.addEventListener('pointerup', showControls)
     this._resetArrowTimer()
   } // showArrows()
+
+  // Show/hide caption
+  _toggleCaption() {
+    if (E('.ahx-captoggle.ahx-active')) {
+      let e = E('.ahx-captoggle.ahx-active')
+      e.style.color = CAPTION_OFF
+      e.classList.remove('ahx-active')
+      if (this.activeCaption()) this.activeCaption().style.opacity = 0
+    } else {
+      let e = E('.ahx-captoggle')
+      e.style.color = CAPTION_ON
+      e.classList.add('ahx-active')
+    }
+  } // _toggleCaption()
 
 } // class AHXCarousel
 
