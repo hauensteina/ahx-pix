@@ -412,8 +412,10 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
             if _bad_caption( caption_h): caption_h = ''
         if 'NEW PICTURE' in caption_h: caption_h = ''
             
-        style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+        #style = f'padding:10px 0; margin:auto 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
+        style = f'padding:10px 0; margin:0 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
         if n_cols == 1:
+          #style = f'padding:10px 0; margin:10px 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
           style = f'padding:10px 0; margin:10px 10px auto 10px;text-overflow:ellipsis;overflow:hidden;'
             
         #if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px;padding:2px;'
@@ -433,7 +435,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
 ###############
 
 def _bad_caption( blurb):
-    """ Return False if the caption looks like just a filename """
+    """ Return True if empty caption or the caption looks like just a filename """
     if not blurb: return True
     if not blurb.strip(): return True
     return ( len(blurb.split()) == 1 and len(os.path.splitext(blurb)[1]) > 1 )
