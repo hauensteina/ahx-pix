@@ -60,13 +60,11 @@ function clearFlash() {
 function editHappened(edit_type) {
   if (edit_type == 'select_pic') {
     if (A('.ahx-selected').length > 0) {
-      E('#btn_del').disabled = false
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = false
         E('#btn_down').disabled = false
       }
     } else {
-      E('#btn_del').disabled = true
       E('#btn_save').disabled = !editHappened.flag
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = true
@@ -81,21 +79,15 @@ function editHappened(edit_type) {
     } else { 
       // desktop
       editHappened.flag = true
-      E('#btn_del').disabled = true
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = true
         E('#btn_down').disabled = true
       }
       var selected = A('.ahx-selected')
       selected.forEach( x => { x.classList.remove( 'ahx-selected') })
-      if (E('#btn_del').disabled) {
-        E('#btn_save').disabled = false
-      } else {
-        E('#btn_save').disabled = true
-      }
+      E('#btn_save').disabled = false
     } // desktop
   } // edit_caption
-
 } // editHappened()
 editHappened.flag = false
 
@@ -113,7 +105,7 @@ function setupCaptionHandlers() {
 // Pictures get a red frame if selected by click
 //---------------------------------------------------
 function setupSelect() {
-  var pics = A('.ahx-pic')
+  var pics = A('.ahx-pic, .ahx-video')
   pics.forEach( p => { 
     p.addEventListener( 'click', ev => {
       var target = ev.target
