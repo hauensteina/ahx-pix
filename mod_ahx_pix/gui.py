@@ -99,7 +99,11 @@ def gen_edit_pics( gallery):
         ext = os.path.splitext(pic['filename'])[1].lower()
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
             if _bad_caption(blurb): blurb = '' 
-        img_link = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        if ext in VIDEO_EXTENSIONS:    
+            img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+        else:
+            img_link = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+
         picdiv = f'''
           <div class='ahx-draggable' draggable=true>
            
