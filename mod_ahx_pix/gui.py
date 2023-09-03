@@ -97,24 +97,20 @@ def gen_edit_pics( gallery):
         blurb = pic['blurb']
         blurb = helpers.desanitize_caption( blurb)
         ext = os.path.splitext(pic['filename'])[1].lower()
+        style='width:100%;object-fit:contain;'
         if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS:
             if _bad_caption(blurb): blurb = '' 
         if ext in VIDEO_EXTENSIONS:    
             img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
+            style += f'border-style:solid; border-color:green; border-width:4px; padding:1px;'  
         else:
             img_link = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
 
         picdiv = f'''
           <div class='ahx-draggable' draggable=true>
-           
             <div class=ahx-pic id='pic_{pic["id"]}'>
-              <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+              <img id='{pic["id"]}' src='{img_link}' style='{style}' draggable=false>
             </div> 
-            <!--
-            <div style='display:grid;justify-items:center;'>
-              <textarea form=frm_pics class=ahx-ta name='ta_{pic["id"]}' placeholder='Type caption here'>{blurb}</textarea>
-            </div>
-            -->
           </div>
         '''
         picdivs += picdiv
