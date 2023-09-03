@@ -86,7 +86,7 @@ def gen_carousel_images( gallery, active_pic_id):
     return html
 
 def gen_edit_pics( gallery):
-    """ Generate the page to drag and drop pic order and edit captions. """
+    """ Generate the page to drag and drop pic order. """
     gallery_id = gallery['id']
     pic_links = pe.get_gallery_links( gallery_id)
     pics = pe.get_gallery_pics( gallery_id)
@@ -106,9 +106,11 @@ def gen_edit_pics( gallery):
             <div class=ahx-pic id='pic_{pic["id"]}'>
               <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
             </div> 
+            <!--
             <div style='display:grid;justify-items:center;'>
               <textarea form=frm_pics class=ahx-ta name='ta_{pic["id"]}' placeholder='Type caption here'>{blurb}</textarea>
             </div>
+            -->
           </div>
         '''
         picdivs += picdiv

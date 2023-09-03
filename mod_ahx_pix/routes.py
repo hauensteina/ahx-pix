@@ -270,7 +270,7 @@ def edit_info():
 @login_required
 #--------------------------------------------------
 def edit_pics():
-    """ Move pics around and edit the captions. """
+    """ Move pics around """
 
     def autosort(gallery_id):
         """ Sort the pictures in a gallery by filename length and then alphabetically. """
