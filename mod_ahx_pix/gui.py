@@ -106,6 +106,7 @@ def gen_edit_pics( gallery):
             <div class='ahx-draggable' draggable=true>
                 <div class=ahx-video id='pic_{pic["id"]}'>
                 <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+                <input type=hidden form=frm_pics name='pic_id_{pic["id"]}' value="" </input>
                 </div> 
             </div>
             '''
@@ -115,6 +116,7 @@ def gen_edit_pics( gallery):
             <div class='ahx-draggable' draggable=true>
                 <div class=ahx-pic id='pic_{pic["id"]}'>
                 <img id='{pic["id"]}' src='{img_link}' style='width:100%;object-fit:contain;' draggable=false>
+                <input type=hidden form=frm_pics name='pic_id_{pic["id"]}' value="" </input>
                 </div> 
             </div>
             '''

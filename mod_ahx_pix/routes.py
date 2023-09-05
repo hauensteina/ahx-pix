@@ -278,6 +278,7 @@ def edit_pics():
         pics = pg.select( sql, (gallery_id,) )
         # Short names first; alphabetical within same length
         pics = sorted( pics, key = lambda x:  f'{len(x["orig_fname"]):04d}|{x["orig_fname"]}' )
+        #@@@
         pic_ids = [ x['id'] for x in pics ]
         update_order( gallery_id, pic_ids)
 
@@ -347,9 +348,8 @@ def edit_pics():
             flash( f'''Auto sort done.''')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
         elif 'btn_save' in parms:
-            caption_dict = { p.split('_')[1]:parms[p].strip() for p in parms if p.startswith('ta_') }
-            update_captions( caption_dict)
-            update_order( gallery_id, caption_dict.keys())
+            pic_ids = { p.split('_')[2]:parms[p].strip() for p in parms if p.startswith('pic_id_') }
+            update_order( gallery_id, pic_ids.keys())
             flash( f'''Changes saved.''')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
         else: # just show the edit page

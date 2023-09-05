@@ -12,6 +12,9 @@ from itsdangerous import TimestampSigner
 from flask_mail import Message
 from flask import url_for
 
+from PIL import Image
+from PIL.ExifTags import TAGS
+
 # AWS S3 api
 import boto3
 
@@ -81,6 +84,26 @@ def list_files(path):
         else:
             res += list_files( full_path)
     return res
+
+# Image and video dates
+#----------------------------
+
+def get_pic_date(fname):
+    """ Get the date taken from exif data """
+    with Image.open(fname) as img:
+        # Extract EXIF data
+        exif_data = img._getexif()
+        
+    # Transforming the tag codes to names
+    labeled = {
+        TAGS.get(tag_code): tag_value 
+        for tag_code, tag_value in exif_data.items() 
+        if tag_code in TAGS and type(tag_value) is bytes
+    }        
+    # Get the date taken
+    date_taken = labeled.get('DateTimeOriginal', None)
+    BP()
+    return date_taken
 
 # HTML stuff
 #-----------------------
