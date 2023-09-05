@@ -366,7 +366,7 @@ def edit_title():
         title = parms.get('title','').strip() or ''
         caption = parms.get('caption','').strip() or ''
         blurb = parms.get('blurb','').strip() or ''
-        show_title_pic_flag =  True if 'cb_show_tpic' in parms else False
+        show_title_pic_flag =  False # True if 'cb_show_tpic' in parms else False
 
         sql = f'''update gallery set title=%s where id=%s'''
         pg.run( sql, (title.strip(),gallery_id))
