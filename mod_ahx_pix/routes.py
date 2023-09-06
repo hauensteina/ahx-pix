@@ -8,6 +8,7 @@ from pdb import set_trace as BP
 
 import os, sys, json
 from datetime import date
+from datetime import datetime
 import uuid
 import shutil
 
@@ -273,12 +274,23 @@ def edit_pics():
     """ Move pics around """
 
     def autosort(gallery_id):
-        """ Sort the pictures in a gallery by filename length and then alphabetically. """
-        sql = f''' select id,orig_fname from picture where gallery_id = %s and deleted_flag = false  '''
+        """ 
+        Sort the pictures in a gallery by date and time taken, if found.  
+        Pics without timestamp go to the end.
+        """
+        sql = f''' select id,orig_fname,pic_taken_ts from picture where gallery_id = %s and deleted_flag = false  '''
         pics = pg.select( sql, (gallery_id,) )
         # Short names first; alphabetical within same length
-        pics = sorted( pics, key = lambda x:  f'{len(x["orig_fname"]):04d}|{x["orig_fname"]}' )
-        #@@@
+        bad_ts = datetime.fromisoformat('9999-12-31')
+
+        def kkey(pic):
+            bad_ts = datetime.fromisoformat('9999-12-31')
+            if pic.get("pic_taken_ts",bad_ts).year < 9999:
+                return 'aaa|' + pic["pic_taken_ts"].isoformat()
+            else: # no date, use filename length and order
+                return 'zzz|' + f'{len(pic["orig_fname"]):04d}|{pic["orig_fname"]}'
+                
+        pics = sorted( pics, key = kkey)
         pic_ids = [ x['id'] for x in pics ]
         update_order( gallery_id, pic_ids)
 
