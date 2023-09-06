@@ -6,6 +6,7 @@
 
 from pdb import set_trace as BP
 import sys,os,subprocess
+from datetime import datetime
 import inspect
 import uuid
 from itsdangerous import TimestampSigner
@@ -90,20 +91,21 @@ def list_files(path):
 
 def get_pic_date(fname):
     """ Get the date taken from exif data """
-    with Image.open(fname) as img:
-        # Extract EXIF data
-        exif_data = img._getexif()
-        
-    # Transforming the tag codes to names
-    labeled = {
-        TAGS.get(tag_code): tag_value 
-        for tag_code, tag_value in exif_data.items() 
-        if tag_code in TAGS and type(tag_value) is bytes
-    }        
-    # Get the date taken
-    date_taken = labeled.get('DateTimeOriginal', None)
-    BP()
-    return date_taken
+    try:
+        with Image.open(fname) as img:
+            # Extract EXIF data
+            exif_data = img._getexif()
+        datestr = exif_data.get(36867,'9999:12:29 00:00:00')  
+    except:
+        datestr = '9999:12:30 00:00:00'   
+    date_format = '%Y:%m:%d %H:%M:%S' 
+    try:
+        ddate = datetime.strptime(datestr, date_format)
+    except:
+        ddate = datetime.strptime('9999:12:31 00:00:00', date_format)
+        print(f'>>> Unparsable string: {datestr}')
+
+    return ddate
 
 # HTML stuff
 #-----------------------

@@ -112,6 +112,7 @@ def _create_picture( pg):
       ,title_flag boolean
       ,create_date date
       ,change_date date
+      ,pic_taken_ts timestamp
       ,deleted_flag boolean not null default false
     )
     '''

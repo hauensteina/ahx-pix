@@ -198,6 +198,7 @@ def f02_gen_thumbs( s3name, gallery_id):
 def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
     """ Tell the DB about the new image """
     log(f'''  WORKER: f03_insert_db({s3name},{gallery_id}) starting''')
+    pic_taken_ts = helpers.get_pic_date(s3name)
     today = datetime.date.today()
     s3name = os.path.split(s3name)[1]
     blurb = ''
@@ -213,6 +214,7 @@ def f03_insert_db( s3name, orig_fname, gallery_id, pic_id):
         ,'title_flag':False
         ,'create_date':today
         ,'change_date':today
+        ,'pic_taken_ts':pic_taken_ts
     }
     pg.insert( 'picture', [data])
     log(f'''  WORKER: f03_insert_db() done''')
