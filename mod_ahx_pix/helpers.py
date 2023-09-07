@@ -158,10 +158,15 @@ def s3_delete_files( fnames):
         except Exception as e:
             log(pexc(e))
 
+
 def s3_download_file(fname):
     """ Download a file from s3 into unique filename and return the filename """
     client = s3_get_client()
-    info = sorted(s3_get_keys( client, fname))[-1]
+    try:
+        info = sorted(s3_get_keys( client, fname))[-1]
+    except:
+        log(f'''Error: File {fname} not found on S3''')
+        return ''
     key = info['Key']
     ext = os.path.splitext(key)[1]
     ofname = DOWNLOAD_FOLDER + '/' + str(uuid.uuid4()) + ext

@@ -20,7 +20,8 @@ from mod_ahx_pix.postgres import Postgres
 import mod_ahx_pix.helpers as helpers
 from mod_ahx_pix import log
 
-pg = Postgres( os.environ['AHX_PIX_LOCAL_DB_URL'])
+#pg = Postgres( os.environ['AHX_PIX_LOCAL_DB_URL'])
+pg = Postgres( os.environ['PIX_DB_URL'])
 
 def usage(printmsg=False):
     name = os.path.basename( __file__)
@@ -47,7 +48,7 @@ def main():
 def run():
     if not os.path.exists('downloads'): os.makedirs('downloads')
     galleries = get_galleries()
-    galleries = [ x for x in galleries if x['title'] == 'Year 2022' ]
+    #galleries = [ x for x in galleries if x['title'] == 'Year 2022' ]
     sql = f''' update picture set pic_taken_ts = %s where id = %s '''
     for idx,g in enumerate(galleries):
         print(f'>>> Gallery {idx+1}/{len(galleries)}:{g["title"]}')
@@ -60,7 +61,8 @@ def run():
             local_fname = helpers.s3_download_file( s3_path)
             date_taken = helpers.get_pic_date(local_fname)
             pg.run( sql, (date_taken, p['id']) )
-            os.remove(local_fname)
+            try: os.remove(local_fname) 
+            except: pass
     print('Done.')
     
 def get_galleries():
