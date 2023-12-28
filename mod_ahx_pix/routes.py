@@ -526,9 +526,9 @@ def index():
     """ Main entry point. Show heading and list of galleries """
     parms = get_parms()
     if session.get('is_mobile',''): return redirect( url_for('index_mobile', **parms))
-    title = parms.get('title','')
-    owner = parms.get('owner','')
-    body = parms.get('body','')
+    title = parms.get('title', session.get('title','')); session['title'] = title
+    owner = parms.get('owner', session.get('owner','')); session['owner'] = owner
+    body = parms.get('body', session.get('body','')); session['body'] = body
     all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
     session['all_pics_flag'] = all_pics_flag
 
@@ -563,9 +563,9 @@ def index_mobile():
     #log('>>>>>>>>>>>>>>>>seesion is_mobile true')
     if not session.get('is_mobile',''): return redirect( url_for('index'))
     parms = get_parms()
-    title = parms.get('title','')
-    owner = parms.get('owner','')
-    body = parms.get('body','')
+    title = parms.get('title', session.get('title','')); session['title'] = title
+    owner = parms.get('owner', session.get('owner','')); session['owner'] = owner
+    body = parms.get('body', session.get('body','')); session['body'] = body
     all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
     session['all_pics_flag'] = all_pics_flag
 
