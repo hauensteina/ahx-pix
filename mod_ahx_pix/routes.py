@@ -528,6 +528,7 @@ def index():
     if session.get('is_mobile',''): return redirect( url_for('index_mobile', **parms))
     title = parms.get('title','')
     owner = parms.get('owner','')
+    body = parms.get('body','')
     all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
     session['all_pics_flag'] = all_pics_flag
 
@@ -540,12 +541,12 @@ def index():
         sort_order = 'desc'
         next_order = 'asc'
 
-    search_html = gui.gen_gallery_search( title, owner)
+    search_html = gui.gen_gallery_search( title, owner, body)
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
     if all_pics_flag:
-        galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        galleries = pe.get_galleries( title, owner, body, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
     else:
-        galleries = pe.get_my_galleries( title, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        galleries = pe.get_my_galleries( title, body, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
         
     gallery_html = gui.gen_gallery_list( galleries, sort_col, next_order)
     res = render_template( 'index.html', search_html=search_html, 
@@ -564,6 +565,7 @@ def index_mobile():
     parms = get_parms()
     title = parms.get('title','')
     owner = parms.get('owner','')
+    body = parms.get('body','')
     all_pics_flag = parms.get('all_pics_flag', session.get('all_pics_flag',False)) in ('True', True)
     session['all_pics_flag'] = all_pics_flag
 
@@ -576,12 +578,13 @@ def index_mobile():
         sort_order = 'desc'
         next_order = 'asc'
 
-    search_html = gui.gen_gallery_search_mobile( title, owner)
+    search_html = gui.gen_gallery_search_mobile( title, owner, body)
     columns = { 'Title':'title', 'Date':'create_date', 'Owner':'username'} 
     if all_pics_flag:
-        galleries = pe.get_galleries( title, owner, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        galleries = pe.get_galleries( title, owner, body, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
     else:
-        galleries = pe.get_my_galleries( title, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        galleries = pe.get_my_galleries( title, body, order_by=f''' lower({columns[sort_col]}::text) {sort_order} ''' )
+        
     gallery_html = gui.gen_gallery_list_mobile( galleries, sort_col, next_order)
     res = render_template( 'index.html', search_html=search_html, 
                            gallery_list=gallery_html, all_pics_flag=all_pics_flag)

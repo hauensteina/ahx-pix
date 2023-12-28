@@ -137,6 +137,7 @@ a:active {
     text-decoration: none;
     display: inline-flex;
     align-items: center; 
+    justify-content: center;
     border-radius: 0.5rem;
     min-height:2rem;
   }
@@ -226,6 +227,7 @@ a:active {
     height:25px;
     margin-right:10px;
 }
+
 
 /* Gallery list styling */
 /*----------------------*/

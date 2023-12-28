@@ -14,7 +14,7 @@ from mod_ahx_pix import pg, log, logged_in
 from mod_ahx_pix import SMALL_FOLDER, MEDIUM_FOLDER, LARGE_FOLDER, LINK_EXPIRE_HOURS
 import mod_ahx_pix.helpers as helpers
 
-def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc'):
+def get_galleries( title='', owner='', body='', gallery_id='', order_by='create_date desc'):
     """
     Get galleries as a list of dicts. Filter by title and owner.
     """
@@ -28,15 +28,14 @@ def get_galleries( title='', owner='', gallery_id='', order_by='create_date desc
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     if gallery_id: where += f''' and id = '{gallery_id}' '''
     sql = f'''
-    select * from gallery {where} order by {order_by} limit 200
+    select id from gallery {where} order by {order_by} limit 200
     '''
-
-    rows = pg.select(sql)
-    #for r in rows: 
-    #    if r['blurb'] is None: r['blurb'] = ''
+    title_matching_rows = pg.select(sql)
+    ids = [ x['id'] for x in title_matching_rows ]
+    rows = find_galleries_with_text(ids, body, order_by)
     return rows
 
-def get_my_galleries( title='', order_by='create_date desc'):
+def get_my_galleries( title='', body='', order_by='create_date desc'):
     """
     Get my galleries as a list of dicts. Filter by title.
     """
@@ -48,9 +47,39 @@ def get_my_galleries( title='', order_by='create_date desc'):
 
     if title: where += f''' and lower(title) like '%%{title.lower()}%%' '''
     sql = f'''
-    select * from gallery {where} order by {order_by} 
+    select id from gallery {where}  
     '''
-    rows = pg.select(sql)
+    title_matching_rows = pg.select(sql)
+    ids = [ x['id'] for x in title_matching_rows ]
+    rows = find_galleries_with_text(ids, body, order_by)
+    return rows
+
+def find_galleries_with_text(ids, text, order_by):
+    """
+    Find galleries with any word in text in their blurb.
+    """
+    words = text.split()
+    words = [ w.lower() for w in words]
+    
+    wordsql = ''
+    for idx,w in enumerate(words):
+        if idx > 0: wordsql += ' or ' 
+        wordsql += f''' lower(blurb) like '%%{w}%%' '''
+    
+    placeholders = ','.join( ['%s'] * len(ids))
+    
+    if not wordsql: wordsql = 'true'
+    
+    # If many galleries are selected, skip columns with long text
+    columns = '*' if len(ids) == 1 else 'id, title, username, create_date, change_date'
+    sql = f'''
+    select * from gallery 
+    where 
+      id in ({placeholders}) 
+      and ( {wordsql} ) 
+      order by {order_by}
+    '''
+    rows = pg.select(sql, ids)   
     return rows
 
 def get_gallery_pics( gallery_id):
