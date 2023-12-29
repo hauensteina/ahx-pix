@@ -185,7 +185,8 @@ def gen_gallery_mobile( gallery, pics, n_cols=5):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         title_pic_h = ''
         if img_link:        
-            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;', f' {onclick} ')
+            #title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;', f' {onclick} ')
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh; max-height:30vh; max-width:90vw;')
             title_pic_h +=  H( 'span', gallery['title_pic_caption'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
