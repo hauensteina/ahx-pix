@@ -82,6 +82,9 @@ def gen_carousel_images( gallery, active_pic_id):
     found_active = False
     pics = pe.get_gallery_pics( gallery['id']) # pic filenames in DB
     pics = [ x for x in pics if not x['title_flag'] or gallery.get('show_title_pic_flag', '') ] 
+    if len(pics) == 0:
+        html = H('div', 'No pictures found in this gallery')
+        return html
     html = gen_images( pics)
     return html
 
@@ -142,7 +145,8 @@ def gen_gallery( gallery, pics, n_cols=5):
         onclick = f''' onclick="window.location.href={visit_url}" '''
         title_pic_h = ''
         if img_link:
-            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;', f' {onclick} ')
+            #title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;', f' {onclick} ')
+            title_pic_h = I( img_link, 'object-fit:contain;margin:0 auto; height:30vh;')
             title_pic_h +=  H( 'span', gallery['title_pic_caption'] or '&nbsp;', 'margin:0 auto; font-size:1.2em')
     else:
         title_pic_h = ''
