@@ -2,14 +2,14 @@
 
 {% block js %}
 <script src="static/js/dropzone.min.js"></script>
-<link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" /> 
+<link rel="stylesheet" href="static/js/dropzone.min.css" type="text/css" />
 {% endblock js %}
 
 {% block content %}
 
 {% if is_mobile() %}
 <!-- Mobile version -->
-<div class=ahx-outer style='margin-left:0;'> 
+<div class=ahx-outer style='margin-left:0;'>
   <div style='min-height:30px;color:red;'>
     {% if error %}
     <strong>Error:</strong> {{ error }}
@@ -27,13 +27,13 @@
   <div id="progress" style='display:grid;justify-items:center;margin-top:20px;'>
   </div>
   <div style='text-align:center;margin-top:10px;'>
-    <input type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' >
+    <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button'>
   </div>
 </div>
 
 {% else %}
 <!-- Desktop version -->
-<div class=ahx-outer style='margin-left:0;max-width:800px;' > 
+<div class=ahx-outer style='margin-left:0;max-width:800px;'>
   <div style='min-height:30px;color:red;'>
     {% if error %}
     <strong>Error:</strong> {{ error }}
@@ -47,14 +47,14 @@
       You can upload individual images or videos, or zip files containing collections of images or videos.
     </div>
     <div style='width:80%;'>
-    <form id=dropform action='upload_pics' method=post enctype=multipart/form-data class='dropzone' >
-      <div class=dz-message data-dz-message>Click, or drop files here</div>
-    </form>
+      <form id=dropform action='upload_pics' method=post enctype=multipart/form-data class='dropzone'>
+        <div class=dz-message data-dz-message>Click, or drop files here</div>
+      </form>
     </div>
     <div id="progress">
     </div>
     <div style='text-align:center;margin-top:20px;'>
-      <input type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' >
+      <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button'>
       <!-- style='margin-top:20px;font-size:1.0em;border-radius:0.5rem;color:#7c795d;border-color:#7c795d;'>  -->
     </div>
   </div>
@@ -67,47 +67,54 @@
 {% block js_end %}
 
 <script>
-Dropzone.autoDiscover = false
-const chunkSize = 1 * 1024 * 1024; // 1 MB chunks
-//const chunkSize = 100 * 1000
+  Dropzone.autoDiscover = false
+  const chunkSize = 1 * 1024 * 1024; // 1 MB chunks
+  //const chunkSize = 100 * 1000
 
-var dz = new Dropzone("#dropform", {
-  url: "upload_pics",
-  paramName: "file",
-  maxFilesize: 5000, // Maximum file size in MB
-  chunking: true,
-  chunkSize: chunkSize,
-  parallelChunkUploads: false, // Upload chunks in parallel
-  retryChunks: true,
-  retryChunksLimit: 3, // Retry failed chunks up to 3 times
-  init: function () {
-    this.on("success", function (file) {
-      console.log("Upload complete:", file)
-    })
-    this.on("error", function (file, errorMessage) {
-      console.log("Error while uploading:", file, errorMessage)
-    })
-  }
-})
+  var dz = new Dropzone("#dropform", {
+    url: "upload_pics",
+    paramName: "file",
+    maxFilesize: 5000, // Maximum file size in MB
+    chunking: true,
+    chunkSize: chunkSize,
+    parallelChunkUploads: false, // Upload chunks in parallel
+    retryChunks: true,
+    retryChunksLimit: 3, // Retry failed chunks up to 3 times
+    init: function () {
+      this.on("success", function (file) {
+        console.log("Upload complete:", file)
+      })
+      this.on("error", function (file, errorMessage) {
+        console.log("Error while uploading:", file, errorMessage)
+      })
+      this.on("queuecomplete", function () {
+        setTimeout(function () {
+          E('#btn_done').disabled = false;
+        }, 10000); // 10 secs
+      })
+      this.on("addedfile", function () {
+        E('#btn_done').disabled = true
+      })
+    }
+  })
 
-dz.on("uploadprogress", function(file, progress) {
+  dz.on("uploadprogress", function (file, progress) {
     const total = file.upload.totalChunkCount
     const uploaded = Math.trunc(total * progress / 100)
     //E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
-})
+  })
 </script>
 
 {% endblock js_end %}
 
 {% block css %}
 <style>
- .ahx-file-upload {
-   border: 1px solid #aaa;
-   display: inline-block;
-   padding: 0 5px 0 5px;
-   cursor: pointer;
-   border-radius: .25rem;
- }
+  .ahx-file-upload {
+    border: 1px solid #aaa;
+    display: inline-block;
+    padding: 0 5px 0 5px;
+    cursor: pointer;
+    border-radius: .25rem;
+  }
 </style>
 {% endblock css %}
-

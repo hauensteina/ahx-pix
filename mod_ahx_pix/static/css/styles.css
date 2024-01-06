@@ -105,6 +105,10 @@ a:active {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     /* transform: translateY(-2px); */
   }
+
+  .ahx-submit-button:disabled {
+    background-color: #aaaaaa;
+  }
   
   /* Active effect */
   .ahx-submit-button:active {
