@@ -91,9 +91,9 @@
 
   <div style='display:grid;justify-items:center;'>
     <span>
-      <input type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'
+      <input id=btn_save type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'
         class='ahx-submit-button'>
-      <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
+      <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
     </span>
   </div>
 </div>
@@ -180,9 +180,9 @@
   
     <div style='display:grid;justify-items:center;margin-top:10px;'>
       <span>
-        <input type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'
+        <input id=btn_save type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'
           class='ahx-submit-button'>
-        <input type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
+        <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
       </span>
     </div>
   </div>
@@ -190,3 +190,24 @@
 {% endif %}
 
 {% endblock content %}
+
+{% block js_end %}
+
+<script>
+  E('#btn_cancel').addEventListener('click', function (evt) {
+    evt.preventDefault()
+    E('#btn_cancel').disabled = true
+    E('#btn_save').disabled = true
+    E('#textform').submit()
+  })
+
+  E('#btn_save').addEventListener('click', function (evt) {
+    evt.preventDefault()
+    E('#btn_cancel').disabled = true
+    E('#btn_save').disabled = true
+    E('#textform').submit()
+  })
+
+</script>
+
+{% endblock js_end %}

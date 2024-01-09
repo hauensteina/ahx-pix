@@ -163,6 +163,30 @@
  setupForm()
  setTimeout( clearFlash, 3000)
  
+ E('#btn_save').addEventListener('click', function () {
+    setTimeout(function () {
+      E('#btn_save').disabled = true
+      E('#btn_cancel').disabled = true
+      E('#btn_sort').disabled = true
+    }, 100); // Delay in milliseconds
+  })
+
+  E('#btn_cancel').addEventListener('click', function () {
+    setTimeout(function () {
+      E('#btn_save').disabled = true
+      E('#btn_cancel').disabled = true
+      E('#btn_sort').disabled = true
+    }, 100); 
+  })
+
+  E('#btn_sort').addEventListener('click', function () {
+    setTimeout(function () {
+      E('#btn_save').disabled = true
+      E('#btn_cancel').disabled = true
+      E('#btn_sort').disabled = true
+    }, 100);
+  })
+
 </script>
 {% endblock js_end %}
 

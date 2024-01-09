@@ -103,6 +103,13 @@
     const uploaded = Math.trunc(total * progress / 100)
     //E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
   })
+
+  E('#btn_done').addEventListener('click', function () {
+    setTimeout(function () {
+      E('#btn_done').disabled = true
+    }, 100); // Delay in milliseconds
+  })
+
 </script>
 
 {% endblock js_end %}
