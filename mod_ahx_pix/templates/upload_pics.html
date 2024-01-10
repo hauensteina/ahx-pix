@@ -27,8 +27,10 @@
   <div id="progress" style='display:grid;justify-items:center;margin-top:20px;'>
   </div>
   <div style='text-align:center;margin-top:10px;'>
-    <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button'>
+    <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' onclick='return doneclicked()'>
   </div>
+  <div id=spinner class='progress-indicator' style='margin-left:auto;margin-right:auto;'></div>
+  <!-- <div class='progress-indicator' style='margin-left:auto;margin-right:auto;border-style:solid;border-color:red;border-width:1;'></div> -->
 </div>
 
 {% else %}
@@ -54,9 +56,9 @@
     <div id="progress">
     </div>
     <div style='text-align:center;margin-top:20px;'>
-      <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button'>
-      <!-- style='margin-top:20px;font-size:1.0em;border-radius:0.5rem;color:#7c795d;border-color:#7c795d;'>  -->
+      <input id=btn_done type=submit form=dropform name=btn_upload value=Done class='ahx-submit-button' onclick='return doneclicked()'>
     </div>
+    <div id=spinner class='progress-indicator' style='margin-left:auto;margin-right:auto;'></div>
   </div>
 </div>
 
@@ -90,10 +92,12 @@
       this.on("queuecomplete", function () {
         setTimeout(function () {
           E('#btn_done').disabled = false;
-        }, 10000); // 10 secs
+          E('#spinner').style.display = 'none'
+        }, 8000); // 8 secs
       })
       this.on("addedfile", function () {
         E('#btn_done').disabled = true
+        E('#spinner').style.display = 'block'
       })
     }
   })
@@ -104,11 +108,22 @@
     //E('#progress').innerHTML = `${uploaded} of ${total} chunks uploaded`
   })
 
+  /*
   E('#btn_done').addEventListener('click', function () {
     setTimeout(function () {
       E('#btn_done').disabled = true
     }, 100); // Delay in milliseconds
-  })
+  }) */
+
+  function doneclicked() {
+    setTimeout(function () {
+      E('#btn_done').disabled = true
+    }, 100)
+    E('#spinner').style.display = 'block'
+    return true
+  }
+
+  E('#spinner').style.display = 'none'
 
 </script>
 
@@ -123,5 +138,20 @@
     cursor: pointer;
     border-radius: .25rem;
   }
+
+  .progress-indicator {
+    width: 2.5vw;
+    height: 2.5vw;
+    /* border: 2px solid  #0077B6; */
+    border-top: 0.5vw solid blue;
+    border-radius: 100%; 
+    animation: spin 1s linear infinite; 
+  }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>
 {% endblock css %}
