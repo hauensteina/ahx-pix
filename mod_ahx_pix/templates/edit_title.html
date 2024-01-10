@@ -36,7 +36,7 @@
     </span>
   </div>
 
-<!--   
+  <!--   
   <div style='margin-left:0; margin-top:10px;'>
     <div>
       <input type="checkbox" form=textform id="cb_show_tpic" name="cb_show_tpic"  {% if show_tpic %}checked{%
@@ -52,8 +52,8 @@
     <div style='display:grid; grid-template-columns:1fr 1fr; margin:0 5vw;'>
       <div>
         <div>
-          <input type="radio" form=textform id="rd_private" name="access" value="private" {% if access=="private" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_private" name="access" value="private" {% if access=="private"
+            %}checked{% endif %}>
           <label for="rd_private">Private</label>
         </div>
         <!-- <div>
@@ -62,26 +62,26 @@
           <label for="rd_members">Members only</label>
         </div> -->
         <div>
-          <input type="radio" form=textform id="rd_public" name="access" value="public" {% if access=="public" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_public" name="access" value="public" {% if access=="public"
+            %}checked{% endif %}>
           <label for="rd_public">Public</label>
         </div>
       </div>
 
       <div style='margin-left:10px'>
         <div>
-          <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if layout=="single_column" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if
+            layout=="single_column" %}checked{% endif %}>
           <label for="rd_single">Single column</label>
         </div>
         <div>
-          <input type="radio" form=textform id="rd_double" name="layout" value="double_column" {% if layout=="double_column" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_double" name="layout" value="double_column" {% if
+            layout=="double_column" %}checked{% endif %}>
           <label for="rd_double">Double column</label>
         </div>
         <div>
-          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column" %}checked{%
-            endif %}>
+          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if
+            layout=="multi_column" %}checked{% endif %}>
           <label for="rd_multi">Multi column</label>
         </div>
 
@@ -93,7 +93,8 @@
     <span>
       <input id=btn_save type=submit form=textform name=save value=Save style='margin-top:20px;margin-right:10px;'
         class='ahx-submit-button'>
-      <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
+      <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'
+        class='ahx-submit-button'>
     </span>
   </div>
 </div>
@@ -140,7 +141,7 @@
 
   <div style='margin-top:10px;'>
     <div style='display:grid; grid-template-columns:1fr 1fr; width:80%; margin:0 auto;'>
-  
+
       <div>
         <div>
           <input type='radio' form=textform id='rd_private' name='access' value='private' class='ahx-radio' {% if
@@ -158,7 +159,7 @@
           <label for='ed_public'>Public</label>
         </div>
       </div>
-      
+
       <div style='margin-left:10px'>
         <div>
           <input type="radio" form=textform id="rd_single" name="layout" value="single_column" {% if
@@ -171,43 +172,37 @@
           <label for="rd_double">Double column</label>
         </div>
         <div>
-          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if layout=="multi_column"
-            %}checked{% endif %}>
+          <input type="radio" form=textform id="rd_multi" name="layout" value="multi_column" {% if
+            layout=="multi_column" %}checked{% endif %}>
           <label for="rd_multi">Multi column</label>
         </div>
       </div>
     </div>
-  
+
     <div style='display:grid;justify-items:center;margin-top:10px;'>
       <span>
         <input id=btn_save type=submit form=textform name=save value=Save style='margin-top:10px;margin-right:10px;'
-          class='ahx-submit-button'>
-        <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;' class='ahx-submit-button'>
+          class='ahx-submit-button' onclick='return btnclick()'>
+        <input id=btn_cancel type=submit form=textform name=cancel value=Cancel style='margin-top:10px;'
+          class='ahx-submit-button' onclick='return btnclick()'>
       </span>
     </div>
   </div>
 
-{% endif %}
+  {% endif %}
 
-{% endblock content %}
+  {% endblock content %}
 
-{% block js_end %}
+  {% block js_end %}
 
-<script>
-  E('#btn_cancel').addEventListener('click', function (evt) {
-    evt.preventDefault()
-    E('#btn_cancel').disabled = true
-    E('#btn_save').disabled = true
-    E('#textform').submit()
-  })
+  <script>
+    function btnclick() {
+      setTimeout(function () {
+        E('#btn_cancel').disabled = true
+        E('#btn_save').disabled = true
+      }, 100)
+      return true
+    }
+  </script>
 
-  E('#btn_save').addEventListener('click', function (evt) {
-    evt.preventDefault()
-    E('#btn_cancel').disabled = true
-    E('#btn_save').disabled = true
-    E('#textform').submit()
-  })
-
-</script>
-
-{% endblock js_end %}
+  {% endblock js_end %}
