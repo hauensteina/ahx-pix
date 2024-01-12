@@ -1,65 +1,80 @@
+.red-border {
+    border-style: solid;
+    border-color: red;
+}
 
-.red-border { border-style:solid; border-color:red; }
-.green-border { border-style:solid; border-color:green; }
-.blue-border { border-style:solid; border-color:blue; }
+.green-border {
+    border-style: solid;
+    border-color: green;
+}
 
-.ahx-heading { 
-    color: #7c795d; 
-    font-family: 'Source Sans Pro', sans-serif; 
-    font-size: 28px; 
-    font-weight: 400; 
-    line-height: 32px; 
-    margin-bottom: 24px; 
+.blue-border {
+    border-style: solid;
+    border-color: blue;
+}
+
+.ahx-heading {
+    color: #7c795d;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-bottom: 24px;
 }
 
 .page-title {
-    color: #7c795d; 
-    font-family: 'Source Sans Pro', sans-serif; 
-    font-size: 28px; 
-    font-weight: 400; 
-    line-height: 32px; 
-    margin: 0 0 24px; 
+    color: #7c795d;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0 0 24px;
 }
 
 .page-title-mobile {
-    color: #7c795d; 
-    font-family: 'Source Sans Pro', sans-serif; 
-    font-size: 28px; 
-    font-weight: 400; 
-    line-height: 32px; 
-    margin: 0 0 24px; 
+    color: #7c795d;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0 0 24px;
 }
 
 /* flask flashed msgs */
-.message { color:green; }
-.error { color:red; } 
+.message {
+    color: green;
+}
+
+.error {
+    color: red;
+}
 
 .linkbtn {
-    background-color:transparent;
-    text-decoration:underline;
-    border:0;
+    background-color: transparent;
+    text-decoration: underline;
+    border: 0;
     color: #293b81;
-    margin:auto;
+    margin: auto;
 }
 
 .linkbtn:hover {
-  color: #3280ec; 
+    color: #3280ec;
 }
 
 a:link {
-  color: #293b81;
+    color: #293b81;
 }
 
 a:visited {
-  color: #293b81;
+    color: #293b81;
 }
 
 a:hover {
-  color: #3280ec; 
+    color: #3280ec;
 }
 
 a:active {
-  color: #3280ec;
+    color: #3280ec;
 }
 
 /* Form input fields */
@@ -72,18 +87,20 @@ a:active {
 }
 
 .center {
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Base button style */
 .ahx-submit-button {
     -webkit-appearance: none;
-    appearance: none; 
-    background-color: #0077B6;  /* Ocean blue */
+    appearance: none;
+    background-color: #0077B6;
+    /* Ocean blue */
     /* background-color: #ff0000;   */
     border: none;
-    color: #ffffff; /* White text */
+    color: #ffffff;
+    /* White text */
     text-align: center;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -92,46 +109,52 @@ a:active {
     margin: 1.0rem 1.0rem;
     text-decoration: none;
     /* display: inline-block; */
-    display: inline-flex; /* Use inline-flex to make the button size adapt to its content */
-    align-items: center; /* Center the content vertically */
-    justify-content: center; /* Center the content horizontally */
+    display: inline-flex;
+    /* Use inline-flex to make the button size adapt to its content */
+    align-items: center;
+    /* Center the content vertically */
+    justify-content: center;
+    /* Center the content horizontally */
     border-radius: 0.5rem;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Hover effect */
-  .ahx-submit-button:hover {
-    background-color: #005e99; /* Darker ocean blue */
+}
+
+/* Hover effect */
+.ahx-submit-button:hover {
+    background-color: #005e99;
+    /* Darker ocean blue */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     /* transform: translateY(-2px); */
-  }
+}
 
-  .ahx-submit-button:disabled {
+.ahx-submit-button:disabled {
     background-color: #aaaaaa;
-  }
-  
-  /* Active effect */
-  .ahx-submit-button:active {
+}
+
+/* Active effect */
+.ahx-submit-button:active {
     transform: translateY(1px);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Media query for mobile devices */
-   @media screen and (max-width: 480px) {
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 480px) {
     .ahx-submit-button {
         font-size: 1rem;
         /* background-color: #ff0000; */
     }
-  } 
-  
-  /* Small button style */
+}
+
+/* Small button style */
 .ahx-small-submit-button {
     -webkit-appearance: none;
-    appearance: none; 
-    background-color: #0077B6;  /* Ocean blue */
+    appearance: none;
+    background-color: #0077B6;
+    /* Ocean blue */
     /* background-color: #000077;  */
     border: none;
-    color: #ffffff; /* White text */
+    color: #ffffff;
+    /* White text */
     text-align: center;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -140,40 +163,43 @@ a:active {
     margin: 0.2rem 0.2rem;
     text-decoration: none;
     display: inline-flex;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
     border-radius: 0.5rem;
-    min-height:2rem;
-  }
-  
-  /* Hover effect */
-  .ahx-small-submit-button:hover {
-    background-color: #005e99; /* Darker ocean blue */
+    min-height: 2rem;
+}
+
+/* Hover effect */
+.ahx-small-submit-button:hover {
+    background-color: #005e99;
+    /* Darker ocean blue */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
     /* transform: translateY(-2px); */
-  }
+}
 
-  .ahx-small-submit-button:disabled {
-      background-color: #aaaaaa;
-  }
-  
-  /* Media query for mobile devices */
-   @media screen and (max-width: 480px) {
+.ahx-small-submit-button:disabled {
+    background-color: #aaaaaa;
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 480px) {
     .ahx-small-submit-button {
         font-size: 1rem;
-        min-height:2rem;
-        padding:0.2rem 0.8rem;
-        margin:0.2rem;
+        min-height: 2rem;
+        padding: 0.2rem 0.8rem;
+        margin: 0.2rem;
         /* background-color: #ff0000; */
     }
-  } 
+}
 
-  /* Base textarea style */
+/* Base textarea style */
 .ahx-textarea {
     -webkit-appearance: none;
-    appearance: none; 
-    background-color: #ffffff; /* White background */
-    color: #333333; /* Dark text */
+    appearance: none;
+    background-color: #ffffff;
+    /* White background */
+    color: #333333;
+    /* Dark text */
     font-size: 16px;
     padding: 12px;
     border: 1px solid #cccccc;
@@ -182,66 +208,77 @@ a:active {
     box-sizing: border-box;
     resize: none;
     transition: all 0.3s ease;
-  }
-  
-  /* Focus effect */
-  .ahx-textarea:focus {
-    border-color: #0077B6; /* Ocean blue */
+}
+
+/* Focus effect */
+.ahx-textarea:focus {
+    border-color: #0077B6;
+    /* Ocean blue */
     box-shadow: 0 0 5px rgba(0, 119, 182, 0.3);
     outline: none;
-  }
-  
-  /* Media query for mobile devices */
-  @media screen and (max-width: 480px) {
+}
+
+/* Media query for mobile devices */
+@media screen and (max-width: 480px) {
     .ahx-textarea {
-      font-size: 14px;
-      padding: 10px;
+        font-size: 14px;
+        padding: 10px;
     }
-  }
-  
+}
+
 /* 
    Three columns. The middle one will be centered. 
    Normally, the outer ones are empty. 
 */
 .center-div {
-    display:grid;
-    grid-template-columns:1fr fit-content(100%) 1fr;
+    display: grid;
+    grid-template-columns: 1fr fit-content(100%) 1fr;
 }
 
 
-/* Gallery search form */ 
+/* Gallery search form */
 /*---------------------*/
 
 .search-form {
-    margin-left:50px;
-    margin-bottom:20px;
+    margin-left: 50px;
+    margin-bottom: 20px;
 }
 
 .search-form input {
-    height:25px;
-    margin-right:10px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 .search-form-mobile {
-    margin-left:5vw;
-    margin-bottom:2vh;
+    margin-left: 5vw;
+    margin-bottom: 2vh;
 }
 
 .search-form-mobile input {
-    height:25px;
-    margin-right:10px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 
 /* Gallery list styling */
 /*----------------------*/
 /* .gallery-list-cell:hover { background-color: #ddd; } */
-.gallery-list-row { display:contents; } /* Wrapper to make table row selectable */
-.gallery-list-row:nth-child(odd) > div {background-color: #e4e6e8;}
-.gallery-list-row:hover > div  { background-color: #d4d6d8; }
+.gallery-list-row {
+    display: contents;
+}
+
+/* Wrapper to make table row selectable */
+.gallery-list-row:nth-child(odd)>div {
+    background-color: #e4e6e8;
+}
+
+.gallery-list-row:hover>div {
+    background-color: #d4d6d8;
+}
+
 .gallery-list-cell {
-    display:grid;
-    border: 1px solid #bbb; 
+    display: grid;
+    border: 1px solid #bbb;
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 5px;
@@ -272,67 +309,74 @@ a:active {
 .ahx-carousel {
     width: 100vw;
     height: 100vh;
-    position:relative;
-    /*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
+    position: relative;
+    /*touch-action:none;*/
+    /* otherwise onpointerup does not fire on mobile devices */
 }
 
-.ahx-carousel > ul {
+.ahx-carousel>ul {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
- /* Styles for iPad portrait mode */
- 
-/* Prevent bottom cutoff if browser chrome visible */
+    /* Styles for iPad portrait mode */
+
+    /* Prevent bottom cutoff if browser chrome visible */
     .ahx-carousel {
-	width: 100vw;
-	height: 94vh;
-	position:relative;
-	/*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
+        width: 100vw;
+        height: 94vh;
+        position: relative;
+        /*touch-action:none;*/
+        /* otherwise onpointerup does not fire on mobile devices */
     }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) and (orientation: landscape) {
-  /* Styles for iPad landscape mode */
-/* Prevent bottom cutoff if browser chrome visible */
+
+    /* Styles for iPad landscape mode */
+    /* Prevent bottom cutoff if browser chrome visible */
     .ahx-carousel {
-	width: 100vw;
-	height: 92vh;
-	position:relative;
-	/*touch-action:none;*/ /* otherwise onpointerup does not fire on mobile devices */
+        width: 100vw;
+        height: 92vh;
+        position: relative;
+        /*touch-action:none;*/
+        /* otherwise onpointerup does not fire on mobile devices */
     }
 }
 
 .ahx-slide.ahx-active {
-    display:block;
+    display: block;
     opacity: 1;
     z-index: 1;
     /* Fade in starts immediately to blend images during transition */
-    transition-delay: 0ms;  
+    transition-delay: 0ms;
 }
 
 .ahx-slide.ahx-loaded {
-    display:block; /* vicinity of active slide gets display:block */
+    display: block;
+    /* vicinity of active slide gets display:block */
 }
 
 .ahx-slide {
-    display:none; /* Browser will crash on ios if too many with diplay:block */
+    display: none;
+    /* Browser will crash on ios if too many with diplay:block */
     width: 100%;
     height: 100%;
-    object-fit: contain; /* scale-down; */
-    object-position:center;
+    object-fit: contain;
+    /* scale-down; */
+    object-position: center;
 
     position: absolute;
     inset: 0;
     opacity: 0;
     transition: opacity 200ms ease-in-out;
     /* Fade out starts with a delay to blend images during transition */
-    transition-delay: 200ms;  
-    user-select:none;
-    background-color:black;
-} 
+    transition-delay: 200ms;
+    user-select: none;
+    background-color: black;
+}
 
 /* 
 Image caption. 
@@ -340,44 +384,45 @@ Position and size is set in AHXCarousel._positionImgCaption()
 */
 /*---------------*/
 .ahx-caption {
-    position:absolute; 
-    z-index:2; 
-    display:block; 
-    overflow:auto;
-    background:none; 
-    border:none;
+    position: absolute;
+    z-index: 2;
+    display: block;
+    overflow: auto;
+    background: none;
+    border: none;
     font-size: 1.5rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .5rem;
     padding: .45rem 1.0rem;
     /* margin: 0 .5rem; */
     background-color: rgba(0, 0, 0, .5);
-    opacity: 0;	  
+    opacity: 0;
     /* max-width:50%; */
-    user-select:none;
-    pointer-events:none;
+    user-select: none;
+    pointer-events: none;
 }
+
 /*--------------------*/
 .ahx-caption-mobile {
-    position:absolute; 
-    z-index:2; 
-    display:block; 
-    overflow:auto;
-    background:none; 
-    border:none;
+    position: absolute;
+    z-index: 2;
+    display: block;
+    overflow: auto;
+    background: none;
+    border: none;
     font-size: 1.0rem;
-    color: rgba(255,255,255, .9);
+    color: rgba(255, 255, 255, .9);
     cursor: pointer;
     border-radius: .5rem;
     padding: .45rem 1.0rem;
     /* margin: 0 .5rem; */
     background-color: rgba(0, 0, 0, .5);
-    opacity: 0;	  
+    opacity: 0;
     /*max-width:75%;*/
     /* border-style:solid; border-color:blue; */
-    user-select:none;
-    pointer-events:none;
+    user-select: none;
+    pointer-events: none;
 }
 
 
@@ -385,24 +430,24 @@ Position and size is set in AHXCarousel._positionImgCaption()
 /* Prev and Next button */
 /*----------------------*/
 .ahx-carousel-button {
-    position:absolute;
+    position: absolute;
     z-index: 20;
-    background:none;
-    border:none;
+    background: none;
+    border: none;
     font-size: 4rem;
-    top:50%;
+    top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255, .9);
+    color: rgba(255, 255, 255, .9);
     cursor: pointer;
     border-radius: .25rem;
     padding: 0 .5rem;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;
-    -webkit-user-select: none; 
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .ahx-carousel-button:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .5);
 }
 
@@ -417,21 +462,22 @@ Position and size is set in AHXCarousel._positionImgCaption()
 /* Exit carousel button (x) */
 /*--------------------------*/
 .ahx-x {
-    display:inline;
-    background:none; 
-    border:none;
+    display: inline;
+    background: none;
+    border: none;
     font-size: 2rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .25rem;
     padding: .45rem 1.0rem;
     /*margin: 0 .5rem;*/
     margin: 0 0;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;	     
+    user-select: none;
 }
+
 .ahx-x:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .2)
 }
 
@@ -439,59 +485,61 @@ Position and size is set in AHXCarousel._positionImgCaption()
 /* Img number k/n */
 /*----------------*/
 .ahx-imgnum {
-    display:inline;
-    background:none; 
-    border:none;
+    display: inline;
+    background: none;
+    border: none;
     font-size: 2rem;
-    color: rgba(255,255,255, .7);
-    cursor: pointer;
-    border-radius: .25rem;
-    padding: .45rem .55rem;
-    /*margin: 0 .5rem;*/
-    margin: 0 0;
-    background-color: rgba(0, 0, 0, .5); 
-    user-select:none;	     
-}
-
-/* Toggle image caption */
-/*----------------------*/
-.ahx-captoggle {
-    display:inline;
-    background:none; 
-    border:none;
-    font-size: 2rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .25rem;
     padding: .45rem .55rem;
     /*margin: 0 .5rem;*/
     margin: 0 0;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;	     
+    user-select: none;
 }
+
+/* Toggle image caption */
+/*----------------------*/
+.ahx-captoggle {
+    display: inline;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, .7);
+    cursor: pointer;
+    border-radius: .25rem;
+    padding: .45rem .55rem;
+    /*margin: 0 .5rem;*/
+    margin: 0 0;
+    background-color: rgba(0, 0, 0, .5);
+    user-select: none;
+}
+
 .ahx-captoggle:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .2)
 }
 
 /* Download image button */
 /*-----------------------*/
 .ahx-download {
-    display:inline;
-    background:none; 
-    border:none;
+    display: inline;
+    background: none;
+    border: none;
     font-size: 2rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .25rem;
     padding: .45rem 1.0rem;
     /*margin: 0 .5rem;*/
     margin: 0 0;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;	     
+    user-select: none;
 }
+
 .ahx-download:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .2)
 }
 
@@ -504,40 +552,65 @@ Position and size is set in AHXCarousel._positionImgCaption()
     width: 100%;
     padding-left: 10px;
     padding-right: 10px;
-  }
-  .ahx-edit {
-    display:inline;
-    background:none; 
-    border:none;
+}
+
+.ahx-delete-image {
+    position: fixed;
+    user-select: none;
+    left: 0; 
+    top: 20vh;
+    z-index: 20;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.ahx-delete-image-inner {
+    width:30em; height:100%; margin-left:auto; margin-right:auto; padding-top:10px; background-color:white;
+}
+/* Media query for mobile devices */
+@media screen and (max-width: 480px) {
+    .ahx-delete-image-inner {
+        width:90%;
+    }
+}
+
+.ahx-edit {
+    display: inline;
+    background: none;
+    border: none;
     font-size: 2rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .25rem;
     padding: .45rem 1.0rem;
     /*margin: 0 .5rem;*/
     margin: 0 0;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;	     
+    user-select: none;
 }
+
 .ahx-edit:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .2)
 }
-  .ahx-delete {
-    display:inline;
-    background:none; 
-    border:none;
+
+.ahx-delete {
+    display: inline;
+    background: none;
+    border: none;
     font-size: 2rem;
-    color: rgba(255,255,255, .7);
+    color: rgba(255, 255, 255, .7);
     cursor: pointer;
     border-radius: .25rem;
     padding: .45rem 1.0rem;
     /*margin: 0 .5rem;*/
     margin: 0 0;
     background-color: rgba(0, 0, 0, .5);
-    user-select:none;	     
+    user-select: none;
 }
+
 .ahx-delete:hover {
-    color:white;
+    color: white;
     background-color: rgba(0, 0, 0, .2)
 }

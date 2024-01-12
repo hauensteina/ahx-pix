@@ -29,9 +29,9 @@ class AHXCarousel {
     this.normalPixelRatio = window.devicePixelRatio
     this.normalInnerHeight = window.innerHeight
 
-    $(window).resize(function() { 
+    $(window).resize(function () {
       // your code 
-      });
+    });
 
     E('.ahx-carousel-button.ahx-next').addEventListener(
       'click', ev => {
@@ -53,8 +53,10 @@ class AHXCarousel {
     E('.ahx-captoggle').addEventListener(
       'click', ev => { this._toggleCaption() })
 
+    // Edit icon at the top
     E('.ahx-edit')?.addEventListener(
       'click', ev => {
+        if (E('.ahx-delete.ahx-active')) { return }
         if (E('.ahx-edit.ahx-active')) {
           let e = E('.ahx-edit.ahx-active')
           e.classList.remove('ahx-active')
@@ -66,20 +68,35 @@ class AHXCarousel {
         }
       })
 
+    // Delete icon at the top 
     E('.ahx-delete')?.addEventListener(
       'click', ev => {
-        let picId = this.activePicId()
-        document.location.href = `/delete_pic?pic_id=${picId}`
+        if (E('.ahx-edit.ahx-active')) { return }
+        if (E('.ahx-delete.ahx-active')) {
+          let e = E('.ahx-delete.ahx-active')
+          e.classList.remove('ahx-active')
+          E('#ahx-delete-image').style.display = 'none'
+        } else {
+          let e = E('.ahx-delete')
+          e.classList.add('ahx-active')
+          E('#ahx-delete-image').style.display = 'block'
+        }
       })
 
     E('#btn_cancel').addEventListener(
       'click', ev => {
         ev.preventDefault()
-        let e = E('#btn_cancel')
         E('.ahx-edit').classList.remove('ahx-active')
         E('#ahx-edit-caption').style.display = 'none'
       })
-  
+
+    E('#btn_cancel_del').addEventListener(
+      'click', ev => {
+        ev.preventDefault()
+        E('.ahx-delete').classList.remove('ahx-active')
+        E('#ahx-delete-image').style.display = 'none'
+      })
+
     if (isMobile()) {
       E('.ahx-carousel-button.ahx-next').hidden = true
       E('.ahx-carousel-button.ahx-prev').hidden = true
@@ -113,6 +130,7 @@ class AHXCarousel {
       E('#ta_caption').value = tstr
     }
     E('#pic_id').value = this.activePicId()
+    E('#del_pic_id').value = this.activePicId()
 
     this._preventClickOnPrevious()
     this._enableSwiping()
@@ -332,8 +350,8 @@ class AHXCarousel {
 
     // Caption hides on zoom
     if (isMobile() && window.innerHeight != this.normalInnerHeight) {
-        //this._toggleCaption()
-        return
+      //this._toggleCaption()
+      return
     }
 
     // Limit image height on mobile if you are looking at a 
@@ -343,7 +361,7 @@ class AHXCarousel {
     var maxHeight = window.innerHeight - spaceAtBottom
     if (isMobile() && !isLandscape() && frame.height > maxHeight) {
       img.style.height = `${maxHeight}px`
-    }   
+    }
 
     // Position caption
     var realHeight = caption.clientHeight
@@ -352,7 +370,7 @@ class AHXCarousel {
     caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
     caption.style.width = `${capWidth}px`
     // On mobile, move caption below image if image is landscape 
-    if ( isMobile() && (frame.width > frame.height * 1.2) ) {
+    if (isMobile() && (frame.width > frame.height * 1.2)) {
       caption.style.top = `${frame.top + frame.height + 10}px`
     }
     caption.style.opacity = 1
@@ -377,8 +395,9 @@ class AHXCarousel {
     const TIMEOUT = 2000
     function timerFired() { //return;
       // Hiding conrols for some reason prevents save button click to go through
-      const div_edit = E('#ahx-edit-caption')   
-      if (div_edit.style.display != 'none') return
+      //const div_edit = E('#ahx-edit-caption')
+      if (E('#ahx-edit-caption').style.display != 'none') return
+      if (E('#ahx-delete-image').style.display != 'none') return
 
       E('.ahx-carousel-button.ahx-next').style.display = 'none'
       E('.ahx-carousel-button.ahx-prev').style.display = 'none'

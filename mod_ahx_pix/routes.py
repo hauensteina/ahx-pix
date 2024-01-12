@@ -104,16 +104,26 @@ def carousel():
         delete_icon = f''' <div class='ahx-delete' style='user-select:none;'>&#x26d4;</div> '''
 
     if request.method == 'POST':  # form submitted
+        gallery_ep = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
         gallery_id = session['gallery_id']
-        active_pic_id = parms['pic_id']  # hidden form parm
-        caption = parms['ta_caption']
-        caption = helpers.sanitize_caption( caption)
-        sql = f''' update picture set blurb = %s where id = %s '''
-        pg.run(sql, (caption.strip(), active_pic_id))
-        images = gui.gen_carousel_images(gallery, active_pic_id)
-        return render_template('carousel.html',
-                               images=images, gallery_id=gallery_id, picture_id=active_pic_id,
-                               edit_icon=edit_icon, delete_icon=delete_icon)
+        if 'ta_caption' in parms:  # Save caption
+            active_pic_id = parms['pic_id']  
+            caption = parms['ta_caption']
+            caption = helpers.sanitize_caption( caption)
+            sql = f''' update picture set blurb = %s where id = %s '''
+            pg.run(sql, (caption.strip(), active_pic_id))
+            images = gui.gen_carousel_images(gallery, active_pic_id)
+            return render_template('carousel.html',
+                                images=images, gallery_id=gallery_id, picture_id=active_pic_id,
+                                edit_icon=edit_icon, delete_icon=delete_icon)
+        else: # delete image
+            if 'btn_del_img' in parms:
+                del_pic_id = parms['del_pic_id'] 
+                pg.run( f''' update picture set deleted_flag = true where id = '{del_pic_id}' ''')
+                flash('Pic deleted')
+                pe.gallery_changed( gallery_id)
+            return redirect( url_for(gallery_ep, gallery_id=gallery_id))
+            
     else:  # Initial hit
         gallery_id = parms['gallery_id']
         active_pic_id = parms['picture_id']
@@ -150,32 +160,32 @@ def delete_gallery():
                                value1='Back to safety', value2='DELETE',
                                no_links=True)
 
-@app.route('/delete_pic', methods=['GET', 'POST'])
-@login_required
-#---------------------------------------------------------------
-def delete_pic():
-    """ Delete a pic (prompt for confirmation first) """
-    gallery_id = session['gallery_id']
-    parms = get_parms()
-    pic_id = parms.get('pic_id', '') or session['pic_id']
+# @app.route('/delete_pic', methods=['GET', 'POST'])
+# @login_required
+# #---------------------------------------------------------------
+# def delete_pic():
+#     """ Delete a pic (prompt for confirmation first) """
+#     gallery_id = session['gallery_id']
+#     parms = get_parms()
+#     pic_id = parms.get('pic_id', '') or session['pic_id']
 
-    home = 'index_mobile' if session.get('is_mobile','') else 'index'
-    gallery = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
-    if request.method == 'POST': # form submitted
-        if 'btn_one' in parms:
-            flash('Pic not deleted')
-            return redirect( url_for(gallery, gallery_id=gallery_id))
-        pg.run( f''' update picture set deleted_flag = true where id = '{pic_id}' ''')
-        flash('Pic deleted')
-        pe.gallery_changed( gallery_id)
-        return redirect( url_for(gallery, gallery_id=gallery_id))
-    else:
-        session['pic_id'] = pic_id
-        return render_template('question.html', 
-                               msg=f'''Do you really want to delete the pic?
-                                <div style='color:red;'>You cannot undo the delete!</div>''', 
-                               value1='Back to safety', value2='DELETE',
-                               no_links=True)
+#     home = 'index_mobile' if session.get('is_mobile','') else 'index'
+#     gallery = 'gallery_mobile' if session.get('is_mobile','') else 'gallery'
+#     if request.method == 'POST': # form submitted
+#         if 'btn_one' in parms:
+#             flash('Pic not deleted')
+#             return redirect( url_for(gallery, gallery_id=gallery_id))
+#         pg.run( f''' update picture set deleted_flag = true where id = '{pic_id}' ''')
+#         flash('Pic deleted')
+#         pe.gallery_changed( gallery_id)
+#         return redirect( url_for(gallery, gallery_id=gallery_id))
+#     else:
+#         session['pic_id'] = pic_id
+#         return render_template('question.html', 
+#                                msg=f'''Do you really want to delete the pic?
+#                                 <div style='color:red;'>You cannot undo the delete!</div>''', 
+#                                value1='Back to safety', value2='DELETE',
+#                                no_links=True)
 
 @app.route('/download_img', methods=['GET'])
 @login_required

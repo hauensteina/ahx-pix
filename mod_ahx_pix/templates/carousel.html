@@ -54,6 +54,19 @@
           </div>
         </form>
       </div>
+      <div id='ahx-delete-image' class='ahx-delete-image' style="text-align:center;display:none;">
+        <div class='ahx-delete-image-inner'>
+          <form id=frm_delete method=post>
+            <div style=" text-align:center;" class=''>
+              Do you really want to delete the pic?
+              <div style='color:red;'>You cannot undo the delete!</div>
+              <input id=del_pic_id type=hidden name='del_pic_id' value=''>
+              <input id=btn_del_img type=submit name=btn_del_img value='Delete' class='ahx-submit-button'>
+              <input id=btn_cancel_del type=submit name=btn_cancel_del value='Cancel' class='ahx-submit-button'>
+            </div>
+          </form>
+        </div>
+      </div>
       <ul id='ahx-carousel-ul'>
         {{ images|safe }}
       </ul>
