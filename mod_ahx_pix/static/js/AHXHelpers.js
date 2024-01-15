@@ -19,7 +19,10 @@ function AO( obj, selector) {
 }
 
 /* Check whether we're on a phone or pad */
-function isMobile() { return typeof window.orientation !== 'undefined' }
+function isMobile() {
+  const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
+  return isMobile
+}
 
 /* Get rendered size of image after object-fit:contain; */
 function getContainedFrame(img) {

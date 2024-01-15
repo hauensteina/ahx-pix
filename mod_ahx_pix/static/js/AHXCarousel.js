@@ -106,7 +106,8 @@ class AHXCarousel {
     // But in landscape, that causes issues.
     const self = this
     window.addEventListener('orientationchange', function () {
-      if (window.orientation === 90 || window.orientation === -90) {
+      //if (window.orientation === 90 || window.orientation === -90) {
+      if (this.screen.orientation.type == 'landscape-primary' || this.screen.orientation.type == 'landscape-secondary') {
         // Landscape orientation
         console.log('Changed to landscape mode')
         E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
