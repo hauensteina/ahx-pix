@@ -489,7 +489,7 @@ def gallery():
     # I can edit my own galleries only
     if logged_in() and current_user.data['username'] == gallery['username']:
         mylinks = f'''
-        <div style='margin-left:50px;margin-bottom:10px;width:100%;'>
+        <div class=frozen-top-links-desktop>
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('edit_title')}">Options</a> &nbsp;   
           <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
@@ -518,7 +518,7 @@ def gallery_mobile():
     # I can edit my own galleries only
     if logged_in() and current_user.data['username'] == gallery['username']:
         mylinks = f'''
-        <div style='margin-left:5vw;margin-bottom:10px;width:95vw;'>
+        <div class=frozen-top-links-mobile>
         <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
         <a href="{url_for('edit_title')}">Options</a> &nbsp;   
         <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   

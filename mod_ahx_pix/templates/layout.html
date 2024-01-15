@@ -78,7 +78,7 @@
     {% if not no_header %}
     <div style='display:grid;
                 grid-template-columns: fit-content(50%) fit-content(50%);
-                margin-left:5vw; margin-bottom:5px; margin-top:5vw;'>
+                margin-left:5vw; margin-bottom:5px; padding-top:5vh;'>
       <div style='height:10vh'>
         <a href="{{ url_for('index') }}">
           <img height=100% src="static/images/world_500.png"/ style='margin:auto 0;'>
@@ -132,9 +132,9 @@
 
     <!-- Page Heading -->
     {% if not no_header %}
-    <div style='display:grid;
+    <div style='display:grid; 
                 grid-template-columns: fit-content(50%) fit-content(50%);
-                margin-left:40px; margin-bottom:5px; margin-top:10px;'>
+                margin-left:40px; margin-bottom:5px; padding-top:35px;'>
       <div style='height:8vh'>
         <a href="{{ url_for('index') }}">
           <img height=100% src='static/images/world_500.png' style='margin:auto 0;'>

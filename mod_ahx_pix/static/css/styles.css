@@ -614,3 +614,28 @@ Position and size is set in AHXCarousel._positionImgCaption()
     color: white;
     background-color: rgba(0, 0, 0, .2)
 }
+
+.frozen-top-links-mobile {
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    width: 95vw;
+    padding-left:5vw;
+    padding-top:3px;
+    padding-bottom:5px;
+    border-bottom: 1px solid #e7e7e7;
+    background-color: #ffffff;
+    text-align:center;
+    z-index: 1000; /* Ensure it's above other elements */
+}
+
+.frozen-top-links-desktop {
+    position: fixed; /* Fixed positioning */
+    top: 0; /* Align to the top */
+    width: 95vw;
+    padding-left:5vw;
+    padding-top:3px;
+    padding-bottom:5px;
+    border-bottom: 1px solid #e7e7e7;
+    background-color: #ffffff;
+    z-index: 1000; /* Ensure it's above other elements */
+}
