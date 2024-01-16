@@ -632,7 +632,7 @@ Position and size is set in AHXCarousel._positionImgCaption()
     position: fixed; /* Fixed positioning */
     top: 0; /* Align to the top */
     width: 95vw;
-    padding-left:5vw;
+    padding-left:40px;
     padding-top:3px;
     padding-bottom:5px;
     border-bottom: 1px solid #e7e7e7;
