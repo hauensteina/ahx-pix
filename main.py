@@ -6,8 +6,8 @@
 # Creation Date: Jan 2023
 # **********************************************************************/
 #
-# A simple image viewer
-# See https://www.youtube.com/watch?v=9HcxHDS2w1s (Web Dev Simplified)
+# A Flask web app to organize pictures and videos into galleries.
+# Inspired by https://www.youtube.com/watch?v=9HcxHDS2w1s (Web Dev Simplified)
 
 from pdb import set_trace as BP
 from mod_ahx_pix import app
