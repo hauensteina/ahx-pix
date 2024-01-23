@@ -85,6 +85,7 @@ def find_galleries_with_text(ids, text, order_by):
     '''
     gallery_ids = pg.select(sql, ids + ids)
     gallery_ids = [ x['id'] for x in gallery_ids ]
+    if not gallery_ids: return []
     placeholders = ','.join( ['%s'] * len(gallery_ids))
     
     # Get the gallery objects for the gallery ids
