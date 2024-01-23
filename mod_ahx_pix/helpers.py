@@ -230,11 +230,15 @@ def s3_upload_files( fnames, s3_fnames=''):
     if not s3_fnames: s3_fnames = fnames
     client = s3_get_client()
     for idx,fname in enumerate(fnames):
+        ext = os.path.splitext(fname)[1].lower()
         s3_fname = s3_fnames[idx]
         if idx % 10 == 0:
             log(f'uploading {idx+1}/{len(fnames)}')
         try:
-            response = client.upload_file( fname, S3_BUCKET, s3_fname)
+            if ext == '.svg':
+                response = client.upload_file( fname, S3_BUCKET, s3_fname, ExtraArgs={'ContentType': 'image/svg+xml'})  
+            else:
+                response = client.upload_file( fname, S3_BUCKET, s3_fname)
         except Exception as e:
             log(pexc(e))
 

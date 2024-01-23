@@ -18,11 +18,10 @@ from mod_ahx_pix import log,pg,Q
 import mod_ahx_pix.helpers as helpers
 
 from mod_ahx_pix import (
-    LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE, 
-    IMG_EXTENSIONS, VIDEO_EXTENSIONS, MEDIA_EXTENSIONS
+    LARGE_FOLDER, MEDIUM_FOLDER, SMALL_FOLDER, SMALL_THUMB_SIZE, MEDIUM_THUMB_SIZE, MEDIA_EXTENSIONS
 )
 
-from mod_ahx_pix import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB, FFMPEG_RESIZE_IMG
+from mod_ahx_pix import FFMPEG_COMPRESSOR, FFMPEG_VIDEO_THUMB
 from mod_ahx_pix import DOWNLOAD_FOLDER
 
 from mod_ahx_pix.helpers import (
@@ -103,7 +102,7 @@ def _resize_image( fname, gallery_id, size='small'):
     try:
         local_fname = fname
         ext = os.path.splitext(fname)[1].lower()
-        if ext != '.pdf' and size != 'large':
+        if ext != '.pdf' and ext != '.svg' and size != 'large':
             if ext == '.heic': ext = '.jpg'
             local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
             s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
