@@ -58,6 +58,7 @@ def find_galleries_with_text(ids, text, order_by):
     """
     Find galleries with any word in text in their blurb.
     """
+    if not ids: return []
     words = text.split()
     words = [ w.lower() for w in words]
     
@@ -70,17 +71,28 @@ def find_galleries_with_text(ids, text, order_by):
     
     if not wordsql: wordsql = 'true'
     
-    # If many galleries are selected, skip columns with long text
-    columns = '*' if len(ids) == 1 else 'id, title, username, create_date, change_date'
     sql = f'''
-    select * from gallery 
+    select id from gallery 
     where 
       id in ({placeholders}) 
       and ( {wordsql} ) 
-      order by {order_by}
+    union distinct
+      select gallery_id from picture
+    where 
+      gallery_id in ({placeholders}) 
+      and ( {wordsql} ) 
+      
     '''
-    rows = pg.select(sql, ids)   
-    return rows
+    gallery_ids = pg.select(sql, ids + ids)
+    gallery_ids = [ x['id'] for x in gallery_ids ]
+    placeholders = ','.join( ['%s'] * len(gallery_ids))
+    
+    # Get the gallery objects for the gallery ids
+    sql = f'''
+    select * from gallery where id in ({placeholders}) order by {order_by}
+    '''    
+    galleries = pg.select(sql, gallery_ids)
+    return galleries
 
 def get_gallery_pics( gallery_id):
     """ Get gallery pics, sorted by gallery.piclist """
