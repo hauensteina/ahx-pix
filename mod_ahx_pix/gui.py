@@ -100,7 +100,7 @@ def gen_edit_pics( gallery):
         blurb = pic['blurb']
         blurb = helpers.desanitize_caption( blurb)
         ext = os.path.splitext(pic['filename'])[1].lower()
-        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS + '.svg':
+        if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS + ['.svg']:
             if _bad_caption(blurb): blurb = '' 
         if ext in VIDEO_EXTENSIONS:    
             img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
