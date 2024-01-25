@@ -441,7 +441,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         if pic.get('title_flag','') and not gallery.get('show_title_pic_flag',''): continue
         ext = os.path.splitext( pic['filename'])[1].lower()
         img_link = pic_links.get( 'sm_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
-        if n_cols <= 2 and ext not in VIDEO_EXTENSIONS:
+        if (n_cols <= 2 or ext == '.png') and ext not in VIDEO_EXTENSIONS:
           img_link = pic_links.get( 'med_' + helpers.basename( pic['filename']), 'static/images/img_not_found.jpg')
             
         visit_url = f''' '{url_for( "carousel", gallery_id=gallery["id"], picture_id=pic["id"])}' '''
