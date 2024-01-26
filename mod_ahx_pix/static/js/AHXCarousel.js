@@ -327,6 +327,7 @@ class AHXCarousel {
           elt.load()
         }
       }
+      elt.style.top = window.innerHeight * 0.10 + 'px' 
     } // load()
   } // _preloadImages()
 
@@ -343,7 +344,9 @@ class AHXCarousel {
     }
     if (!E('.ahx-captoggle.ahx-active')) return
 
-    img.style.top = E('#ahx-topcont').clientHeight + 'px'
+    //debugger
+    img.style.top = window.innerHeight * 0.10 + 'px' //E('#ahx-topcont').clientHeight + 'px'
+    img.style.height = `calc(100% - ${E('#ahx-topcont').clientHeight}px)`
     var frame = getContainedFrame(img)
     if (isNaN(frame.width)) return;
     let caption = this.activeCaption()
