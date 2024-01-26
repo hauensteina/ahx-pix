@@ -366,7 +366,7 @@ a:active {
     height: 100%;
     object-fit: contain;
     /* scale-down; */
-    object-position: center;
+    object-position: top;
 
     position: absolute;
     inset: 0;

@@ -29,10 +29,6 @@ class AHXCarousel {
     this.normalPixelRatio = window.devicePixelRatio
     this.normalInnerHeight = window.innerHeight
 
-    $(window).resize(function () {
-      // your code 
-    });
-
     E('.ahx-carousel-button.ahx-next').addEventListener(
       'click', ev => {
         this._changeImage('next')
@@ -111,13 +107,15 @@ class AHXCarousel {
         // Landscape orientation
         console.log('Changed to landscape mode')
         E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
-        E('#ahx-topcont').style.display = 'none'
+        //E('#ahx-topcont').style.display = 'none'
+        E('#ahx-topcont').style.opacity = 0
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
         E('#ahx-carousel').style.touchAction = 'auto'
         E('.ahx-x').style.display = 'inline'
-        E('#ahx-topcont').style.display = 'inline'
+        //E('#ahx-topcont').style.display = 'inline'
+        E('#ahx-topcont').style.opacity = 1
         self._resetArrowTimer()
       }
     })
@@ -343,8 +341,8 @@ class AHXCarousel {
       return
     }
     if (!E('.ahx-captoggle.ahx-active')) return
+    img.style.top = E('#ahx-topcont').clientHeight + 'px'
     var frame = getContainedFrame(img)
-    img.style.top = `0px`
     if (isNaN(frame.width)) return;
     let caption = this.activeCaption()
     if (!caption) return
@@ -370,10 +368,17 @@ class AHXCarousel {
     caption.style.left = `${frame.left + (frame.width - capWidth) / 2.0}px` // center
     caption.style.top = `${frame.top + frame.height - realHeight - 20}px`
     caption.style.width = `${capWidth}px`
+
     // On mobile, move caption below image if image is landscape 
-    if (isMobile() && (frame.width > frame.height * 1.2)) {
+    // if (isMobile() && (frame.width > frame.height * 1.2)) {
+    //   caption.style.top = `${frame.top + frame.height + 10}px`
+    // }
+
+    // Move caption below image if there is enough room
+    if (window.innerHeight - (frame.top + frame.height) > realHeight + 20 ) {
       caption.style.top = `${frame.top + frame.height + 10}px`
     }
+
     caption.style.opacity = 1
   } // _positionCaption()
 
@@ -403,7 +408,8 @@ class AHXCarousel {
       E('.ahx-carousel-button.ahx-next').style.display = 'none'
       E('.ahx-carousel-button.ahx-prev').style.display = 'none'
       E('.ahx-x').style.display = 'none'
-      E('#ahx-topcont').style.display = 'none'
+      //E('#ahx-topcont').style.display = 'none'
+      E('#ahx-topcont').style.opacity = 0
     }
     clearTimeout(this.arrowTimer)
     this.arrowTimer = setTimeout(timerFired, TIMEOUT)
@@ -428,7 +434,8 @@ class AHXCarousel {
         E('.ahx-carousel-button.ahx-prev').style.display = 'inline'
       }
       E('.ahx-x').style.display = 'inline'
-      E('#ahx-topcont').style.display = 'inline'
+      //E('#ahx-topcont').style.display = 'inline'
+      E('#ahx-topcont').style.opacity = 1
       self._resetArrowTimer()
     } // showControls()
 
