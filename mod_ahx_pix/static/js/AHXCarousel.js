@@ -107,14 +107,14 @@ class AHXCarousel {
         // Landscape orientation
         console.log('Changed to landscape mode')
         E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
-        //E('#ahx-topcont').style.display = 'none'
+        E('#ahx-topcont').style.display = 'none'
         E('#ahx-topcont').style.opacity = 0
       } else {
         // Portrait orientation
         console.log('Changed to portrait mode')
         E('#ahx-carousel').style.touchAction = 'auto'
         E('.ahx-x').style.display = 'inline'
-        //E('#ahx-topcont').style.display = 'inline'
+        E('#ahx-topcont').style.display = 'inline'
         E('#ahx-topcont').style.opacity = 1
         self._resetArrowTimer()
       }
@@ -337,10 +337,13 @@ class AHXCarousel {
     if (isMobile() && isLandscape() && this.activeCaption()) {
       let caption = this.activeCaption()
       caption.style.opacity = 0
+      caption.style.display = 'none'
       img.style.height = `100%`
+      img.style.top = 0
       return
     }
     if (!E('.ahx-captoggle.ahx-active')) return
+
     img.style.top = E('#ahx-topcont').clientHeight + 'px'
     var frame = getContainedFrame(img)
     if (isNaN(frame.width)) return;

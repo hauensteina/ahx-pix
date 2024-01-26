@@ -18,7 +18,7 @@ function AO( obj, selector) {
   return [ ...obj.querySelectorAll( selector) ]
 }
 
-/* Check whether we're on a phone or pad */
+/* Check whether we're on a mobile device (phone or tablet) */
 function isMobile() {
   const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
   return isMobile
