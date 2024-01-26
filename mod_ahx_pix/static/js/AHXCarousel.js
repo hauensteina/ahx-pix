@@ -337,7 +337,6 @@ class AHXCarousel {
     if (isMobile() && isLandscape() && this.activeCaption()) {
       let caption = this.activeCaption()
       caption.style.opacity = 0
-      caption.style.display = 'none'
       img.style.height = `100%`
       img.style.top = 0
       return
