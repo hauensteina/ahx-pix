@@ -329,6 +329,7 @@ class AHXCarousel {
       }
       // Position image relative to top of screen
       elt.style.top = window.innerHeight * 0.08 + 'px' 
+      elt.style.height = `calc(100% - ${window.innerHeight * 0.09}px)`
     } // load()
   } // _preloadImages()
 
@@ -347,7 +348,8 @@ class AHXCarousel {
 
     //debugger
     img.style.top = window.innerHeight * 0.08 + 'px' //E('#ahx-topcont').clientHeight + 'px'
-    img.style.height = `calc(100% - ${E('#ahx-topcont').clientHeight}px)`
+    //img.style.height = `calc(100% - ${E('#ahx-topcont').clientHeight}px)`
+    img.style.height = `calc(100% - ${window.innerHeight * 0.09}px)`
     var frame = getContainedFrame(img)
     if (isNaN(frame.width)) return;
     let caption = this.activeCaption()
