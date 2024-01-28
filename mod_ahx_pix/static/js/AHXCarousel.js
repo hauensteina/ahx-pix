@@ -328,7 +328,7 @@ class AHXCarousel {
         }
       }
       // Position image relative to top of screen
-      elt.style.top = window.innerHeight * 0.07 + 'px' 
+      elt.style.top = window.innerHeight * 0.08 + 'px' 
     } // load()
   } // _preloadImages()
 
@@ -346,7 +346,7 @@ class AHXCarousel {
     if (!E('.ahx-captoggle.ahx-active')) return
 
     //debugger
-    img.style.top = window.innerHeight * 0.07 + 'px' //E('#ahx-topcont').clientHeight + 'px'
+    img.style.top = window.innerHeight * 0.08 + 'px' //E('#ahx-topcont').clientHeight + 'px'
     img.style.height = `calc(100% - ${E('#ahx-topcont').clientHeight}px)`
     var frame = getContainedFrame(img)
     if (isNaN(frame.width)) return;
