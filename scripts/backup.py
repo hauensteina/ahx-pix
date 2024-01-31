@@ -18,7 +18,7 @@ from mod_ahx_pix.postgres import Postgres
 PROD_BUCKET = 'ahx-pics'
 BACKUP_BUCKET = 'ahx-pics-backup'
 
-BACKUP_FOLDER = '/Volumes/One Touch/ahx-pics'
+BACKUP_FOLDER = '/Volumes/stuff/ahx-pics'
 
 def usage(printmsg=False):
     name = os.path.basename( __file__)
