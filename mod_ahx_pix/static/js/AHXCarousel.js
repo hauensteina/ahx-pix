@@ -189,6 +189,7 @@ class AHXCarousel {
     if (E('#cap_' + picIdx)) { E('#ta_caption').value = E('#cap_' + picIdx).innerHTML }
     // Pass the pic id in a hidden form param on submit
     E('#pic_id').value = nextSlide.getAttribute('data-pic-id')
+    E('#del_pic_id').value = nextSlide.getAttribute('data-pic-id')
     E('#ahx-edit-caption').style.display = 'none' // Hide caption editor
 
     // Change URL to match pic
