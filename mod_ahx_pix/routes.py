@@ -438,12 +438,14 @@ def edit_title():
     title_pic = pe.get_title_pic(gallery_id)
     data['caption'] = ''
     if title_pic: data['caption'] = gallery.get('title_pic_caption','') or ''
-    if request.method == 'POST': # Save button clicked
+    if request.method == 'POST': # A button was clicked
         if 'file' not in request.files: # Save button clicked
             parms = get_parms()
             if 'save' in parms:
                 save_changes( get_parms(), gallery_id)
                 flash('Title changes saved. Refresh until changes show.')
+            elif 'del_gallery' in parms:
+                return redirect( url_for('delete_gallery', gallery_id=gallery_id))
             else:
                 flash('Title changes discarded.')
             return redirect( url_for( gallery_page, gallery_id=gallery_id))
@@ -493,7 +495,6 @@ def gallery():
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('edit_title')}">Options</a> &nbsp;   
           <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
-          <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
         '''
     return render_template( 'gallery.html', content=gallery_html, custom_links=mylinks, no_links=True)
@@ -522,7 +523,6 @@ def gallery_mobile():
         <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
         <a href="{url_for('edit_title')}">Options</a> &nbsp;   
         <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
-        <a href="{url_for('delete_gallery', gallery_id=gallery_id )}">Delete</a> &nbsp;   
         </div>
         '''
     return render_template( 'gallery_mobile.html', content=gallery_html, custom_links=mylinks, no_links=True)
