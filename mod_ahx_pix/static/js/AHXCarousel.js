@@ -293,11 +293,43 @@ class AHXCarousel {
     }
   } // _enableSwiping()
 
+  //-----------------------
+  _positionImage(img) {
+    var frame = getContainedFrame(img)
+    var top = 0.0
+    var height = 0.0
+    // Landscape images look better if we move them down a bit
+    if (frame.width > frame.height * 1.2) {
+      top = window.innerHeight * 0.12 + 'px'
+      height = `calc(100% - ${window.innerHeight * 0.12}px)`
+    } else {
+      top = window.innerHeight * 0.08 + 'px'
+      height = `calc(100% - ${window.innerHeight * 0.09}px)`
+    }
+    img.style.top = top
+    img.style.height = height
+  } // _positionImage()
+
   // Load active image on demand, and some more to the left and right.
   // Unload other stuff by setting display:none (remove ahx-loaded).
   // Otherwise, mobile browsers crash.
   //---------------------------------------------------------------------
   _preloadImages(slides, nextSlide) {
+    const load = (elt, idx) => {  // 'this' must point to the AHXCarousel object
+      elt.classList.add('ahx-loaded')
+      if (elt.tagName == 'IMG') {
+        elt.setAttribute('src', elt.getAttribute('data-src'))
+      }
+      else if (elt.tagName == 'VIDEO') {
+        var source = E(`#vsrc_${idx}`)
+        if (!source.src) {
+          source.src = source.getAttribute('data-src')
+          elt.load()
+        }
+      }
+      this._positionImage(elt)
+    } // load()
+
     var nextIdx = [...slides].indexOf(nextSlide)
     // Load current img
     if (!slides[nextIdx].classList.contains('ahx-loaded')) { load(slides[nextIdx], nextIdx) }
@@ -316,23 +348,8 @@ class AHXCarousel {
       }
     } // for
 
-    function load(elt, idx) {
-      elt.classList.add('ahx-loaded')
-      if (elt.tagName == 'IMG') {
-        elt.setAttribute('src', elt.getAttribute('data-src'))
-      }
-      else if (elt.tagName == 'VIDEO') {
-        var source = E(`#vsrc_${idx}`)
-        if (!source.src) {
-          source.src = source.getAttribute('data-src')
-          elt.load()
-        }
-      }
-      // Position image relative to top of screen
-      elt.style.top = window.innerHeight * 0.08 + 'px' 
-      elt.style.height = `calc(100% - ${window.innerHeight * 0.09}px)`
-    } // load()
   } // _preloadImages()
+
 
   //-----------------------
   _positionCaption() {
@@ -347,10 +364,7 @@ class AHXCarousel {
     }
     if (!E('.ahx-captoggle.ahx-active')) return
 
-    //debugger
-    img.style.top = window.innerHeight * 0.08 + 'px' //E('#ahx-topcont').clientHeight + 'px'
-    //img.style.height = `calc(100% - ${E('#ahx-topcont').clientHeight}px)`
-    img.style.height = `calc(100% - ${window.innerHeight * 0.09}px)`
+    this._positionImage(img)
     var frame = getContainedFrame(img)
     if (isNaN(frame.width)) return;
     let caption = this.activeCaption()
@@ -384,7 +398,7 @@ class AHXCarousel {
     // }
 
     // Move caption below image if there is enough room
-    if (window.innerHeight - (frame.top + frame.height) > realHeight + 20 ) {
+    if (window.innerHeight - (frame.top + frame.height) > realHeight + 20) {
       caption.style.top = `${frame.top + frame.height + 10}px`
     }
 
