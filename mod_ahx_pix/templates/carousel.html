@@ -84,7 +84,8 @@
         //multi-touch events, allow default
       } else {
         //single touch, prevent default
-        event.preventDefault();
+        if (E('#ahx-edit-caption').style.display != 'none') return
+        event.preventDefault()
       }
     }, { passive: false });
 
