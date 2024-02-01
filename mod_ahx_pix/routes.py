@@ -492,6 +492,7 @@ def gallery():
     if logged_in() and current_user.data['username'] == gallery['username']:
         mylinks = f'''
         <div class=frozen-top-links-desktop>
+          <a href="{url_for('index')}">Back</a> &nbsp;   
           <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
           <a href="{url_for('edit_title')}">Options</a> &nbsp;   
           <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
@@ -520,6 +521,7 @@ def gallery_mobile():
     if logged_in() and current_user.data['username'] == gallery['username']:
         mylinks = f'''
         <div class=frozen-top-links-mobile>
+        <a href="{url_for('index')}">Back</a> &nbsp;   
         <a href="{url_for('upload_pics')}">Upload Pics</a> &nbsp;   
         <a href="{url_for('edit_title')}">Options</a> &nbsp;   
         <a href="{url_for('edit_pics', gallery_id=gallery_id)}">Change Order</a> &nbsp;   
