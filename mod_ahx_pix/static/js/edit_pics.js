@@ -60,11 +60,13 @@ function clearFlash() {
 function editHappened(edit_type) {
   if (edit_type == 'select_pic') {
     if (A('.ahx-selected').length > 0) {
+      E('#btn_del').disabled = false
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = false
         E('#btn_down').disabled = false
       }
     } else {
+      E('#btn_del').disabled = true
       E('#btn_save').disabled = !editHappened.flag
       if (E('#btn_up') != null) {
         E('#btn_up').disabled = true
@@ -73,6 +75,7 @@ function editHappened(edit_type) {
     }
   } // select_pic
   else if (edit_type == 'edit_caption' || edit_type == 'pic_moved' ) {
+    E('#btn_del').disabled = true
     if (isMobile()) {
       editHappened.flag = true
       E('#btn_save').disabled = false
