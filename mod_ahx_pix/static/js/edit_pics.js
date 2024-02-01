@@ -169,7 +169,7 @@ function setupDragging() {
   function rowcol( action, pic_id) {
     if (action == 'compute') {
       // Compute and remember row and col for all pics
-      const pics = document.querySelectorAll( '.ahx-pic') 
+      const pics = document.querySelectorAll( '.ahx-pic, .ahx-video') 
       var idx = 0
       pics.forEach( p => {
         rowcol.lookup[p.id] = [ Math.floor( idx / ROWLEN), idx % ROWLEN, idx ] 
@@ -177,7 +177,8 @@ function setupDragging() {
       })
     } else if (action == 'get') {
       // Retrieve row,col for one pic
-      return rowcol.lookup[pic_id]
+      const res = rowcol.lookup[pic_id]
+      return res
     }
     return [0,0,0]
   } // rowcol()
