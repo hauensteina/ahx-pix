@@ -390,8 +390,8 @@ Position and size is set in AHXCarousel._positionImgCaption()
     overflow: auto;
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, .7);
+    font-size: 1.0rem;
+    color: rgba(255, 255, 255, .9);
     cursor: pointer;
     border-radius: .5rem;
     padding: .45rem 1.0rem;
