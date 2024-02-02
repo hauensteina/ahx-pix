@@ -327,7 +327,9 @@ class AHXCarousel {
           elt.load()
         }
       }
-      this._positionImage(elt)
+      elt.addEventListener('load', () => { // Wait until it's loaded to get the img dimensions
+        this._positionImage(elt)
+      })
     } // load()
 
     var nextIdx = [...slides].indexOf(nextSlide)
@@ -339,6 +341,10 @@ class AHXCarousel {
       const slide = slides[idx]
       if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
         if (!slide.classList.contains('ahx-loaded')) {
+          if (idx == 50) {
+            var tt=42
+            //debugger
+          }
           console.log(`preloading idx ${idx}`)
           load(slide, idx)
         }
