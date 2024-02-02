@@ -315,7 +315,7 @@ class AHXCarousel {
   // Otherwise, mobile browsers crash.
   //---------------------------------------------------------------------
   _preloadImages(slides, nextSlide) {
-    const load = (elt, idx) => {  // 'this' must point to the AHXCarousel object
+    const load = (elt, idx) => {  
       elt.classList.add('ahx-loaded')
       if (elt.tagName == 'IMG') {
         elt.setAttribute('src', elt.getAttribute('data-src'))
@@ -341,10 +341,6 @@ class AHXCarousel {
       const slide = slides[idx]
       if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
         if (!slide.classList.contains('ahx-loaded')) {
-          if (idx == 50) {
-            var tt=42
-            //debugger
-          }
           console.log(`preloading idx ${idx}`)
           load(slide, idx)
         }
