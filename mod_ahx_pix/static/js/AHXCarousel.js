@@ -315,7 +315,7 @@ class AHXCarousel {
   // Otherwise, mobile browsers crash.
   //---------------------------------------------------------------------
   _preloadImages(slides, nextSlide) {
-    const load = (elt, idx) => {  
+    const load = (elt, idx) => {
       elt.classList.add('ahx-loaded')
       if (elt.tagName == 'IMG') {
         elt.setAttribute('src', elt.getAttribute('data-src'))
@@ -332,26 +332,27 @@ class AHXCarousel {
       })
     } // load()
 
-    var nextIdx = [...slides].indexOf(nextSlide)
-    // Load current img
-    if (!slides[nextIdx].classList.contains('ahx-loaded')) { load(slides[nextIdx], nextIdx) }
-    // Load or unload the others
-    //for (var idx=0; idx < slides.length; idx++) {
-    for (var idx = slides.length - 1; idx >= 0; idx--) {
-      const slide = slides[idx]
-      if (idx >= nextIdx - 2 && idx <= nextIdx + 2 && idx != nextIdx) {
-        if (!slide.classList.contains('ahx-loaded')) {
-          console.log(`preloading idx ${idx}`)
-          load(slide, idx)
-        }
+    let nextIdx = [...slides].indexOf(nextSlide)
+    let N = slides.length
+    // Find nearby indexes and load them
+    let nearby = []
+    for (let offset of [0,1,2,-1,-2]) {
+      let idx = (nextIdx + offset + N) % N
+      nearby.push(idx)
+      let slide = slides[idx]
+      if (!slide.classList.contains('ahx-loaded')) {
+        console.log(`preloading idx ${idx}`)
+        load(slide, idx)
       }
-      else if (idx != nextIdx) {
+    }
+    // Unload if not nearby
+    for (let idx = 0; idx < N; idx++) {
+      let slide = slides[idx]
+      if (!nearby.includes(idx)) {
         slide.classList.remove('ahx-loaded')
       }
     } // for
-
   } // _preloadImages()
-
 
   //-----------------------
   _positionCaption() {
