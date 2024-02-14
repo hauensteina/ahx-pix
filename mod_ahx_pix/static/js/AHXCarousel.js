@@ -443,10 +443,12 @@ class AHXCarousel {
 
   //------------------
   _setImgNum() {
-    var slides = this.slides()
-    var activeSlide = this.activeSlide()
-    var activeIdx = [...slides].indexOf(activeSlide)
-    E('.ahx-imgnum').innerHTML = `${activeIdx + 1}/${slides.length}`
+    let slides = this.slides()
+    let activeSlide = this.activeSlide()
+    let activeIdx = [...slides].indexOf(activeSlide)
+    let curPage = (activeIdx+1).toString().padStart(3, ' ') // left pad to 3 digits
+    curPage = curPage.replace(/^ +/g, match => '&nbsp;'.repeat(match.length)); // replace leading spaces with &nbsp;
+    E('.ahx-imgnum').innerHTML = `${curPage}/${slides.length}`
   } // _setImgNum
 
   // Show arrows on mouse move
