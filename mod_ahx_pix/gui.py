@@ -7,7 +7,7 @@ Functions to generate html for the GUI
 """
 
 from pdb import set_trace as BP
-import os
+import os, re
 from flask import url_for, session
 from mod_ahx_pix import IMG_EXTENSIONS, VIDEO_EXTENSIONS
 import mod_ahx_pix.helpers as helpers
@@ -34,12 +34,13 @@ def gen_carousel_images( gallery, active_pic_id):
                   'lg_' + helpers.basename(pic['filename']), 'static/images/img_not_found.png')
                 #log( f'gen_carousel_images: furl:{furl} pic:{pic}')
 
-            caption = f''' <div id='cap_{i}' class={capclass}>{pic['blurb']}</div> '''
+            blurb = helpers.markup_caption( pic['blurb'])
+            caption = f''' <div id='cap_{i}' class={capclass}>{blurb}</div> '''
             
             if ext in VIDEO_EXTENSIONS + IMG_EXTENSIONS + ['.svg']:
-                if _bad_caption( pic['blurb']): caption = ''
+                if _bad_caption( blurb): caption = ''
  
-            if 'NEW PICTURE' in pic['blurb']: caption = ''
+            if 'NEW PICTURE' in blurb: caption = ''
 
             classes = " class='ahx-slide' "
             if pic['id'] == active_pic_id: 
@@ -453,7 +454,7 @@ def _gen_image_grid( gallery, pics, pic_links, n_cols=5):
         style = f'width:100%;object-fit:contain;'
         if ext in VIDEO_EXTENSIONS: style += f'border-style:solid; border-color:green; border-width:4px; padding:1px;'
         pic_h = I( img_link, style, f' {onclick} ')
-        caption_h = pic['blurb']
+        caption_h = helpers.markup_caption( pic['blurb'])
         if len(caption_h) > MAX_CAP_LEN and not '<a' in caption_h and n_cols > 2:
             caption_h = caption_h[:MAX_CAP_LEN] + '...'
         # Some captions are just filenames. Hide them. 

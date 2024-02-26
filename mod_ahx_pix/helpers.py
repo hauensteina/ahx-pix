@@ -5,7 +5,8 @@
 # **********************************************************************/
 
 from pdb import set_trace as BP
-import sys,os,subprocess
+import sys,os,re
+import subprocess
 from datetime import datetime
 import inspect
 import uuid
@@ -120,6 +121,11 @@ def desanitize_caption(text):
     """ Replace <br> with line breaks """
     text = text.replace('<br>','\n')
     return text
+
+def markup_caption(text):
+    """ Display bold text between *'s """
+    res = re.sub(r'\*(.*?)\*', r'<b>\1</b>', text)
+    return res
 
 def html_tag( tag, content='', style=''):
     """
