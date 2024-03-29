@@ -90,17 +90,23 @@
         console.log("Error while uploading:", file, errorMessage)
       })
       this.on("queuecomplete", function () {
+        var twait = 8000 // 8 secs
+        try {
+          if (dz.files[0].name.slice(-4) == '.svg') {
+            twait = 2000
+          }
+        } catch {}
         setTimeout(function () {
           E('#btn_done').disabled = false;
           E('#spinner').style.display = 'none'
-        }, 4000); // 4 secs
+        }, twait)
       })
       this.on("addedfile", function () {
         E('#btn_done').disabled = true
         E('#spinner').style.display = 'block'
       })
     }
-  })
+  }) // new Dropzone
 
   dz.on("uploadprogress", function (file, progress) {
     const total = file.upload.totalChunkCount
