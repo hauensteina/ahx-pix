@@ -14,10 +14,11 @@ from urllib.parse import urlparse
 import redis
 import random
 from rq import Queue
-from flask import Flask, session
+from flask import Flask, session, json
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask.json import JSONEncoder
+
 from flask_mail import Mail
 
 from mod_ahx_pix.postgres import Postgres
@@ -77,7 +78,7 @@ class CustomJSONEncoder(JSONEncoder):
             pass
         else:
             return list(iterable)
-        return JSONEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, obj)
 
 app.json_encoder = CustomJSONEncoder
 
