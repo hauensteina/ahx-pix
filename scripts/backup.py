@@ -47,8 +47,7 @@ def main():
     parser = argparse.ArgumentParser(usage=usage())
     parser.add_argument( "--mode", required=True, choices=['DB','S3', 'local', 'all'])
     args = parser.parse_args()
-    if args.mode in ['DB', 'all']:
-        copy_db()
+    copy_db()
     if args.mode in ['S3', 'all']:
         copy_s3()
     if args.mode in ['local', 'all']:
