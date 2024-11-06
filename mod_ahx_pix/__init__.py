@@ -47,7 +47,7 @@ UPLOAD_FOLDER='uploads'
 # Limit background job time
 JOB_TIMEOUT=3600
 
-IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg','.heic','.svg']
+IMG_EXTENSIONS = ['.png', '.jpg', '.jpeg','.heic','.svg', '.webp']
 VIDEO_EXTENSIONS = ['.mov', '.mp4']
 MEDIA_EXTENSIONS = IMG_EXTENSIONS + VIDEO_EXTENSIONS
 
