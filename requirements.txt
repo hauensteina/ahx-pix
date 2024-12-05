@@ -15,7 +15,7 @@ jmespath==1.0.1
 MarkupSafe==2.1.5
 packaging==24.1
 pillow==10.4.0
-psycopg2==2.9.9
+psycopg2-binary==2.9.10
 python-dateutil==2.9.0.post0
 redis==5.0.7
 rq==1.16.2
