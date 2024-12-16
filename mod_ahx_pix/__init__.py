@@ -153,7 +153,8 @@ mail = Mail(app)
 #-----------------------------------
 #redis_url = os.getenv('REDIS_URL')
 if os.getenv('PRODUCTION_FLAG'):
-    redis_url = os.getenv('REDIS_TLS_URL')
+    #redis_url = os.getenv('REDIS_TLS_URL')
+    redis_url = os.getenv('REDIS_URL')
 else:
     #redis_url = os.getenv('PIX_REDIS_URL')  # remote
     redis_url = os.getenv('REDIS_URL')  # local
