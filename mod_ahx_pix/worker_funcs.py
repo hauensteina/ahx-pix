@@ -304,7 +304,7 @@ def add_title_image( fname, gallery_id):
 
 def heic2jpg(fname):
     src = os.path.splitext(fname)[0] + '.HEIC'
-    # rename src to .HEIC from .heic
+    # rename src to .HEIC from .heic to make Image.open work
     if fname.endswith('.heic'): # move to src
         os.rename(fname, src)
         
@@ -330,5 +330,8 @@ def heic2jpg(fname):
 
         im.convert("RGB").save(dst, **save_kwargs)
 
+    if src != fname:
+        os.rename(src, fname)
+        
     log(f"heic2jgp(): converted {src} to {dst}")   
     return dst
