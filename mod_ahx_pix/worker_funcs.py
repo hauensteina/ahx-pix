@@ -8,10 +8,13 @@ Functions for background execution via Redis Queue
 
 from pdb import set_trace as BP
 import os, shutil, json
+import pathlib
 import datetime
 import uuid
 from zipfile import ZipFile
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, ImageOps
+from pillow_heif import register_heif_opener
+
 from werkzeug.utils import secure_filename
 from mod_ahx_pix.helpers import pexc, media_type, run_shell, list_files
 from mod_ahx_pix import log,pg,Q
@@ -103,7 +106,10 @@ def _resize_image( fname, gallery_id, size='small'):
         local_fname = fname
         ext = os.path.splitext(fname)[1].lower()
         if ext != '.pdf' and ext != '.svg' and size != 'large':
-            if ext == '.heic': ext = '.jpg'
+            if ext == '.heic':
+                BP()
+                local_fname = heic2jpg(local_fname) 
+                ext = '.jpg'
             local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
             s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
             try:
@@ -296,3 +302,34 @@ def add_title_image( fname, gallery_id):
     os.remove( s3name)
     _set_gallery_status( gallery_id, f'ok')
     log( f'''WORKER:  add_title_image() done''')
+
+def heic2jpg(fname):
+    src = os.path.splitext(fname)[0] + '.HEIC'
+    # rename src to .HEIC from .heic
+    if fname.endswith('.heic'): # move to src
+        os.rename(fname, src)
+        
+    dst = os.path.splitext(fname)[0] + ".jpg"
+
+    with Image.open(fname) as im:
+        # Apply correct orientation if EXIF has rotation
+        im = ImageOps.exif_transpose(im)
+
+        exif = im.info.get("exif")
+        icc = im.info.get("icc_profile")
+
+        save_kwargs = {
+            "format": "JPEG",
+            "quality": 95,
+            "optimize": True,
+            "progressive": True,
+        }
+        if exif:
+            save_kwargs["exif"] = exif
+        if icc:
+            save_kwargs["icc_profile"] = icc
+
+        im.convert("RGB").save(dst, **save_kwargs)
+
+    log(f"heic2jgp(): converted {src} to {dst}")   
+    return dst
