@@ -108,7 +108,9 @@ def _resize_image( fname, gallery_id, size='small'):
             s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
             try:
                 cmd = f''' convert {local_fname} -auto-orient -resize {max_size}x{max_size}\> -quality {qual} +profile '*' {local_thumb} '''
+                log(f'''cmd:{cmd}''')
                 out,err = run_shell( cmd)
+                log(f'''err:{err}''')
             except Exception as e:
                 log(pexc(e))
                 log(f'ERROR: ImageMagick resize of {fname} failed.') 
