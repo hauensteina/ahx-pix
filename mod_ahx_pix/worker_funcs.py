@@ -107,7 +107,6 @@ def _resize_image( fname, gallery_id, size='small'):
         ext = os.path.splitext(fname)[1].lower()
         if ext != '.pdf' and ext != '.svg' and size != 'large':
             if ext == '.heic':
-                BP()
                 local_fname = heic2jpg(local_fname) 
                 ext = '.jpg'
             local_thumb = f'{DOWNLOAD_FOLDER}/{prefix}_{basename(local_fname)}{ext}'
