@@ -31,6 +31,9 @@ from mod_ahx_pix.helpers import (
     basename, s3_get_keys, s3_download_file, s3_upload_files, s3_delete_files, s3_get_client
 )
     
+# Enable HEIC/HEIF support in Pillow
+register_heif_opener()
+        
 def _resize_media( fnames, gallery_id, size):
     tstart = datetime.datetime.now()
     for idx,fname in enumerate(fnames):
@@ -113,9 +116,9 @@ def _resize_image( fname, gallery_id, size='small'):
             s3_thumb = f'{target_folder}{gallery_id}/{prefix}_{basename(fname)}{ext}'
             try:
                 cmd = f''' convert {local_fname} -auto-orient -resize {max_size}x{max_size}\> -quality {qual} +profile '*' {local_thumb} '''
-                log(f'''cmd:{cmd}''')
+                #log(f'''cmd:{cmd}''')
                 out,err = run_shell( cmd)
-                log(f'''err:{err}''')
+                #log(f'''err:{err}''')
             except Exception as e:
                 log(pexc(e))
                 log(f'ERROR: ImageMagick resize of {fname} failed.') 
@@ -303,14 +306,11 @@ def add_title_image( fname, gallery_id):
     log( f'''WORKER:  add_title_image() done''')
 
 def heic2jpg(fname):
-    src = os.path.splitext(fname)[0] + '.HEIC'
-    # rename src to .HEIC from .heic to make Image.open work
-    if fname.endswith('.heic'): # move to src
-        os.rename(fname, src)
+    src = fname
         
     dst = os.path.splitext(fname)[0] + ".jpg"
 
-    with Image.open(fname) as im:
+    with Image.open(src) as im:
         # Apply correct orientation if EXIF has rotation
         im = ImageOps.exif_transpose(im)
 
@@ -319,7 +319,7 @@ def heic2jpg(fname):
 
         save_kwargs = {
             "format": "JPEG",
-            "quality": 95,
+            "quality": 100,
             "optimize": True,
             "progressive": True,
         }
@@ -329,9 +329,6 @@ def heic2jpg(fname):
             save_kwargs["icc_profile"] = icc
 
         im.convert("RGB").save(dst, **save_kwargs)
-
-    if src != fname:
-        os.rename(src, fname)
         
     log(f"heic2jgp(): converted {src} to {dst}")   
     return dst
