@@ -308,7 +308,8 @@ a:active {
 
 .ahx-carousel {
     width: 100vw;
-    height: 100vh;
+    /* height: 100vh; */
+    height: 95vh;
     position: relative;
     /*touch-action:none;*/
     /* otherwise onpointerup does not fire on mobile devices */
