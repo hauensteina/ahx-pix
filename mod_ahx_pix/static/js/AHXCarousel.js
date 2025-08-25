@@ -401,7 +401,7 @@ class AHXCarousel {
     // }
 
     // Move caption below image if there is enough room
-    if (window.innerHeight - (frame.top + frame.height) > realHeight + 40) {
+    if (window.innerHeight - (frame.top + frame.height) > realHeight + 80) {
       caption.style.top = `${frame.top + frame.height + 10}px`
     }
 
