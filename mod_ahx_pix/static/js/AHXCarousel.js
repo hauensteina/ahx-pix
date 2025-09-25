@@ -98,15 +98,14 @@ class AHXCarousel {
       E('.ahx-carousel-button.ahx-prev').hidden = true
     }
 
-    // We want touchAction:auto in portrait to allow zooming.
-    // But in landscape, that causes issues.
+    // Style changes if orientation changes between portrait and landscape
     const self = this
     window.addEventListener('orientationchange', function () {
       //if (window.orientation === 90 || window.orientation === -90) {
       if (this.screen.orientation.type == 'landscape-primary' || this.screen.orientation.type == 'landscape-secondary') {
         // Landscape orientation
         console.log('Changed to landscape mode')
-        E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
+        //E('#ahx-carousel').style.touchAction = 'none' // This disables zooming
         E('#ahx-topcont').style.display = 'none'
         E('#ahx-topcont').style.opacity = 0
       } else {
